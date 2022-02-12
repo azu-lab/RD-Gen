@@ -11,8 +11,8 @@ def option_parser() -> Union[bool, argparse.FileType]:
                             help='chain-based generation')
     arg_parser.add_argument('--dest_dir',
                             type=str,
-                            default="./",
-                            help="destination directory")
+                            default='./',
+                            help='destination directory')
     args = arg_parser.parse_args()
 
     return args.use_chain, args.dest_dir
@@ -22,6 +22,6 @@ def main(use_chain, dest_dir):
     print('TODO: 処理を書く')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     use_chain, dest_dir = option_parser()
     main(use_chain, dest_dir)
