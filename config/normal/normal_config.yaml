@@ -1,18 +1,32 @@
-Analysis Items:
-  CPU Temperature: True
-  CPU Usage (All): True
-  CPU Usage (User): True
-  CPU Usage (Sys): True
-  CPU Frequency: True
-  CPU Load Average: True
-  Memory Usage (All): True
-  Memory Usage (Swap): True
-  GPU Memory Usage: True
-  GPU Usage: True
-  HDD Usage: True
-  HDD Throughput: True
-  HDD Temperature: False
-  Process Count: True
-Others:
-  Sampling Rate: 1.0
-  Number of Process: 5
+Compulsory:
+  Number of DAGs: 3
+  Initial seed: 0
+  Initial node index: 0
+  Number of nodes: 50
+  Number of entry nodes: 3
+  Number of exit nodes: 1
+  In-degree:
+    Min: 1
+    Max: 3
+  Out-degree:
+    Min: 1
+    Max: 3
+  Execution time:
+    Min: 2
+    Max: 70
+    Use list: [2, 3, 4, 5]
+
+Optional:
+  Use communication time:
+    Communication time:
+      Min: 2
+      Max: 3
+      Use list: [2, 3, 4, 5]
+  Use multi-period:
+    Period:
+      Min: 10
+      Max: 30
+      Use list: [10, 20, 30, 40]
+    All nodes are periodic: True
+    Entry nodes are periodic: True
+    Execution time exceeds period: False
