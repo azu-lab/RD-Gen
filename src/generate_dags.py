@@ -3,7 +3,7 @@ from typing import Union
 
 
 def option_parser() -> Union[bool, argparse.FileType]:
-    usage = f'[python] {__file__} [<True|False>] --dest_dir [<destination directory>]'
+    usage = f'[python] {__file__} --use_chain --dest_dir [<destination directory>]'
 
     arg_parser = argparse.ArgumentParser(usage=usage)
     arg_parser.add_argument('--use_chain',
