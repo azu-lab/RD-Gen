@@ -1,0 +1,18 @@
+Analysis Items:
+  CPU Temperature: True
+  CPU Usage (All): True
+  CPU Usage (User): True
+  CPU Usage (Sys): True
+  CPU Frequency: True
+  CPU Load Average: True
+  Memory Usage (All): True
+  Memory Usage (Swap): True
+  GPU Memory Usage: True
+  GPU Usage: True
+  HDD Usage: True
+  HDD Throughput: True
+  HDD Temperature: False
+  Process Count: True
+Others:
+  Sampling Rate: 1.0
+  Number of Process: 5
