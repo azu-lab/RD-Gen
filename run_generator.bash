@@ -67,7 +67,6 @@ fi
 
 
 ### generate DAGs
-# TODO: python ファイルを実行
 python3 ${PYTHON_SCRIPT_DIR}/generate_dags.py ${USE_CHAIN} --dest_dir "${DEST_DIR}"
 
 
