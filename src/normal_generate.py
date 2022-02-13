@@ -19,11 +19,11 @@ def option_parser() -> Union[argparse.FileType, str]:
     return args.config_yaml_path, args.dest_dir
 
 
-def main(config_yaml_file, dest_dir):
-    config = file_handling_helper.load_normal_config(config_yaml_file)
+def main(config, dest_dir):
     print('TODO: 処理を書く')
 
 
 if __name__ == '__main__':
     config_yaml_file, dest_dir = option_parser()
-    main(config_yaml_file, dest_dir)
+    config = file_handling_helper.load_normal_config(config_yaml_file)
+    main(config, dest_dir)
