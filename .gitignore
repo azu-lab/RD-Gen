@@ -130,6 +130,7 @@ dmypy.json
 
 # tests
 tests/
+test.pdf
 
 # vscode setting
 .vscode/

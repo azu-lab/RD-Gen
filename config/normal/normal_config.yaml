@@ -4,19 +4,20 @@ Initial seed: 0
 Initial node index: 0
 Number of nodes: 50
 Number of entry nodes: 3
-Number of exit nodes: 1
 In-degree:
-  Min: 1
-  Max: 3
+  Min: 2
+  Max: 2
 Out-degree:
-  Min: 1
-  Max: 3
+  Min: 2
+  Max: 2
 Execution time:
   Min: 2
   Max: 70
   Use list: [2, 3, 4, 5]
 
 # Optional parameters
+Force merge to exit nodes:
+  Number of exit nodes: 1
 Use communication time:
   Min: 2
   Max: 3
