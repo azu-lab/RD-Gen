@@ -15,7 +15,7 @@ function show_usage () {
 USE_CHAIN=""
 CONFIG_YAML_NAME=""
 CONFIG_YAML_PATH=""
-DEST_DIR="${PWD}"
+DEST_DIR="${PWD}/DAGs"
 PYTHON_SCRIPT_DIR="$(dirname $0)/src"
 
 
@@ -47,8 +47,7 @@ do
         shift 2
         ;;
     -d | --dest-dir)
-        DEST_DIR="$2"
-        mkdir -p $2
+        DEST_DIR="$2/DAGs"
         shift 2
         ;;
     --)
@@ -77,9 +76,9 @@ else
 fi
 
 # check dest dir exist
-if [ -e "${DEST_DIR}/DAGs" ]; then
+if [ -e "${DEST_DIR}" ]; then
     echo "The following directory is already existing. Do you overwrite?"
-    echo "DIRECTORY: ${DEST_DIR}/DAGs"
+    echo "DIRECTORY: ${DEST_DIR}"
     while :
     do
         read -p "[Y]es / [N]o? >> " INP
@@ -88,6 +87,19 @@ if [ -e "${DEST_DIR}/DAGs" ]; then
         fi
         echo "[Error] Input again [Y]es or [N]o."
     done
+    if [[ ${INP} =~ [nN] ]]; then
+        exit 1
+    fi
+fi
+
+
+### make destination directory
+if [[ ! -e "${DEST_DIR}" || ${INP} =~ [yY] ]]; then
+    mkdir -p ${DEST_DIR}
+    if [ $? -ne 0 ]; then
+        echo "[Error] Cannot make directory." 1>&2
+        exit 1
+    fi
 fi
 
 

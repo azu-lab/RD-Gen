@@ -161,7 +161,7 @@ def main(config, dest_dir):
                 print("[Error] ぴったりの DAG を作れません")
                 exit(1)
         
-        write_dag(f'dag_{dag_i}', G)
+        write_dag(dest_dir, f'dag_{dag_i}', G)
         
         # TODO: 強制マージなら exit node を追加し、後続ノードがないノードをすべて繋ぐ
         # TODO: 通信時間を使うなら、通信時間をランダムに決める

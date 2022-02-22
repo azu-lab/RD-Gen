@@ -3,7 +3,7 @@ import networkx as nx
 import pydot
 
 
-def write_dag(filename, G : nx.DiGraph) -> None:
+def write_dag(dest_dir, filename, G : nx.DiGraph) -> None:
     for node_i in range(G.number_of_nodes()):
         if(G.nodes[node_i]['timer_driven']):
             G.nodes[node_i]['shape'] = 'box'
@@ -15,4 +15,5 @@ def write_dag(filename, G : nx.DiGraph) -> None:
                                        f'C: {G.nodes[node_i]["execution_time"]}'
     
     pdot = nx.drawing.nx_pydot.to_pydot(G)
-    pdot.write_pdf(f'{filename}.pdf', prog='dot')
+    pdot.write_pdf(f'{dest_dir}/{filename}.pdf', prog='dot')
+    pdot.write_svg(f'{dest_dir}/{filename}.svg')
