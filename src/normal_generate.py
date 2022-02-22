@@ -5,9 +5,8 @@ import networkx as nx
 import random
 import copy
 import numpy as np
-from matplotlib import pyplot as plt
 import pydot
-from networkx.drawing.nx_pydot import graphviz_layout
+from write_dag import write_dag
 
 
 def option_parser() -> Union[argparse.FileType, str]:
@@ -62,7 +61,7 @@ def try_extend_dag(config, dag : nx.DiGraph) -> Union[bool, nx.DiGraph]:
         # Add next_level nodes
         next_nodes_i = [i for i in range(G.number_of_nodes(), G.number_of_nodes()+num_next_level_nodes)]
         for next_node_i in next_nodes_i:
-            G.add_node(next_node_i, execution_time=random_get_exec_time(config))
+            G.add_node(next_node_i, execution_time=random_get_exec_time(config), timer_driven=False)
             
         # Determine num_edges_to_next_level
         num_edges_to_next_level = random.randint(
@@ -148,7 +147,7 @@ def main(config, dest_dir):
         
         # Add entry nodes
         for i in range(config['Number of entry nodes']):
-            G.add_node(G.number_of_nodes(), execution_time=random_get_exec_time(config))
+            G.add_node(G.number_of_nodes(), execution_time=random_get_exec_time(config), timer_driven=False)
         
         # Extend dag
         max_num_try = 100  # HACK
@@ -162,13 +161,11 @@ def main(config, dest_dir):
                 print("[Error] ぴったりの DAG を作れません")
                 exit(1)
         
-        pdot = nx.drawing.nx_pydot.to_pydot(G)
-        pdot.write_pdf(f'dag_{dag_i}.pdf', prog='dot')
+        write_dag(f'dag_{dag_i}', G)
         
         # TODO: 強制マージなら exit node を追加し、後続ノードがないノードをすべて繋ぐ
         # TODO: 通信時間を使うなら、通信時間をランダムに決める
         # TODO: 最後に Periodic type に応じて、周期タスクにする
-        # TODO: 描画（別関数）
 
 if __name__ == '__main__':
     config_yaml_file, dest_dir = option_parser()

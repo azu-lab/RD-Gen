@@ -1,5 +1,5 @@
 # Compulsory parameters
-Number of DAGs: 10
+Number of DAGs: 1
 Initial seed: 0
 Number of nodes: 50
 Number of entry nodes: 3
@@ -27,3 +27,4 @@ Use multi-period:
   Min: 10
   Max: 30
   Use list: [10, 20, 30, 40]
+  
