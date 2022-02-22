@@ -21,7 +21,6 @@ def error_show_normal_config_format() -> None:
     print('# Compulsory parameters')
     print('Number of DAGs: <int>')
     print('Initial seed: <int>')
-    print('Initial node index: <int>')
     print('Number of nodes: <int>')
     print('Number of entry nodes: <int>')
     print('In-degree:')
@@ -65,7 +64,6 @@ def load_normal_config(config_yaml_file) -> Dict:
     
     compulsory_params = ['Number of DAGs',
                          'Initial seed',
-                         'Initial node index',
                          'Number of nodes',
                          'Number of entry nodes',
                          'In-degree',
