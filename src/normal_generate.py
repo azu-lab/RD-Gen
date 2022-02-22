@@ -1,11 +1,10 @@
 import argparse
 import file_handling_helper
-from typing import Union, Dict, Tuple
+from typing import Union, Dict
 import networkx as nx
 import random
 import copy
 import numpy as np
-import pydot
 from write_dag import write_dag
 
 
@@ -25,7 +24,7 @@ def option_parser() -> Union[argparse.FileType, str]:
     return args.config_yaml_path, args.dest_dir
 
 
-def random_get_exec_time(config : Dict) -> int:
+def random_get_exec_time(config) -> int:
     if('Use list' in config['Execution time'].keys()):
         return random.choice(config['Execution time']['Use list'])
     else:
@@ -84,7 +83,7 @@ def try_extend_dag(config, dag : nx.DiGraph) -> Union[bool, nx.DiGraph]:
                     dests = list(set(nodes_lack_in_degree) - set(G.succ[start_i]))
                 else:
                     dests = list(set(next_nodes_i) - set(G.succ[start_i]) - nodes_max_in_degree)
-                if(len(dests) > 0):
+                if(dests):
                     feasibility = True
                     if(start_i in nodes_lack_out_degree):
                         only_lack_out_degree_feasibility = True
@@ -131,16 +130,33 @@ def try_extend_dag(config, dag : nx.DiGraph) -> Union[bool, nx.DiGraph]:
     return True, G
 
 
-def main(config, dest_dir):
-    # Validation check of In-degree and Out-degree
-    if(config['In-degree']['Max'] < config['Out-degree']['Min']):
-        print("[Error] Please increase 'Max' of 'In-degree' or decrease 'Min' of 'Out-degree'.")
-        exit(1)
-    if(config['Out-degree']['Max'] < config['In-degree']['Min']):
-        print("[Error] Please increase 'Max' of 'Out-degree' or decrease 'Min' of 'In-degree'.")
-        exit(1)
+def force_merge_to_exit_nodes(config, G) -> None:
+    leaves = [v for v, d in G.out_degree() if d == 0]
+    exit_nodes_i = []
+    for i in range(config['Force merge to exit nodes']['Number of exit nodes']):
+        exit_nodes_i.append(G.number_of_nodes())
+        G.add_node(G.number_of_nodes(), execution_time=random_get_exec_time(config), timer_driven=False)
     
-    # Generate DAGs
+    if(len(leaves) > len(exit_nodes_i)):
+        no_in_degree_i = copy.deepcopy(exit_nodes_i)
+        for leaf in leaves:
+            if(no_in_degree_i):
+                exit_node_i = random.choice(no_in_degree_i)
+                G.add_edge(leaf, exit_node_i)
+                no_in_degree_i.remove(exit_node_i)
+            else:
+                G.add_edge(leaf, random.choice(exit_nodes_i))
+    else:
+        while(exit_nodes_i):
+            for leaf in leaves:
+                if(not exit_nodes_i):
+                    break
+                exit_node_i = random.choice(exit_nodes_i)
+                G.add_edge(leaf, exit_node_i)
+                exit_nodes_i.remove(exit_node_i)
+
+
+def main(config, dest_dir):
     for dag_i in range(config['Number of DAGs']):
         random.seed(config['Initial seed'] + dag_i)
         G = nx.DiGraph()
@@ -156,16 +172,20 @@ def main(config, dest_dir):
             if(result):
                 G = extended_dag
                 break
-            
             if(num_try == max_num_try):
-                print("[Error] ぴったりの DAG を作れません")
+                print("[Error] Cannot create DAGs. Please specify the feasible parameters.")
                 exit(1)
         
-        write_dag(dest_dir, f'dag_{dag_i}', G)
+        # (Optional) Force merge to exit nodes
+        if('Force merge to exit nodes' in config.keys()):
+            force_merge_to_exit_nodes(config, G)
         
-        # TODO: 強制マージなら exit node を追加し、後続ノードがないノードをすべて繋ぐ
+        
         # TODO: 通信時間を使うなら、通信時間をランダムに決める
         # TODO: 最後に Periodic type に応じて、周期タスクにする
+        
+        write_dag(dest_dir, f'dag_{dag_i}', G)
+
 
 if __name__ == '__main__':
     config_yaml_file, dest_dir = option_parser()

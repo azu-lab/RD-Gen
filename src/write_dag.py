@@ -1,4 +1,3 @@
-from platform import node
 import networkx as nx
 import pydot
 

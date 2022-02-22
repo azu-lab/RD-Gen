@@ -137,5 +137,14 @@ def load_normal_config(config_yaml_file) -> Dict:
             if(isinstance(config[input_param], int) == False):
                 print(f"[Error] Type of '{input_param}' must be <int>.")
                 error_show_normal_config_format()
+    
+    # Validation check of In-degree and Out-degree
+    if(config['In-degree']['Max'] < config['Out-degree']['Min']):
+        print("[Error] Please increase 'Max' of 'In-degree' or decrease 'Min' of 'Out-degree'.")
+        exit(1)
+    if(config['Out-degree']['Max'] < config['In-degree']['Min']):
+        print("[Error] Please increase 'Max' of 'Out-degree' or decrease 'Min' of 'In-degree'.")
+        exit(1)
+
 
     return config

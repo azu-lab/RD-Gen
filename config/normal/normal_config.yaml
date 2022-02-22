@@ -1,8 +1,8 @@
 # Compulsory parameters
-Number of DAGs: 1
+Number of DAGs: 3
 Initial seed: 0
 Number of nodes: 50
-Number of entry nodes: 3
+Number of entry nodes: 2
 In-degree:
   Min: 1
   Max: 2
@@ -16,7 +16,7 @@ Execution time:
 
 # Optional parameters
 Force merge to exit nodes:
-  Number of exit nodes: 1
+  Number of exit nodes: 3
 Use communication time:
   Min: 2
   Max: 3
