@@ -15,5 +15,4 @@ def write_dag(dest_dir, filename, G : nx.DiGraph) -> None:
                                        f'C: {G.nodes[node_i]["execution_time"]}'
     
     pdot = nx.drawing.nx_pydot.to_pydot(G)
-    pdot.write_pdf(f'{dest_dir}/{filename}.pdf', prog='dot')
-    pdot.write_svg(f'{dest_dir}/{filename}.svg')
+    pdot.write_png(f'{dest_dir}/{filename}.png', prog='dot')

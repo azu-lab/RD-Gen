@@ -87,7 +87,13 @@ if [ -e "${DEST_DIR}" ]; then
         fi
         echo "[Error] Input again [Y]es or [N]o."
     done
-    if [[ ${INP} =~ [nN] ]]; then
+    if [[ ${INP} =~ [yY] ]]; then
+        rm -r ${DEST_DIR}
+        if [ $? -ne 0 ]; then
+            echo "[Error] Cannot overwrite the destination directory: ${DEST_DIR}." 1>&2
+            exit 1
+        fi
+    elif [[ ${INP} =~ [nN] ]]; then
         exit 1
     fi
 fi
@@ -97,7 +103,7 @@ fi
 if [[ ! -e "${DEST_DIR}" || ${INP} =~ [yY] ]]; then
     mkdir -p ${DEST_DIR}
     if [ $? -ne 0 ]; then
-        echo "[Error] Cannot make directory." 1>&2
+        echo "[Error] Cannot make the destination directory: ${DEST_DIR}." 1>&2
         exit 1
     fi
 fi
@@ -111,6 +117,7 @@ else
 fi
 
 
+cp ${CONFIG_YAML_PATH} ${DEST_DIR}
 echo "$0 is successfully completed." 1>&2
 
 
