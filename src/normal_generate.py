@@ -28,7 +28,16 @@ def random_get_exec_time(config) -> int:
     if('Use list' in config['Execution time'].keys()):
         return random.choice(config['Execution time']['Use list'])
     else:
-        return random.randint(config['Execution time']['Min'], config['Execution time']['Max'])
+        return random.randint(config['Execution time']['Min'],
+                                    config['Execution time']['Max'])
+
+
+def random_get_comm_time(config) -> int:
+    if('Use list' in config['Use communication time'].keys()):
+        return random.choice(config['Use communication time']['Use list'])
+    else:
+        return random.randint(config['Use communication time']['Min'],
+                                    config['Use communication time']['Max'])
 
 
 def try_extend_dag(config, dag : nx.DiGraph) -> Union[bool, nx.DiGraph]:
@@ -180,9 +189,12 @@ def main(config, dest_dir):
         if('Force merge to exit nodes' in config.keys()):
             force_merge_to_exit_nodes(config, G)
         
+        # (Optional) Use communication time
+        if('Use communication time' in config.keys()):
+            for start_i, end_i in G.edges():
+                G.edges[start_i, end_i]['communication_time'] = random_get_comm_time(config)
         
-        # TODO: 通信時間を使うなら、通信時間をランダムに決める
-        # TODO: 最後に Periodic type に応じて、周期タスクにする
+        # TODO: Periodic type に応じて、周期タスクにする
         
         write_dag(dest_dir, f'dag_{dag_i}', G)
 
