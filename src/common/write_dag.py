@@ -4,10 +4,10 @@ import pydot
 
 def write_dag(config, dest_dir, filename, G : nx.DiGraph) -> None:
     for node_i in range(G.number_of_nodes()):
-        if(G.nodes[node_i]['timer_driven']):
+        if('Period' in list(G.nodes[node_i].keys())):
             G.nodes[node_i]['shape'] = 'box'
             G.nodes[node_i]['label'] = f'[{node_i}]\n' \
-                                       f'C: {G.nodes[node_i]["execution_time"]}' \
+                                       f'C: {G.nodes[node_i]["execution_time"]}\n' \
                                        f'T: {G.nodes[node_i]["Period"]}'
         else:
             G.nodes[node_i]['label'] = f'[{node_i}]\n' \

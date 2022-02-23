@@ -22,8 +22,8 @@ Use communication time:
   Max: 3
   Use list: [2, 3, 4, 5]
 Use multi-period:
-  Periodic type: 'All'
-  Descendants have larger period: True
+  Periodic type: 'Random'
+  Descendants have larger period: False
   Max ratio of execution time to period: 0.8
   Min: 10
   Max: 30

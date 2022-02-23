@@ -1,6 +1,7 @@
 import os
 import sys
 import yaml
+import numpy as np
 from typing import Union, Dict, List
 
 
@@ -154,5 +155,27 @@ def load_normal_config(config_yaml_file) -> Dict:
     if(config['Out-degree']['Max'] < config['In-degree']['Min']):
         print("[Error] Please increase 'Max' of 'Out-degree' or decrease 'Min' of 'In-degree'.")
         exit(1)
+    
+    # Check 'Max ratio of execution time to period' feasibility
+    if('Use multi-period' in config.keys()):
+        max_exec_time = None
+        if('Use list' in config['Execution time'].keys()):
+            max_exec_time = max(config['Execution time']['Use list'])
+        else:
+            max_exec_time = config['Execution time']['Max']
+        
+        max_period = None
+        if('Use list' in config['Use multi-period'].keys()):
+            max_period = max(config['Use multi-period']['Use list'])
+        else:
+            max_period = config['Use multi-period']['Max']
+        
+        max_lower_bound = np.ceil(max_exec_time
+                                    / config['Use multi-period']['Max ratio of execution time to period'])
+        if(max_lower_bound > max_period):
+            print("[Error] 'Max ratio of execution time to period' may not be satisfied.")
+            print("Please increase the maximum value of period or decrease the maximum value of execution time.")
+            exit(1)
+
 
     return config

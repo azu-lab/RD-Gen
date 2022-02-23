@@ -71,7 +71,7 @@ def try_extend_dag(config, dag : nx.DiGraph) -> Union[bool, nx.DiGraph]:
         # Add next_level nodes
         next_nodes_i = [i for i in range(G.number_of_nodes(), G.number_of_nodes()+num_next_level_nodes)]
         for next_node_i in next_nodes_i:
-            G.add_node(next_node_i, execution_time=random_get_exec_time(config), timer_driven=False)
+            G.add_node(next_node_i, execution_time=random_get_exec_time(config))
             
         # Determine num_edges_to_next_level
         num_edges_to_next_level = random.randint(
@@ -146,7 +146,7 @@ def force_merge_to_exit_nodes(config, G) -> None:
     exit_nodes_i = []
     for i in range(config['Force merge to exit nodes']['Number of exit nodes']):
         exit_nodes_i.append(G.number_of_nodes())
-        G.add_node(G.number_of_nodes(), execution_time=random_get_exec_time(config), timer_driven=False)
+        G.add_node(G.number_of_nodes(), execution_time=random_get_exec_time(config))
     
     if(len(leaves) > len(exit_nodes_i)):
         no_in_degree_i = copy.deepcopy(exit_nodes_i)
@@ -174,7 +174,7 @@ def main(config, dest_dir):
         
         # Add entry nodes
         for i in range(config['Number of entry nodes']):
-            G.add_node(G.number_of_nodes(), execution_time=random_get_exec_time(config), timer_driven=False)
+            G.add_node(G.number_of_nodes(), execution_time=random_get_exec_time(config))
         
         # Extend dag
         max_num_try = 100  # HACK
