@@ -196,7 +196,7 @@ def main(config, dest_dir):
         
         # TODO: Periodic type に応じて、周期タスクにする
         
-        write_dag(dest_dir, f'dag_{dag_i}', G)
+        write_dag(config, dest_dir, f'dag_{dag_i}', G)
 
 
 if __name__ == '__main__':
