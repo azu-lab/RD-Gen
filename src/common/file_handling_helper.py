@@ -4,7 +4,7 @@ import yaml
 from typing import Union, Dict, List
 
 
-def load_config(config_yaml_file):
+def _load_config(config_yaml_file):
     try:
         config = yaml.safe_load(config_yaml_file)
     except yaml.YAMLError:
@@ -14,7 +14,7 @@ def load_config(config_yaml_file):
     return config
 
 
-def error_show_normal_config_format() -> None:
+def _error_show_normal_config_format() -> None:
     print('\n')
     print('Please describe the configuration file as follows:')
     print('--------------------------------------------------')
@@ -52,7 +52,7 @@ def error_show_normal_config_format() -> None:
     exit(1)
 
 
-def check_list_int(list : List) -> bool:
+def _check_list_int(list : List) -> bool:
     for value in list:
         if(isinstance(value, int) == False):
             return False
@@ -61,7 +61,7 @@ def check_list_int(list : List) -> bool:
 
 
 def load_normal_config(config_yaml_file) -> Dict:
-    config = load_config(config_yaml_file)
+    config = _load_config(config_yaml_file)
     
     compulsory_params = ['Number of DAGs',
                          'Initial seed',
@@ -77,7 +77,7 @@ def load_normal_config(config_yaml_file) -> Dict:
             config[compulsory_param]
     except KeyError:
         print(f"[Error] Compulsory parameter '{compulsory_param}' is not specified.")
-        error_show_normal_config_format()
+        _error_show_normal_config_format()
     
     # check format
     for input_param in config.keys():
@@ -85,67 +85,67 @@ def load_normal_config(config_yaml_file) -> Dict:
             if(isinstance(config[input_param]['Min'], int) == False or
                     isinstance(config[input_param]['Max'], int) == False):
                 print("[Error] Type of 'Min' and 'Max' must be <int>.")
-                error_show_normal_config_format()
+                _error_show_normal_config_format()
                 
         elif(input_param in ['Execution time', 'Use communication time']):  # 'Min', 'Max', and 'Use list'
             if('Use list' in config[input_param].keys()):
-                if(check_list_int(config[input_param]['Use list']) == False):
+                if(_check_list_int(config[input_param]['Use list']) == False):
                     print("[Error] Type of 'Use list' values must be <int>.")
-                    error_show_normal_config_format()
+                    _error_show_normal_config_format()
             else:
                 if(isinstance(config[input_param]['Min'], int) == False or
                         isinstance(config[input_param]['Max'], int) == False):
                     print("[Error] Type of 'Min' and 'Max' must be <int>.")
-                    error_show_normal_config_format()
+                    _error_show_normal_config_format()
         
         elif(input_param == 'Force merge to exit nodes'):
             try:
                 if(isinstance(config[input_param]['Number of exit nodes'], int) == False):
                     print("[Error] Type of 'Number of exit nodes' must be <int>.")
-                    error_show_normal_config_format()
+                    _error_show_normal_config_format()
             except KeyError:
                 print(f"'[Error] Number of exit nodes' is not specified.")
-                error_show_normal_config_format()
+                _error_show_normal_config_format()
         
         elif(input_param == 'Use multi-period'):
             try:
                 periodic_type = config[input_param]['Periodic type']
                 if(periodic_type not in ['All', 'Entry', 'Random']):
                     print(f"[Error] 'Periodic type' must be 'All', 'Entry', or 'Random'.")
-                    error_show_normal_config_format()
+                    _error_show_normal_config_format()
             except KeyError:
                 print(f"[Error] 'Periodic type' is not specified.")
-                error_show_normal_config_format()
+                _error_show_normal_config_format()
             
             try:
                 if(isinstance(config[input_param]['Descendants have larger period'], bool) == False):
                     print("[Error] Type of 'Descendants have larger period' must be <bool>.")
-                    error_show_normal_config_format()
+                    _error_show_normal_config_format()
             except KeyError:
                 print(f"[Error] 'Descendants have larger period' is not specified.")
-                error_show_normal_config_format()
+                _error_show_normal_config_format()
             
             try:
                 if(isinstance(config[input_param]['Max ratio of execution time to period'], float) == False):
                     print("[Error] Type of 'Max ratio of execution time to period' must be <float>.")
-                    error_show_normal_config_format()
+                    _error_show_normal_config_format()
             except KeyError:
                 print(f"[Error] 'Max ratio of execution time to period' is not specified.")
-                error_show_normal_config_format()
+                _error_show_normal_config_format()
             
             if('Use list' in config[input_param].keys()):
-                if(check_list_int(config[input_param]['Use list']) == False):
+                if(_check_list_int(config[input_param]['Use list']) == False):
                     print("[Error] Type of 'Use list' values must be <int>.")
-                    error_show_normal_config_format()
+                    _error_show_normal_config_format()
             else:
                 if(isinstance(config[input_param]['Min'], int) == False or
                         isinstance(config[input_param]['Max'], int) == False):
                     print("[Error] Type of 'Min' and 'Max' must be <int>.")
-                    error_show_normal_config_format()
+                    _error_show_normal_config_format()
         else:
             if(isinstance(config[input_param], int) == False):
                 print(f"[Error] Type of '{input_param}' must be <int>.")
-                error_show_normal_config_format()
+                _error_show_normal_config_format()
     
     # Validation check of In-degree and Out-degree
     if(config['In-degree']['Max'] < config['Out-degree']['Min']):

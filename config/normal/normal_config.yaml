@@ -24,7 +24,7 @@ Use communication time:
 Use multi-period:
   Periodic type: 'All'
   Descendants have larger period: True
-  Max ratio of execution time to period: 1
+  Max ratio of execution time to period: 0.8
   Min: 10
   Max: 30
   Use list: [10, 20, 30, 40]

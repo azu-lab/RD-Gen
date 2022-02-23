@@ -1,11 +1,13 @@
 import argparse
-import file_handling_helper
 from typing import Union, Dict
 import networkx as nx
 import random
 import copy
 import numpy as np
-from write_dag import write_dag
+
+from common.file_handling_helper import load_normal_config
+from common.write_dag import write_dag
+from common.random_set_period import random_set_period
 
 
 def option_parser() -> Union[argparse.FileType, str]:
@@ -194,12 +196,15 @@ def main(config, dest_dir):
             for start_i, end_i in G.edges():
                 G.edges[start_i, end_i]['communication_time'] = random_get_comm_time(config)
         
-        # TODO: Periodic type に応じて、周期タスクにする
+        # (Optional) Use multi-period
+        if('Use multi-period' in config.keys()):
+            random_set_period(config, 'normal', G)
         
+        # Output
         write_dag(config, dest_dir, f'dag_{dag_i}', G)
 
 
 if __name__ == '__main__':
     config_yaml_file, dest_dir = option_parser()
-    config = file_handling_helper.load_normal_config(config_yaml_file)
+    config = load_normal_config(config_yaml_file)
     main(config, dest_dir)
