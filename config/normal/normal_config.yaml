@@ -1,7 +1,7 @@
 # Compulsory parameters
 Number of DAGs: 3
 Initial seed: 0
-Number of nodes: 50
+Number of nodes: 30
 Number of entry nodes: 2
 In-degree:
   Min: 1
@@ -23,7 +23,8 @@ Use communication time:
   Use list: [2, 3, 4, 5]
 Use multi-period:
   Periodic type: 'All'
-  Descendants have smaller period: True
+  Descendants have larger period: True
+  Max ratio of execution time to period: 1
   Min: 10
   Max: 30
   Use list: [10, 20, 30, 40]

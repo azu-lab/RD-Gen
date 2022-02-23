@@ -18,5 +18,6 @@ def write_dag(config, dest_dir, filename, G : nx.DiGraph) -> None:
         for start_i, end_i in G.edges():
             G.edges[start_i, end_i]['label'] = f'{G.edges[start_i, end_i]["communication_time"]}'
     
+    # write
     pdot = nx.drawing.nx_pydot.to_pydot(G)
     pdot.write_png(f'{dest_dir}/{filename}.png', prog='dot')

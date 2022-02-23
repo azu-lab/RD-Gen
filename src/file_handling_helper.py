@@ -43,7 +43,8 @@ def error_show_normal_config_format() -> None:
     print('  Use list: [<int>, ..., <int>]  # (optional)')
     print('Use multi-period:')
     print("  Periodic type: 'All', 'Entry' or 'Random'")
-    print('  Descendants have smaller period: <bool>')
+    print('  Descendants have larger period: <bool>')
+    print('  Max ratio of execution time to period: <float>')
     print('  Min: <int>')
     print('  Max: <int>')
     print('  Use list: [<int>, ..., <int>]  # (optional)')
@@ -110,18 +111,26 @@ def load_normal_config(config_yaml_file) -> Dict:
             try:
                 periodic_type = config[input_param]['Periodic type']
                 if(periodic_type not in ['All', 'Entry', 'Random']):
-                    print(f"'[Error] Periodic type' must be 'All', 'Entry', or 'Random'.")
+                    print(f"[Error] 'Periodic type' must be 'All', 'Entry', or 'Random'.")
                     error_show_normal_config_format()
             except KeyError:
-                print(f"'[Error] Periodic type' is not specified.")
+                print(f"[Error] 'Periodic type' is not specified.")
                 error_show_normal_config_format()
             
             try:
-                if(isinstance(config[input_param]['Descendants have smaller period'], bool) == False):
-                    print("[Error] Type of 'Descendants have smaller period' must be <bool>.")
+                if(isinstance(config[input_param]['Descendants have larger period'], bool) == False):
+                    print("[Error] Type of 'Descendants have larger period' must be <bool>.")
                     error_show_normal_config_format()
             except KeyError:
-                print(f"'[Error] Descendants have smaller period' is not specified.")
+                print(f"[Error] 'Descendants have larger period' is not specified.")
+                error_show_normal_config_format()
+            
+            try:
+                if(isinstance(config[input_param]['Max ratio of execution time to period'], float) == False):
+                    print("[Error] Type of 'Max ratio of execution time to period' must be <float>.")
+                    error_show_normal_config_format()
+            except KeyError:
+                print(f"[Error] 'Max ratio of execution time to period' is not specified.")
                 error_show_normal_config_format()
             
             if('Use list' in config[input_param].keys()):
@@ -145,6 +154,5 @@ def load_normal_config(config_yaml_file) -> Dict:
     if(config['Out-degree']['Max'] < config['In-degree']['Min']):
         print("[Error] Please increase 'Max' of 'Out-degree' or decrease 'Min' of 'In-degree'.")
         exit(1)
-
 
     return config
