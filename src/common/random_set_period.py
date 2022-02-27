@@ -42,13 +42,6 @@ def _set_entry(config, G):
         G.nodes[entry_i]['Period'] = _random_get_period(entry_i, config, G)
 
 
-def _set_random(config, G):
-    num_timer_driven = random.randint(0, G.number_of_nodes())
-    sampled_nodes = random.sample(G.nodes(), num_timer_driven)
-    for sampled_i in sampled_nodes:
-        G.nodes[sampled_i]['Period'] = _random_get_period(sampled_i, config, G)
-
-
 def _set_chain(config, G):
     # TODO
     pass
@@ -63,8 +56,6 @@ def random_set_period(config, mode : str, G : nx.DiGraph) -> None:
         _set_all(config, G)
     elif(config['Use multi-period']['Periodic type'] == 'Entry'):
         _set_entry(config, G)
-    elif(config['Use multi-period']['Periodic type'] == 'Random'):
-        _set_random(config, G)
     
     if(mode == 'chain' and config['Use multi-period']['Periodic type'] == 'Chain'):
         _set_chain(config, G)

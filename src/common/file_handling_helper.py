@@ -43,7 +43,7 @@ def _error_show_normal_config_format() -> None:
     print('  Max: <int>')
     print('  Use list: [<int>, ..., <int>]  # (optional)')
     print('Use multi-period:')
-    print("  Periodic type: 'All', 'Entry' or 'Random'")
+    print("  Periodic type: 'All' or 'Entry'")
     print('  Descendants have larger period: <bool>')
     print('  Max ratio of execution time to period: <float>')
     print('  Min: <int>')
@@ -111,8 +111,8 @@ def load_normal_config(config_yaml_file) -> Dict:
         elif(input_param == 'Use multi-period'):
             try:
                 periodic_type = config[input_param]['Periodic type']
-                if(periodic_type not in ['All', 'Entry', 'Random']):
-                    print(f"[Error] 'Periodic type' must be 'All', 'Entry', or 'Random'.")
+                if(periodic_type not in ['All', 'Entry']):
+                    print(f"[Error] 'Periodic type' must be 'All' or 'Entry'.")
                     _error_show_normal_config_format()
             except KeyError:
                 print(f"[Error] 'Periodic type' is not specified.")
