@@ -3,15 +3,16 @@ import pydot
 
 
 def write_dag(config, dest_dir, filename, G : nx.DiGraph) -> None:
+    # draw node label
     for node_i in range(G.number_of_nodes()):
-        if('Period' in list(G.nodes[node_i].keys())):
+        G.nodes[node_i]['label'] = f'[{node_i}]\n' \
+                                   f'C: {G.nodes[node_i]["execution_time"]}'
+        if('period' in list(G.nodes[node_i].keys())):
             G.nodes[node_i]['shape'] = 'box'
-            G.nodes[node_i]['label'] = f'[{node_i}]\n' \
-                                       f'C: {G.nodes[node_i]["execution_time"]}\n' \
-                                       f'T: {G.nodes[node_i]["Period"]}'
-        else:
-            G.nodes[node_i]['label'] = f'[{node_i}]\n' \
-                                       f'C: {G.nodes[node_i]["execution_time"]}'
+            G.nodes[node_i]['label'] += f'\nT: {G.nodes[node_i]["period"]}'
+        if('deadline' in list(G.nodes[node_i].keys())):
+            G.nodes[node_i]['style'] = 'bold'
+            G.nodes[node_i]['label'] += f'\nD: {G.nodes[node_i]["deadline"]}'
     
     # draw communication time
     if('Use communication time' in config.keys()):

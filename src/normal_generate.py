@@ -1,5 +1,6 @@
 import argparse
-from typing import Union, Dict
+from logging import critical
+from typing import Union, Dict, List, Tuple
 import networkx as nx
 import random
 import copy
@@ -10,7 +11,7 @@ from common.write_dag import write_dag
 from common.random_set_period import random_set_period
 
 
-def option_parser() -> Union[argparse.FileType, str]:
+def option_parser() -> Tuple[argparse.FileType, str]:
     usage = f'[python] {__file__} --config_yaml_path [<path to config file>] --dest_dir [<destination directory>]'
 
     arg_parser = argparse.ArgumentParser(usage=usage)
@@ -42,7 +43,7 @@ def random_get_comm_time(config) -> int:
                                     config['Use communication time']['Max'])
 
 
-def try_extend_dag(config, dag : nx.DiGraph) -> Union[bool, nx.DiGraph]:
+def try_extend_dag(config, dag: nx.DiGraph) -> Tuple[bool, nx.DiGraph]:
     G = copy.deepcopy(dag)
     end_num_node = config['Number of nodes']
     if('Force merge to exit nodes' in config.keys()):
@@ -141,7 +142,7 @@ def try_extend_dag(config, dag : nx.DiGraph) -> Union[bool, nx.DiGraph]:
     return True, G
 
 
-def force_merge_to_exit_nodes(config, G) -> None:
+def force_merge_to_exit_nodes(config, G: nx.DiGraph) -> None:
     leaves = [v for v, d in G.out_degree() if d == 0]
     exit_nodes_i = []
     for i in range(config['Force merge to exit nodes']['Number of exit nodes']):
@@ -165,6 +166,36 @@ def force_merge_to_exit_nodes(config, G) -> None:
                 exit_node_i = random.choice(exit_nodes_i)
                 G.add_edge(leaf, exit_node_i)
                 exit_nodes_i.remove(exit_node_i)
+
+
+def get_cp_and_cp_len(dag: nx.DiGraph, source, target) -> Tuple[List[int], int]:
+    paths = nx.all_simple_paths(dag, source=source, target=target)
+    cp = []
+    cp_len = 0
+    for path in paths:
+        path_len = 0
+        for i in range(len(path)):
+            path_len += dag.nodes[path[i]]['execution_time']
+            if(i != len(path)-1 and 'communication_time' in list(dag.nodes[path[i]].keys())):
+                path_len += dag.edges[path[i], path[i+1]]['communication_time']
+        if(path_len > cp_len):
+            cp = path
+            cp_len = path_len
+    
+    return cp, cp_len
+
+
+def set_end_to_end_deadlines(config, G: nx.DiGraph) -> None:
+    for exit_i in [v for v, d in G.out_degree() if d == 0]:
+        max_cp_len = 0
+        for entry_i in [v for v, d in G.in_degree() if d == 0]:
+            _, cp_len = get_cp_and_cp_len(G, entry_i, exit_i)
+            if(cp_len > max_cp_len):
+                max_cp_len = cp_len
+                
+        G.nodes[exit_i]['deadline'] = int(
+                max_cp_len
+                * config['Use end-to-end deadline']['Ratio of deadlines to critical path length'])
 
 
 def main(config, dest_dir):
@@ -195,6 +226,10 @@ def main(config, dest_dir):
         if('Use communication time' in config.keys()):
             for start_i, end_i in G.edges():
                 G.edges[start_i, end_i]['communication_time'] = random_get_comm_time(config)
+        
+        # (Optional) Use end-to-end deadline
+        if('Use end-to-end deadline' in config.keys()):
+            set_end_to_end_deadlines(config, G)
         
         # (Optional) Use multi-period
         if('Use multi-period' in config.keys()):

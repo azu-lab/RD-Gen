@@ -83,29 +83,38 @@ def load_normal_config(config_yaml_file) -> Dict:
     # check format
     for input_param in config.keys():
         if(input_param in ['In-degree', 'Out-degree']):  # 'Min' and 'Max'
-            if(isinstance(config[input_param]['Min'], int) == False or
-                    isinstance(config[input_param]['Max'], int) == False):
+            if(not isinstance(config[input_param]['Min'], int) or
+                    not isinstance(config[input_param]['Max'], int)):
                 print("[Error] Type of 'Min' and 'Max' must be <int>.")
                 _error_show_normal_config_format()
                 
         elif(input_param in ['Execution time', 'Use communication time']):  # 'Min', 'Max', and 'Use list'
             if('Use list' in config[input_param].keys()):
-                if(_check_list_int(config[input_param]['Use list']) == False):
+                if(not _check_list_int(config[input_param]['Use list'])):
                     print("[Error] Type of 'Use list' values must be <int>.")
                     _error_show_normal_config_format()
             else:
-                if(isinstance(config[input_param]['Min'], int) == False or
-                        isinstance(config[input_param]['Max'], int) == False):
+                if(not isinstance(config[input_param]['Min'], int) or
+                        not isinstance(config[input_param]['Max'], int)):
                     print("[Error] Type of 'Min' and 'Max' must be <int>.")
                     _error_show_normal_config_format()
         
         elif(input_param == 'Force merge to exit nodes'):
             try:
-                if(isinstance(config[input_param]['Number of exit nodes'], int) == False):
+                if(not isinstance(config[input_param]['Number of exit nodes'], int)):
                     print("[Error] Type of 'Number of exit nodes' must be <int>.")
                     _error_show_normal_config_format()
             except KeyError:
-                print(f"'[Error] Number of exit nodes' is not specified.")
+                print("[Error] 'Number of exit nodes' is not specified.")
+                _error_show_normal_config_format()
+        
+        elif(input_param == 'Use end-to-end deadline'):
+            try:
+                if(not isinstance(config[input_param]['Ratio of deadlines to critical path length'], float)):
+                    print("[Error] Type of 'Ratio of deadlines to critical path length' must be <float>.")
+                    _error_show_normal_config_format()
+            except KeyError:
+                print("[Error] 'Ratio of deadlines to critical path length' is not specified.")
                 _error_show_normal_config_format()
         
         elif(input_param == 'Use multi-period'):
@@ -119,7 +128,7 @@ def load_normal_config(config_yaml_file) -> Dict:
                 _error_show_normal_config_format()
             
             try:
-                if(isinstance(config[input_param]['Descendants have larger period'], bool) == False):
+                if(not isinstance(config[input_param]['Descendants have larger period'], bool)):
                     print("[Error] Type of 'Descendants have larger period' must be <bool>.")
                     _error_show_normal_config_format()
             except KeyError:
@@ -127,7 +136,7 @@ def load_normal_config(config_yaml_file) -> Dict:
                 _error_show_normal_config_format()
             
             try:
-                if(isinstance(config[input_param]['Max ratio of execution time to period'], float) == False):
+                if(not isinstance(config[input_param]['Max ratio of execution time to period'], float)):
                     print("[Error] Type of 'Max ratio of execution time to period' must be <float>.")
                     _error_show_normal_config_format()
             except KeyError:
@@ -135,16 +144,16 @@ def load_normal_config(config_yaml_file) -> Dict:
                 _error_show_normal_config_format()
             
             if('Use list' in config[input_param].keys()):
-                if(_check_list_int(config[input_param]['Use list']) == False):
+                if(not _check_list_int(config[input_param]['Use list'])):
                     print("[Error] Type of 'Use list' values must be <int>.")
                     _error_show_normal_config_format()
             else:
-                if(isinstance(config[input_param]['Min'], int) == False or
-                        isinstance(config[input_param]['Max'], int) == False):
+                if(not isinstance(config[input_param]['Min'], int) or
+                        not isinstance(config[input_param]['Max'], int)):
                     print("[Error] Type of 'Min' and 'Max' must be <int>.")
                     _error_show_normal_config_format()
         else:
-            if(isinstance(config[input_param], int) == False):
+            if(not isinstance(config[input_param], int)):
                 print(f"[Error] Type of '{input_param}' must be <int>.")
                 _error_show_normal_config_format()
     

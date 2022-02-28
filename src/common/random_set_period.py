@@ -18,8 +18,8 @@ def _random_get_period(node_i, config, dag : nx.DiGraph) -> int:
         ancestors = list(nx.ancestors(dag, node_i))
         anc_periods = []
         for ancestor in ancestors:
-            if 'Period' in list(dag.nodes[ancestor].keys()):
-                anc_periods.append(dag.nodes[ancestor]['Period'])
+            if 'period' in list(dag.nodes[ancestor].keys()):
+                anc_periods.append(dag.nodes[ancestor]['period'])
         if(anc_periods):
             lower_bound = max(max(anc_periods), lower_bound)
     
@@ -33,13 +33,13 @@ def _random_get_period(node_i, config, dag : nx.DiGraph) -> int:
 
 def _set_all(config, G):
     for node_i in G.nodes():
-        G.nodes[node_i]['Period'] = _random_get_period(node_i, config, G)
+        G.nodes[node_i]['period'] = _random_get_period(node_i, config, G)
 
 
 def _set_entry(config, G):
     entry_nodes = [v for v, d in G.in_degree() if d == 0]
     for entry_i in entry_nodes:
-        G.nodes[entry_i]['Period'] = _random_get_period(entry_i, config, G)
+        G.nodes[entry_i]['period'] = _random_get_period(entry_i, config, G)
 
 
 def _set_chain(config, G):
