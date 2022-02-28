@@ -173,9 +173,19 @@ def load_normal_config(config_yaml_file) -> Dict:
         max_lower_bound = np.ceil(max_exec_time
                                     / config['Use multi-period']['Max ratio of execution time to period'])
         if(max_lower_bound > max_period):
-            print("[Error] 'Max ratio of execution time to period' may not be satisfied.")
-            print("Please increase the maximum value of period or decrease the maximum value of execution time.")
+            print("[Error] 'Max ratio of execution time to period' may not be satisfied. \
+                  Please increase the maximum value of period or decrease the maximum value of execution time.")
             exit(1)
+    
+    # Check 'Max number of same-depth nodes' feasibility
+    if('Max number of same-depth nodes' in config.keys()):
+        min_same_depth_num = max(config['Out-degree']['Min'], 
+                      int(np.ceil(config['Number of entry nodes']*config['Out-degree']['Min'] 
+                                  / config['In-degree']['Max'])))
 
+        if(config['Max number of same-depth nodes'] < min_same_depth_num):
+            print("[Error] 'Max number of same-depth nodes' is too small. \
+                  Please increase 'Max number of same-depth nodes'.")
+            exit(1)
 
     return config

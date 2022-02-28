@@ -51,41 +51,41 @@ def try_extend_dag(config, dag : nx.DiGraph) -> Union[bool, nx.DiGraph]:
     while(G.number_of_nodes() != end_num_node):
         leaves = [v for v, d in G.out_degree() if d == 0]
         
-        # Determine num_next_level
-        num_next_level_nodes = 0
+        # Determine num_next_depth
+        num_next_depth_nodes = 0
         min_num = max(config['Out-degree']['Min'], 
                       int(np.ceil(len(leaves)*config['Out-degree']['Min'] / config['In-degree']['Max'])))
         max_num = int(np.floor(len(leaves)*config['Out-degree']['Max'] / config['In-degree']['Min']))
+        if('Max number of same-depth nodes' in config.keys()):
+            max_num = min(max_num, config['Max number of same-depth nodes'])
 
         if(G.number_of_nodes()+min_num >= end_num_node and
                 G.number_of_nodes()+max_num <= end_num_node):
-            for num in range(min_num, max_num):
-                if(G.number_of_nodes()+num == end_num_node):
-                    num_next_level_nodes = num
-                    break
+            num_next_depth_nodes = end_num_node - G.number_of_nodes()
+            break
         elif(G.number_of_nodes() > end_num_node):
             return False, G
         else:
-            num_next_level_nodes = random.randint(min_num, max_num)
+            num_next_depth_nodes = random.randint(min_num, max_num)
         
-        # Add next_level nodes
-        next_nodes_i = [i for i in range(G.number_of_nodes(), G.number_of_nodes()+num_next_level_nodes)]
+        # Add next_depth nodes
+        next_nodes_i = [i for i in range(G.number_of_nodes(), G.number_of_nodes()+num_next_depth_nodes)]
         for next_node_i in next_nodes_i:
             G.add_node(next_node_i, execution_time=random_get_exec_time(config))
             
-        # Determine num_edges_to_next_level
-        num_edges_to_next_level = random.randint(
-                max(len(leaves)*config['Out-degree']['Min'], num_next_level_nodes*config['In-degree']['Min']),
-                min(len(leaves)*config['Out-degree']['Max'], num_next_level_nodes*config['In-degree']['Max']))
+        # Determine num_edges_to_next_depth
+        num_edges_to_next_depth = random.randint(
+                max(len(leaves)*config['Out-degree']['Min'], num_next_depth_nodes*config['In-degree']['Min']),
+                min(len(leaves)*config['Out-degree']['Max'], num_next_depth_nodes*config['In-degree']['Max']))
         
-        # Add edges_to_next_level
+        # Add edges_to_next_depth
         add_edge_count = 0
         nodes_lack_out_degree = copy.deepcopy(leaves)
         nodes_max_out_degree = set()
         nodes_lack_in_degree = copy.deepcopy(next_nodes_i)
         nodes_max_in_degree = set()
         
-        while(add_edge_count != num_edges_to_next_level):
+        while(add_edge_count != num_edges_to_next_depth):
             # Check feasibility
             feasibility = False
             only_lack_out_degree_feasibility = False
@@ -135,7 +135,7 @@ def try_extend_dag(config, dag : nx.DiGraph) -> Union[bool, nx.DiGraph]:
                     nodes_lack_in_degree.remove(dest_next_node_i)
                 if(G.in_degree(dest_next_node_i) == config['In-degree']['Max']):
                     nodes_max_in_degree.add(dest_next_node_i)
-                if(add_edge_count == num_edges_to_next_level):
+                if(add_edge_count == num_edges_to_next_depth):
                     break
     
     return True, G

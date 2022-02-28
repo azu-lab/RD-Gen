@@ -5,7 +5,7 @@ Number of nodes: 30
 Number of entry nodes: 2
 In-degree:
   Min: 1
-  Max: 2
+  Max: 3
 Out-degree:
   Min: 1
   Max: 2
@@ -17,12 +17,13 @@ Execution time:
 # Optional parameters
 Force merge to exit nodes:
   Number of exit nodes: 3
+Max number of same-depth nodes: 5
 Use communication time:
   Min: 2
   Max: 3
   Use list: [2, 3, 4, 5]
 Use multi-period:
-  Periodic type: 'Entry'
+  Periodic type: 'All'
   Descendants have larger period: False
   Max ratio of execution time to period: 0.8
   Min: 10
