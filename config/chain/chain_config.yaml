@@ -1,0 +1,46 @@
+# Compulsory parameters
+Number of DAGs: 3
+Initial seed: 0
+Number of nodes: 30
+Number of entry nodes: 2
+Number of chains: 3
+Chain length:
+  Min: 1
+  Max: 3
+Chain width:
+  Min: 1
+  Max: 2
+Merge chains:
+  Exit nodes: True
+  Middle of chain: True
+  Vertical:
+    Max number of vertical merged chains: 2
+Execution time:
+  Min: 2
+  Max: 70
+  Use list: [2, 3, 4, 5]
+
+# Optional parameters
+Number of exit nodes: 3
+Use communication time:
+  Min: 2
+  Max: 3
+  Use list: [2, 3, 4, 5]
+Use multi-period:
+  Periodic type: 'Entry'
+  Descendants have larger period: False
+  Max ratio of execution time to period: 0.8
+  Min: 10
+  Max: 30
+  Use list: [10, 20, 30, 40]
+
+# Output formats
+DAG description:
+  xml: True
+  dot: True
+  json: True
+  yaml: True
+Figure:
+  png: True
+  svg: True
+  pdf: True
