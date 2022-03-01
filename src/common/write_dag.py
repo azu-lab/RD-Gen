@@ -1,8 +1,7 @@
 import networkx as nx
-import pydot
 
 
-def write_dag(config, dest_dir, filename, G : nx.DiGraph) -> None:
+def write_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
     # draw node label
     for node_i in range(G.number_of_nodes()):
         G.nodes[node_i]['label'] = f'[{node_i}]\n' \
@@ -13,12 +12,13 @@ def write_dag(config, dest_dir, filename, G : nx.DiGraph) -> None:
         if('deadline' in list(G.nodes[node_i].keys())):
             G.nodes[node_i]['style'] = 'bold'
             G.nodes[node_i]['label'] += f'\nD: {G.nodes[node_i]["deadline"]}'
-    
+
     # draw communication time
     if('Use communication time' in config.keys()):
         for start_i, end_i in G.edges():
-            G.edges[start_i, end_i]['label'] = f'{G.edges[start_i, end_i]["communication_time"]}'
-    
+            G.edges[start_i, end_i]['label'] = \
+                    f'{G.edges[start_i, end_i]["communication_time"]}'
+
     # write
     pdot = nx.drawing.nx_pydot.to_pydot(G)
     fig_formats = [k for k, v in config['Figure'].items() if v]

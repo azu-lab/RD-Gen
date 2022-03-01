@@ -1,8 +1,7 @@
-import os
 import sys
 import yaml
 import numpy as np
-from typing import Union, Dict, List
+from typing import Dict, List
 
 
 def _load_config(config_yaml_file):
@@ -64,17 +63,16 @@ def _error_show_normal_config_format() -> None:
     exit(1)
 
 
-def _check_list_int(list : List) -> bool:
+def _is_int_list(list: List) -> bool:
     for value in list:
-        if(isinstance(value, int) == False):
+        if(not isinstance(value, int)):
             return False
-    
     return True
 
 
 def load_normal_config(config_yaml_file) -> Dict:
     config = _load_config(config_yaml_file)
-    
+
     compulsory_params = ['Number of DAGs',
                          'Initial seed',
                          'Number of nodes',
@@ -82,16 +80,16 @@ def load_normal_config(config_yaml_file) -> Dict:
                          'In-degree',
                          'Out-degree',
                          'Execution time']
-    
-    # check compulsory parameter exists
+
+    # Check compulsory parameter exists
     try:
         for compulsory_param in compulsory_params:
             config[compulsory_param]
     except KeyError:
         print(f"[Error] Compulsory parameter '{compulsory_param}' is not specified.")
         _error_show_normal_config_format()
-    
-    # check output format exists
+
+    # Check output format exists
     try:
         if(not config['DAG description'].keys()):
             print("[Error] At least one 'DAG description' format must be 'True'.")
@@ -106,18 +104,18 @@ def load_normal_config(config_yaml_file) -> Dict:
     except KeyError:
         print("[Error] 'Figure' is not specified.")
         _error_show_normal_config_format()
-    
-    # check format
+
+    # Check format
     for input_param in config.keys():
         if(input_param in ['In-degree', 'Out-degree']):  # 'Min' and 'Max'
             if(not isinstance(config[input_param]['Min'], int) or
                     not isinstance(config[input_param]['Max'], int)):
                 print("[Error] Type of 'Min' and 'Max' must be <int>.")
                 _error_show_normal_config_format()
-                
+
         elif(input_param in ['Execution time', 'Use communication time']):  # 'Min', 'Max', and 'Use list'
             if('Use list' in config[input_param].keys()):
-                if(not _check_list_int(config[input_param]['Use list'])):
+                if(not _is_int_list(config[input_param]['Use list'])):
                     print("[Error] Type of 'Use list' values must be <int>.")
                     _error_show_normal_config_format()
             else:
@@ -125,7 +123,7 @@ def load_normal_config(config_yaml_file) -> Dict:
                         not isinstance(config[input_param]['Max'], int)):
                     print("[Error] Type of 'Min' and 'Max' must be <int>.")
                     _error_show_normal_config_format()
-        
+
         elif(input_param == 'Force merge to exit nodes'):
             try:
                 if(not isinstance(config[input_param]['Number of exit nodes'], int)):
@@ -134,7 +132,7 @@ def load_normal_config(config_yaml_file) -> Dict:
             except KeyError:
                 print("[Error] 'Number of exit nodes' is not specified.")
                 _error_show_normal_config_format()
-        
+
         elif(input_param == 'Use end-to-end deadline'):
             try:
                 if(not isinstance(config[input_param]['Ratio of deadlines to critical path length'], float)):
@@ -143,7 +141,7 @@ def load_normal_config(config_yaml_file) -> Dict:
             except KeyError:
                 print("[Error] 'Ratio of deadlines to critical path length' is not specified.")
                 _error_show_normal_config_format()
-        
+
         elif(input_param == 'Use multi-period'):
             try:
                 periodic_type = config[input_param]['Periodic type']
@@ -153,7 +151,7 @@ def load_normal_config(config_yaml_file) -> Dict:
             except KeyError:
                 print("[Error] 'Periodic type' is not specified.")
                 _error_show_normal_config_format()
-            
+
             try:
                 if(not isinstance(config[input_param]['Descendants have larger period'], bool)):
                     print("[Error] Type of 'Descendants have larger period' must be <bool>.")
@@ -161,17 +159,17 @@ def load_normal_config(config_yaml_file) -> Dict:
             except KeyError:
                 print("[Error] 'Descendants have larger period' is not specified.")
                 _error_show_normal_config_format()
-            
+
             try:
                 if(not isinstance(config[input_param]['Max ratio of execution time to period'], float)):
                     print("[Error] Type of 'Max ratio of execution time to period' must be <float>.")
                     _error_show_normal_config_format()
             except KeyError:
-                print(f"[Error] 'Max ratio of execution time to period' is not specified.")
+                print("[Error] 'Max ratio of execution time to period' is not specified.")
                 _error_show_normal_config_format()
-            
+
             if('Use list' in config[input_param].keys()):
-                if(not _check_list_int(config[input_param]['Use list'])):
+                if(not _is_int_list(config[input_param]['Use list'])):
                     print("[Error] Type of 'Use list' values must be <int>.")
                     _error_show_normal_config_format()
             else:
@@ -194,7 +192,7 @@ def load_normal_config(config_yaml_file) -> Dict:
             if(not isinstance(config[input_param], int)):
                 print(f"[Error] Type of '{input_param}' must be <int>.")
                 _error_show_normal_config_format()
-    
+
     # Validation check of In-degree and Out-degree
     if(config['In-degree']['Max'] < config['Out-degree']['Min']):
         print("[Error] Please increase 'Max' of 'In-degree' or decrease 'Min' of 'Out-degree'.")
@@ -202,7 +200,7 @@ def load_normal_config(config_yaml_file) -> Dict:
     if(config['Out-degree']['Max'] < config['In-degree']['Min']):
         print("[Error] Please increase 'Max' of 'Out-degree' or decrease 'Min' of 'In-degree'.")
         exit(1)
-    
+
     # Check 'Max ratio of execution time to period' feasibility
     if('Use multi-period' in config.keys()):
         max_exec_time = None
@@ -210,25 +208,26 @@ def load_normal_config(config_yaml_file) -> Dict:
             max_exec_time = max(config['Execution time']['Use list'])
         else:
             max_exec_time = config['Execution time']['Max']
-        
+
         max_period = None
         if('Use list' in config['Use multi-period'].keys()):
             max_period = max(config['Use multi-period']['Use list'])
         else:
             max_period = config['Use multi-period']['Max']
-        
+
         max_lower_bound = np.ceil(max_exec_time
-                                    / config['Use multi-period']['Max ratio of execution time to period'])
+                                  / config['Use multi-period']['Max ratio of execution time to period'])
         if(max_lower_bound > max_period):
             print("[Error] 'Max ratio of execution time to period' may not be satisfied. \
                   Please increase the maximum value of period or decrease the maximum value of execution time.")
             exit(1)
-    
+
     # Check 'Max number of same-depth nodes' feasibility
     if('Max number of same-depth nodes' in config.keys()):
-        min_same_depth_num = max(config['Out-degree']['Min'], 
-                      int(np.ceil(config['Number of entry nodes']*config['Out-degree']['Min'] 
-                                  / config['In-degree']['Max'])))
+        min_same_depth_num = max(config['Out-degree']['Min'],
+                                 int(np.ceil(
+                                     config['Number of entry nodes']*config['Out-degree']['Min']
+                                     / config['In-degree']['Max'])))
 
         if(config['Max number of same-depth nodes'] < min_same_depth_num):
             print("[Error] 'Max number of same-depth nodes' is too small. \
