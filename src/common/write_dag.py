@@ -21,4 +21,10 @@ def write_dag(config, dest_dir, filename, G : nx.DiGraph) -> None:
     
     # write
     pdot = nx.drawing.nx_pydot.to_pydot(G)
-    pdot.write_png(f'{dest_dir}/{filename}.png', prog='dot')
+    fig_formats = [k for k, v in config['Figure'].items() if v]
+    if('png' in fig_formats):
+        pdot.write_png(f'{dest_dir}/{filename}.png')
+    if('svg' in fig_formats):
+        pdot.write_svg(f'{dest_dir}/{filename}.svg')
+    if('pdf' in fig_formats):
+        pdot.write_pdf(f'{dest_dir}/{filename}.pdf')

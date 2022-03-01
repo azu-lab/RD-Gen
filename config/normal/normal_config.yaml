@@ -31,3 +31,14 @@ Use multi-period:
   Min: 10
   Max: 30
   Use list: [10, 20, 30, 40]
+
+# Output formats
+DAG description:
+  xml: True
+  dot: True
+  json: True
+  yaml: True
+Figure:
+  png: True
+  svg: True
+  pdf: True

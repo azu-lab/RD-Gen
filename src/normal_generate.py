@@ -1,10 +1,12 @@
 import argparse
-from logging import critical
 from typing import Union, Dict, List, Tuple
 import networkx as nx
 import random
 import copy
 import numpy as np
+import yaml
+import json
+from networkx.readwrite import json_graph
 
 from common.file_handling_helper import load_normal_config
 from common.write_dag import write_dag
@@ -236,6 +238,23 @@ def main(config, dest_dir):
             random_set_period(config, 'normal', G)
         
         # Output
+        dag_formats = [k for k, v in config['DAG description'].items() if v]
+        if('xml' in dag_formats):
+            nx.write_graphml_xml(G, f'{dest_dir}/dag_{dag_i}.xml')
+        if('dot' in dag_formats):
+            nx.drawing.nx_pydot.write_dot(G, f'{dest_dir}/dag_{dag_i}.dot')
+        if('json' in dag_formats):
+            data = json_graph.node_link_data(G)
+            s = json.dumps(data)
+            with open(f'{dest_dir}/dag_{dag_i}.json', 'w') as f:
+                json.dump(s, f)
+        if('yaml' in dag_formats):
+            data = json_graph.node_link_data(G)
+            s = json.dumps(data)
+            dic = json.loads(s)
+            with open(f'{dest_dir}/dag_{dag_i}.yaml', 'w') as f:
+                yaml.dump(dic, f)
+
         write_dag(config, dest_dir, f'dag_{dag_i}', G)
 
 

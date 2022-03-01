@@ -49,6 +49,17 @@ def _error_show_normal_config_format() -> None:
     print('  Min: <int>')
     print('  Max: <int>')
     print('  Use list: [<int>, ..., <int>]  # (optional)')
+    print('\n')
+    print('# Output formats')
+    print('DAG description:')
+    print('  xml: <bool>')
+    print('  dot: <bool>')
+    print('  json: <bool>')
+    print('  yaml: <bool>')
+    print('Figure:')
+    print('  png: <bool>')
+    print('  svg: <bool>')
+    print('  pdf: <bool>')
     print('--------------------------------------------------\n')
     exit(1)
 
@@ -78,6 +89,22 @@ def load_normal_config(config_yaml_file) -> Dict:
             config[compulsory_param]
     except KeyError:
         print(f"[Error] Compulsory parameter '{compulsory_param}' is not specified.")
+        _error_show_normal_config_format()
+    
+    # check output format exists
+    try:
+        if(not config['DAG description'].keys()):
+            print("[Error] At least one 'DAG description' format must be 'True'.")
+            _error_show_normal_config_format()
+    except KeyError:
+        print("[Error] 'DAG description' is not specified.")
+        _error_show_normal_config_format()
+    try:
+        if(not config['Figure'].keys()):
+            print("[Error] At least one 'Figure' format must be 'True'.")
+            _error_show_normal_config_format()
+    except KeyError:
+        print("[Error] 'Figure' is not specified.")
         _error_show_normal_config_format()
     
     # check format
@@ -121,10 +148,10 @@ def load_normal_config(config_yaml_file) -> Dict:
             try:
                 periodic_type = config[input_param]['Periodic type']
                 if(periodic_type not in ['All', 'Entry']):
-                    print(f"[Error] 'Periodic type' must be 'All' or 'Entry'.")
+                    print("[Error] 'Periodic type' must be 'All' or 'Entry'.")
                     _error_show_normal_config_format()
             except KeyError:
-                print(f"[Error] 'Periodic type' is not specified.")
+                print("[Error] 'Periodic type' is not specified.")
                 _error_show_normal_config_format()
             
             try:
@@ -132,7 +159,7 @@ def load_normal_config(config_yaml_file) -> Dict:
                     print("[Error] Type of 'Descendants have larger period' must be <bool>.")
                     _error_show_normal_config_format()
             except KeyError:
-                print(f"[Error] 'Descendants have larger period' is not specified.")
+                print("[Error] 'Descendants have larger period' is not specified.")
                 _error_show_normal_config_format()
             
             try:
@@ -152,6 +179,17 @@ def load_normal_config(config_yaml_file) -> Dict:
                         not isinstance(config[input_param]['Max'], int)):
                     print("[Error] Type of 'Min' and 'Max' must be <int>.")
                     _error_show_normal_config_format()
+        elif(input_param in ['DAG description', 'Figure']):
+            specified_true_flag = False
+            for key in config[input_param].keys():
+                if(not isinstance(config[input_param][key], bool)):
+                    print(f"[Error] Type of '{key}' must be <bool>.")
+                    _error_show_normal_config_format()
+                elif(config[input_param][key]):
+                    specified_true_flag = True
+            if(not specified_true_flag):
+                print(f"[Error] At least one '{input_param}' format must be 'True'.")
+                _error_show_normal_config_format()
         else:
             if(not isinstance(config[input_param], int)):
                 print(f"[Error] Type of '{input_param}' must be <int>.")
