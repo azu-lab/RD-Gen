@@ -4,11 +4,11 @@ Initial seed: 0
 Number of nodes: 30
 Number of entry nodes: 2
 In-degree:
-  Min: 1
-  Max: 3
+  Min: 2
+  Max: 2
 Out-degree:
   Min: 1
-  Max: 2
+  Max: 3
 Execution time:
   Min: 2
   Max: 70
