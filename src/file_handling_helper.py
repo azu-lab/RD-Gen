@@ -54,6 +54,57 @@ normal_format = {
 }
 
 
+chain_format = {
+    'Number of DAGs': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+    'Initial seed': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+    'Number of nodes': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+    'Number of chains': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+    'Chain length': {'Requirement':'compulsory', 'Children':{
+        'Min': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':'compulsory', 'Children':None, 'Type':'int'}}},
+    'Chain width': {'Requirement':'compulsory', 'Children':{
+        'Min': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':'compulsory', 'Children':None, 'Type':'int'}}},
+    'Execution time': {'Requirement':'compulsory', 'Children':{
+        'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'}}},
+    'Vertically link chains': {'Requirement':'optional', 'Children':{
+        'Max number of vertical links': {'Requirement':[{'Max number of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'},
+        'Max number of parallel chains': {'Requirement':[{'Max number of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'}}},
+    'Merge chains': {'Requirement':'optional', 'Children':{
+        'Middle of chain': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'vertical links'}], 'Children':None, 'Type':'bool'},
+        'Exit nodes': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'vertical links'}], 'Children':None, 'Type':'bool'},
+        'vertical links': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'vertical links'}], 'Children':None, 'Type':'bool'}}},
+    'Number of entry nodes': {'Requirement':'optional', 'Children':None, 'Type':'int'},
+    'Number of exit nodes': {'Requirement':'optional', 'Children':None, 'Type':'int'},
+    'Use end-to-end deadline': {'Requirement':'optional', 'Children':{
+        'Ratio of deadlines to critical path length': {'Requirement':'compulsory', 'Children':None, 'Type':'float'}}},
+    'Use communication time': {'Requirement':'optional', 'Children':{
+        'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'}}},
+    'Use multi-period': {'Requirement':'optional', 'Children':{
+        'Periodic type': {'Requirement':'compulsory', 'Children':None, 'Type':['Entry', 'All', 'Chain']},
+        'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'},
+        'Entry node periods': {'Requirement':'optional', 'Children':None, 'Type':'List[int]'},
+        'Exit node periods': {'Requirement':'optional', 'Children':None, 'Type':'List[int]'},
+        'Max ratio of execution time to period': {'Requirement':'compulsory', 'Children':None, 'Type':'float'},
+        'Descendants have larger period': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}},
+    'DAG format': {'Requirement':'default', 'Children':{
+        'yaml': {'Requirement':'default', 'Children':None, 'Type':'bool', 'Default':True},
+        'json': {'Requirement':'optional', 'Children':None, 'Type':'bool'},
+        'xml': {'Requirement':'optional', 'Children':None, 'Type':'bool'},
+        'dot': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}},
+    'Figure format': {'Requirement':'default', 'Children':{
+        'pdf': {'Requirement':'default', 'Children':None, 'Type':'bool', 'Default':True},
+        'png': {'Requirement':'optional', 'Children':None, 'Type':'bool'},
+        'svg': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}}
+}
+
+
 def _load_yaml(config_yaml_file):
     try:
         config = yaml.safe_load(config_yaml_file)
@@ -93,7 +144,7 @@ def _show_config_format(mode: str) -> None:
     if(mode == 'normal'):
         format = normal_format
     elif(mode == 'chain'):
-        # format = chain_format # TODO
+        format = chain_format
         pass
     
     print('\n')
@@ -214,8 +265,7 @@ def _check_config_format(mode: str, conf) -> None:
     if(mode == 'normal'):
         format = normal_format
     elif(mode == 'chain'):
-        # format = chain_format  # TODO
-        pass
+        format = chain_format
     input_top_keys = conf.keys()
 
     # Check 'Requirement' meets
@@ -303,3 +353,8 @@ def load_normal_config(config_yaml_file) -> Dict:
             exit(1)
 
     return conf
+
+
+def load_chain_config(config_yaml_file) -> Dict:
+    conf = _load_yaml(config_yaml_file)
+    _show_config_format('chain')

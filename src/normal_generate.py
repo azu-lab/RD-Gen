@@ -1,4 +1,3 @@
-import argparse
 import numpy as np
 import networkx as nx
 import random
@@ -8,27 +7,10 @@ import json
 from typing import List, Tuple
 from networkx.readwrite import json_graph
 
+from utils import option_parser
 from file_handling_helper import load_normal_config
 from write_dag import write_dag
 from random_set_period import random_set_period
-
-
-def option_parser() -> Tuple[argparse.FileType, str]:
-    usage = f'[python] {__file__} \
-              --config_yaml_path [<path to config file>] \
-              --dest_dir [<destination directory>]'
-
-    arg_parser = argparse.ArgumentParser(usage=usage)
-    arg_parser.add_argument('--config_yaml_path',
-                            type=argparse.FileType(("r")),
-                            help='config file name (.yaml)')
-    arg_parser.add_argument('--dest_dir',
-                            type=str,
-                            default='./',
-                            help='destination directory')
-    args = arg_parser.parse_args()
-
-    return args.config_yaml_path, args.dest_dir
 
 
 def random_get_exec_time(conf) -> int:

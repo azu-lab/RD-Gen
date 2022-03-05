@@ -111,7 +111,7 @@ fi
 
 ### generate DAGs
 if [ ${USE_CHAIN} ]; then
-    python3 ${PYTHON_SCRIPT_DIR}/chain_based_generate.py --config_yaml_path "${CONFIG_YAML_PATH}" --dest_dir "${DEST_DIR}"
+    python3 ${PYTHON_SCRIPT_DIR}/chain_generate.py --config_yaml_path "${CONFIG_YAML_PATH}" --dest_dir "${DEST_DIR}"
 else
     python3 ${PYTHON_SCRIPT_DIR}/normal_generate.py --config_yaml_path "${CONFIG_YAML_PATH}" --dest_dir "${DEST_DIR}"
 fi

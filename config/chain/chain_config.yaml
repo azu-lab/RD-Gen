@@ -9,37 +9,44 @@ Chain length:
 Chain width:
   Min: 1
   Max: 2
-Merge chains:
-  Exit nodes: True
-  Middle of chain: True
-  Vertical:
-    Max number of vertical merged chains: 2
 Execution time:
   Min: 2
   Max: 70
   Use list: [2, 3, 4, 5]
 
 # Optional parameters
+Vertically link chains:
+  Max number of vertical links: 2
+  Max number of parallel chains: 2
+Merge chains:
+  Middle of chain: True
+  Exit nodes: True
+  vertical links: True
+Number of entry nodes: 2
 Number of exit nodes: 3
+Use end-to-end deadline:
+  Ratio of deadlines to critical path length: 1.2
 Use communication time:
   Min: 2
   Max: 3
   Use list: [2, 3, 4, 5]
 Use multi-period:
-  Periodic type: 'Entry'
-  Descendants have larger period: False
-  Max ratio of execution time to period: 0.8
+  Periodic type: 'Chain'
   Min: 10
   Max: 30
   Use list: [10, 20, 30, 40]
+  Entry node periods: [20, 40]
+  Exit node periods: [30]
+  Max ratio of execution time to period: 0.8
+  Descendants have larger period: False
 
 # Output formats
-DAG description:
-  xml: True
-  dot: True
-  json: True
+DAG format:
   yaml: True
-Figure:
+  json: False
+  xml: False
+  dot: False
+Figure format:
+  pdf: True
   png: True
   svg: True
-  pdf: True
