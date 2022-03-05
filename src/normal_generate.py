@@ -8,9 +8,9 @@ import json
 from typing import List, Tuple
 from networkx.readwrite import json_graph
 
-from common.file_handling_helper import load_normal_config
-from common.write_dag import write_dag
-from common.random_set_period import random_set_period
+from file_handling_helper import load_normal_config
+from write_dag import write_dag
+from random_set_period import random_set_period
 
 
 def option_parser() -> Tuple[argparse.FileType, str]:
@@ -254,7 +254,7 @@ def main(conf, dest_dir):
             random_set_period(conf, 'normal', G)
 
         # Output
-        dag_formats = [k for k, v in conf['DAG description'].items() if v]
+        dag_formats = [k for k, v in conf['DAG format'].items() if v]
         if('xml' in dag_formats):
             nx.write_graphml_xml(G, f'{dest_dir}/dag_{dag_i}.xml')
         if('dot' in dag_formats):

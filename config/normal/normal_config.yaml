@@ -1,11 +1,11 @@
 # Compulsory parameters
 Number of DAGs: 3
 Initial seed: 0
-Number of nodes: 30
+Number of nodes: 15
 Number of entry nodes: 2
 In-degree:
   Min: 1
-  Max: 3
+  Max: 2
 Out-degree:
   Min: 1
   Max: 2
@@ -15,9 +15,9 @@ Execution time:
   Use list: [2, 3, 4, 5]
 
 # Optional parameters
-Max number of same-depth nodes: 5
+Max number of same-depth nodes: 3
 Force merge to exit nodes:
-  Number of exit nodes: 3
+  Number of exit nodes: 1
 Use end-to-end deadline:
   Ratio of deadlines to critical path length: 1.2
 Use communication time:
@@ -26,19 +26,21 @@ Use communication time:
   Use list: [2, 3, 4, 5]
 Use multi-period:
   Periodic type: 'Entry'
-  Descendants have larger period: False
-  Max ratio of execution time to period: 0.8
   Min: 10
   Max: 30
   Use list: [10, 20, 30, 40]
+  Entry node periods: [20, 30]
+  Exit node periods: [30]
+  Max ratio of execution time to period: 0.8
+  Descendants have larger period: False
 
 # Output formats
-DAG description:
+DAG format:
+  yaml: True
+  json: True
   xml: True
   dot: True
-  json: True
-  yaml: True
-Figure:
+Figure format:
+  pdf: True
   png: True
   svg: True
-  pdf: True
