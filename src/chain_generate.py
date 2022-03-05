@@ -4,6 +4,7 @@ import random
 import copy
 import yaml
 import json
+import itertools
 from typing import List, Tuple
 from networkx.readwrite import json_graph
 
@@ -12,13 +13,25 @@ from file_handling_helper import load_chain_config
 from write_dag import write_dag
 from random_set_period import random_set_period
 
+
 def main(conf, dest_dir):
     for dag_i in range(conf['Number of DAGs']):
         random.seed(conf['Initial seed'] + dag_i)
         G = nx.DiGraph()
 
-        # TODO: gen dag
+        # Determine the number of nodes in each chain
+        min_nodes = conf['Chain length']['Min'] + conf['Chain width']['Min'] - 1
+        max_nodes = conf['Chain length']['Max']*conf['Chain width']['Max'] \
+                            - conf['Chain width']['Max'] + 1
+        combination_options = []
+        for combination in itertools.combinations(
+                list(range(min_nodes, max_nodes+1)), conf['Number of chains']):
+            if(sum(combination) == conf['Number of nodes']):
+                combination_options.append(list(combination))
+        combination = random.choice(combination_options)
 
+        
+        # TODO: gen dag
 
         # (Optional) Use communication time
         if('Use communication time' in conf.keys()):

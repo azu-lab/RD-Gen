@@ -359,4 +359,18 @@ def load_chain_config(config_yaml_file) -> Dict:
     conf = _load_yaml(config_yaml_file)
     _check_config_format('chain', conf)
     
-    # TODO: check feasibility
+    # Check 'Number of nodes' feasibility
+    if((conf['Number of chains']
+                *(conf['Chain length']['Max']*conf['Chain width']['Max'] - conf['Chain width']['Max'] + 1))
+                < conf['Number of nodes']):
+        print("[Error] Please increase 'Chain length: Max' or 'Chain width: Max' \
+               or decrease 'Number of nodes'.")
+        exit(1)
+    if((conf['Number of chains']
+                *(conf['Chain length']['Min'] + conf['Chain width']['Min'] - 1))
+                > conf['Number of nodes']):
+        print("[Error] Please decrease 'Chain length: Max' or 'Chain width: Max' \
+               or increase 'Number of nodes'.")
+        exit(1)
+
+    return conf

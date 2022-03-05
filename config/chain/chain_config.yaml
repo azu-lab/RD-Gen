@@ -1,11 +1,11 @@
 # Compulsory parameters
 Number of DAGs: 3
 Initial seed: 0
-Number of nodes: 30
+Number of nodes: 15
 Number of chains: 3
 Chain length:
-  Min: 1
-  Max: 3
+  Min: 3
+  Max: 5
 Chain width:
   Min: 1
   Max: 2
