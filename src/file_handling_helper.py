@@ -357,4 +357,6 @@ def load_normal_config(config_yaml_file) -> Dict:
 
 def load_chain_config(config_yaml_file) -> Dict:
     conf = _load_yaml(config_yaml_file)
-    _show_config_format('chain')
+    _check_config_format('chain', conf)
+    
+    # TODO: check feasibility

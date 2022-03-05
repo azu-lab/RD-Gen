@@ -78,16 +78,10 @@ def _set_chain(conf, G):
     pass
 
 
-def random_set_period(conf, mode: str, G: nx.DiGraph) -> None:
-    if(mode not in ['normal', 'chain']):
-        print('[Error] Invalid mode name was specified.')
-        exit(1)
-
+def random_set_period(conf, G: nx.DiGraph) -> None:
     if(conf['Use multi-period']['Periodic type'] == 'All'):
         _set_all(conf, G)
     elif(conf['Use multi-period']['Periodic type'] == 'Entry'):
         _set_entry(conf, G)
-
-    if(mode == 'chain' and
-            conf['Use multi-period']['Periodic type'] == 'Chain'):
+    elif(conf['Use multi-period']['Periodic type'] == 'Chain'):
         _set_chain(conf, G)
