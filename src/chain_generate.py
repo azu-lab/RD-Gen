@@ -14,6 +14,10 @@ from write_dag import write_dag
 from random_set_period import random_set_period
 
 
+def _generate_chain(conf, num_nodes: int, G: nx.DiGraph) -> List[int]:
+    pass # TODO
+
+
 def main(conf, dest_dir):
     for dag_i in range(conf['Number of DAGs']):
         random.seed(conf['Initial seed'] + dag_i)
@@ -29,7 +33,12 @@ def main(conf, dest_dir):
             if(sum(combination) == conf['Number of nodes']):
                 combination_options.append(list(combination))
         combination = random.choice(combination_options)
+        random.shuffle(combination)
 
+        # Generate each chain
+        chains = []
+        for num_nodes_in_one_chain in combination:
+            chains.append(_generate_chain(conf, num_nodes_in_one_chain))
         
         # TODO: gen dag
 

@@ -187,24 +187,6 @@ def main(conf, dest_dir):
         if('Use multi-period' in conf.keys()):
             random_set_period(conf, G)
 
-        # Output
-        dag_formats = [k for k, v in conf['DAG format'].items() if v]
-        if('xml' in dag_formats):
-            nx.write_graphml_xml(G, f'{dest_dir}/dag_{dag_i}.xml')
-        if('dot' in dag_formats):
-            nx.drawing.nx_pydot.write_dot(G, f'{dest_dir}/dag_{dag_i}.dot')
-        if('json' in dag_formats):
-            data = json_graph.node_link_data(G)
-            s = json.dumps(data)
-            with open(f'{dest_dir}/dag_{dag_i}.json', 'w') as f:
-                json.dump(s, f)
-        if('yaml' in dag_formats):
-            data = json_graph.node_link_data(G)
-            s = json.dumps(data)
-            dic = json.loads(s)
-            with open(f'{dest_dir}/dag_{dag_i}.yaml', 'w') as f:
-                yaml.dump(dic, f)
-
         write_dag(conf, dest_dir, f'dag_{dag_i}', G)
 
 
