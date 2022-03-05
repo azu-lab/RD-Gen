@@ -25,11 +25,11 @@ Use communication time:
   Max: 3
   Use list: [2, 3, 4, 5]
 Use multi-period:
-  Periodic type: 'Entry'
+  Periodic type: 'All'
   Min: 10
   Max: 30
   Use list: [10, 20, 30, 40]
-  Entry node periods: [20, 30]
+  Entry node periods: [20, 40]
   Exit node periods: [30]
   Max ratio of execution time to period: 0.8
   Descendants have larger period: False
@@ -37,10 +37,10 @@ Use multi-period:
 # Output formats
 DAG format:
   yaml: True
-  json: True
-  xml: True
-  dot: True
+  json: False
+  xml: False
+  dot: False
 Figure format:
-  pdf: True
+  pdf: False
   png: True
-  svg: True
+  svg: False
