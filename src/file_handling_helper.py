@@ -71,12 +71,12 @@ chain_format = {
         'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
         'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'}}},
     'Vertically link chains': {'Requirement':'optional', 'Children':{
-        'Max number of vertical links': {'Requirement':[{'Max number of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'},
-        'Max number of parallel chains': {'Requirement':[{'Max number of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'}}},
+        'Max level of vertical links': {'Requirement':[{'Max level of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'},
+        'Max number of parallel chains': {'Requirement':[{'Max level of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'}}},
     'Merge chains': {'Requirement':'optional', 'Children':{
-        'Middle of chain': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'vertical links'}], 'Children':None, 'Type':'bool'},
-        'Exit nodes': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'vertical links'}], 'Children':None, 'Type':'bool'},
-        'vertical links': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'vertical links'}], 'Children':None, 'Type':'bool'}}},
+        'Middle of chain': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'Head of next level chain'}], 'Children':None, 'Type':'bool'},
+        'Exit nodes': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'Head of next level chain'}], 'Children':None, 'Type':'bool'},
+        'Head of next level chain': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'Head of next level chain'}], 'Children':None, 'Type':'bool'}}},
     'Number of entry nodes': {'Requirement':'optional', 'Children':None, 'Type':'int'},
     'Number of exit nodes': {'Requirement':'optional', 'Children':None, 'Type':'int'},
     'Use end-to-end deadline': {'Requirement':'optional', 'Children':{

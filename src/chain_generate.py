@@ -73,21 +73,21 @@ def main(conf, dest_dir):
         chains = []
         for num_nodes_in_one_chain in chain_num_nodes_combo:
             chains.append(_generate_chain(conf, num_nodes_in_one_chain, G))
-        
-        # TODO: gen dag
-
-        # (Optional) Use multi-period
-        if('Use multi-period' in conf.keys()):
-            random_set_period(conf, G)
-
-        # Set execution time
-        
 
         # (Optional) Use communication time
         if('Use communication time' in conf.keys()):
             for start_i, end_i in G.edges():
                 G.edges[start_i, end_i]['communication_time'] = \
                         random_get_comm_time(conf)
+
+        # (Optional) Use multi-period
+        if('Use multi-period' in conf.keys()):
+            random_set_period(conf, G)
+
+        # (Optional) Vertically link chains TODO
+        # (Optional) Merge chains TODO
+        # (Optional) Number of entry nodes TODO
+        # (Optional) Number of exit nodes TODO
 
         # (Optional) Use end-to-end deadline
         if('Use end-to-end deadline' in conf.keys()):

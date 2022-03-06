@@ -16,17 +16,17 @@ Execution time:
 
 # Optional parameters
 Vertically link chains:
-  Max number of vertical links: 2
+  Max level of vertical links: 2
   Max number of parallel chains: 2
 Merge chains:
   Middle of chain: True
   Exit nodes: True
-  vertical links: True
+  Head of next level chain: True
 Number of entry nodes: 2
 Number of exit nodes: 3
 Use end-to-end deadline:
   Ratio of deadlines to critical path length: 1.2
-  Ratio of deadlines to max period: True
+  # Ratio of deadlines to max period: 1.0
 Use communication time:
   Min: 2
   Max: 3
