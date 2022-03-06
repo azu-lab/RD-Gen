@@ -179,13 +179,13 @@ def main(conf, dest_dir):
                 G.edges[start_i, end_i]['communication_time'] = \
                         random_get_comm_time(conf)
 
-        # (Optional) Use end-to-end deadline
-        if('Use end-to-end deadline' in conf.keys()):
-            set_end_to_end_deadlines(conf, G)
-
         # (Optional) Use multi-period
         if('Use multi-period' in conf.keys()):
             random_set_period(conf, G)
+
+        # (Optional) Use end-to-end deadline
+        if('Use end-to-end deadline' in conf.keys()):
+            set_end_to_end_deadlines(conf, G)
 
         write_dag(conf, dest_dir, f'dag_{dag_i}', G)
 

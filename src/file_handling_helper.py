@@ -28,7 +28,8 @@ normal_format = {
     'Force merge to exit nodes': {'Requirement':'optional', 'Children':{
         'Number of exit nodes': {'Requirement':'compulsory', 'Children':None, 'Type':'int'}}},
     'Use end-to-end deadline': {'Requirement':'optional', 'Children':{
-        'Ratio of deadlines to critical path length': {'Requirement':'compulsory', 'Children':None, 'Type':'float'}}},
+        'Ratio of deadlines to critical path length': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'},
+        'Ratio of deadlines to max period': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'}}},
     'Use communication time': {'Requirement':'optional', 'Children':{
         'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
         'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
@@ -79,7 +80,8 @@ chain_format = {
     'Number of entry nodes': {'Requirement':'optional', 'Children':None, 'Type':'int'},
     'Number of exit nodes': {'Requirement':'optional', 'Children':None, 'Type':'int'},
     'Use end-to-end deadline': {'Requirement':'optional', 'Children':{
-        'Ratio of deadlines to critical path length': {'Requirement':'compulsory', 'Children':None, 'Type':'float'}}},
+        'Ratio of deadlines to critical path length': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'},
+        'Ratio of deadlines to max period': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'}}},
     'Use communication time': {'Requirement':'optional', 'Children':{
         'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
         'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
@@ -372,5 +374,28 @@ def load_chain_config(config_yaml_file) -> Dict:
         print("[Error] Please decrease 'Chain length: Max' or 'Chain width: Max' \
                or increase 'Number of nodes'.")
         exit(1)
+
+    # Check 'Max ratio of execution time to period' feasibility
+    if('Use multi-period' in conf.keys()):
+        max_exec_time = None
+        if('Use list' in conf['Execution time'].keys()):
+            max_exec_time = max(conf['Execution time']['Use list'])
+        else:
+            max_exec_time = conf['Execution time']['Max']
+
+        max_period = None
+        if('Use list' in conf['Use multi-period'].keys()):
+            max_period = max(conf['Use multi-period']['Use list'])
+        else:
+            max_period = conf['Use multi-period']['Max']
+
+        max_lower_bound = np.ceil(max_exec_time
+                                  / conf['Use multi-period']['Max ratio of execution time to period'])
+        if(max_lower_bound > max_period):
+            print("[Error] 'Max ratio of execution time to period' may not be satisfied. \
+                  Please increase the maximum value of period or decrease the maximum value of execution time.")
+            exit(1)
+        
+        
 
     return conf

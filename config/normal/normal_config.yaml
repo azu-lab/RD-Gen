@@ -20,6 +20,7 @@ Force merge to exit nodes:
   Number of exit nodes: 1
 Use end-to-end deadline:
   Ratio of deadlines to critical path length: 1.2
+  Ratio of deadlines to max period: 1.5
 Use communication time:
   Min: 2
   Max: 3

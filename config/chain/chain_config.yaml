@@ -26,6 +26,7 @@ Number of entry nodes: 2
 Number of exit nodes: 3
 Use end-to-end deadline:
   Ratio of deadlines to critical path length: 1.2
+  Ratio of deadlines to max period: True
 Use communication time:
   Min: 2
   Max: 3

@@ -42,16 +42,23 @@ def get_cp_and_cp_len(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
 
 
 def set_end_to_end_deadlines(conf, G: nx.DiGraph) -> None:
-    for exit_i in [v for v, d in G.out_degree() if d == 0]:
-        max_cp_len = 0
-        for entry_i in [v for v, d in G.in_degree() if d == 0]:
-            _, cp_len = get_cp_and_cp_len(G, entry_i, exit_i)
-            if(cp_len > max_cp_len):
-                max_cp_len = cp_len
+    if('Use multi-period' in conf.keys() and
+            'Ratio of deadlines to max period' in conf['Use end-to-end deadline'].keys()):
+        max_period = max((nx.get_node_attributes(G, 'period')).values())
+        for exit_i in [v for v, d in G.out_degree() if d == 0]:
+            G.nodes[exit_i]['deadline'] = \
+                    int(max_period * conf['Use end-to-end deadline']['Ratio of deadlines to max period'])
 
-        G.nodes[exit_i]['deadline'] = int(
-                max_cp_len
-                * conf['Use end-to-end deadline']['Ratio of deadlines to critical path length'])
+    elif('Ratio of deadlines to critical path length' in conf['Use end-to-end deadline'].keys()):
+        for exit_i in [v for v, d in G.out_degree() if d == 0]:
+            max_cp_len = 0
+            for entry_i in [v for v, d in G.in_degree() if d == 0]:
+                _, cp_len = get_cp_and_cp_len(G, entry_i, exit_i)
+                if(cp_len > max_cp_len):
+                    max_cp_len = cp_len
+            G.nodes[exit_i]['deadline'] = int(
+                    max_cp_len
+                    * conf['Use end-to-end deadline']['Ratio of deadlines to critical path length'])
 
 
 def random_get_comm_time(conf) -> int:
