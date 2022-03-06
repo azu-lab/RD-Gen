@@ -5,7 +5,7 @@ Number of nodes: 15
 Number of chains: 3
 Chain length:
   Min: 3
-  Max: 5
+  Max: 7
 Chain width:
   Min: 1
   Max: 2
@@ -47,6 +47,6 @@ DAG format:
   xml: False
   dot: False
 Figure format:
-  pdf: True
+  pdf: False
   png: True
-  svg: True
+  svg: False
