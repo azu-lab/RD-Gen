@@ -71,13 +71,13 @@ chain_format = {
         'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
         'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'}}},
     'Vertically link chains': {'Requirement':'optional', 'Children':{
-        'Max level of vertical links': {'Requirement':[{'Max level of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'},
-        'Max number of parallel chains': {'Requirement':[{'Max level of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'}}},
+        'Number of entry nodes': {'Requirement':[{'Number of entry nodes'}, {'Max level of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'},
+        'Max level of vertical links': {'Requirement':[{'Number of entry nodes'}, {'Max level of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'},
+        'Max number of parallel chains': {'Requirement':[{'Number of entry nodes'}, {'Max level of vertical links'}, {'Max number of parallel chains'}], 'Children':None, 'Type':'int'}}},
     'Merge chains': {'Requirement':'optional', 'Children':{
         'Middle of chain': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'Head of next level chain'}], 'Children':None, 'Type':'bool'},
         'Exit nodes': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'Head of next level chain'}], 'Children':None, 'Type':'bool'},
         'Head of next level chain': {'Requirement':[{'Middle of chain'}, {'Exit nodes'}, {'Head of next level chain'}], 'Children':None, 'Type':'bool'}}},
-    'Number of entry nodes': {'Requirement':'optional', 'Children':None, 'Type':'int'},
     'Number of exit nodes': {'Requirement':'optional', 'Children':None, 'Type':'int'},
     'Use end-to-end deadline': {'Requirement':'optional', 'Children':{
         'Ratio of deadlines to critical path length': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'},
@@ -377,18 +377,18 @@ def load_chain_config(config_yaml_file) -> Dict:
 
     # Check 'Vertically link chains' feasibility
     if('Vertically link chains' in conf.keys()):
-        max_num_chains = (conf['Vertically link chains']['Max level of vertical links']
-                          * conf['Vertically link chains']['Max number of parallel chains'])
-        if(conf['Number of chains'] > max_num_chains):
-            print("[Error] Please increase 'Vertically link chains: Max level of vertical links' \
-                   or 'Vertically link chains: Max number of parallel chains' \
-                   or decrease 'Number of chains'.")
-            exit(1)
-        if('Number of entry nodes' in conf.keys() and conf['Number of entry nodes']
-                > conf['Vertically link chains']['Max number of parallel chains']):
-            print("[Error] Please increase 'Vertically link chains: Max level of vertical links' \
-                   or 'Vertically link chains: Max number of parallel chains' \
-                   or decrease 'Number of chains'.")
-            exit(1)
+        children_keys = set(conf['Vertically link chains'].keys())
+        if({'Max level of vertical links', 'Max number of parallel chains'} <= children_keys):
+            max_num_chains = (conf['Vertically link chains']['Max level of vertical links']
+                            * conf['Vertically link chains']['Max number of parallel chains'])
+            if(conf['Number of chains'] > max_num_chains):
+                _error_increase_or_decrease(['Vertically link chains: Max level of vertical links',
+                                            'Vertically link chains: Max number of parallel chains'],
+                                            ['Number of chains'])
+        if({'Number of entry nodes', 'Max number of parallel chains'} <= children_keys):
+            if(conf['Vertically link chains']['Number of entry nodes']
+               > conf['Vertically link chains']['Max number of parallel chains']):
+                _error_increase_or_decrease(['Vertically link chains: Max number of parallel chains'],
+                                            ['Number of entry nodes'])
 
     return conf
