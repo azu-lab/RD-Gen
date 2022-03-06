@@ -309,38 +309,45 @@ def _check_config_format(mode: str, conf) -> None:
                 _error_invalid_type(mode, input_top_key, correct_type)
 
 
+def _error_increase_or_decrease(increase_param: List[str]=[], decrease_param: List[str]=[]) -> None:
+    if(len(increase_param) == 1):
+        increase_str = f"'{increase_param[0]}'"
+    elif(len(increase_param) >= 2):
+        increase_str = ""
+        for i, v in enumerate(increase_param):
+            if(i == len(increase_param)-1):
+                increase_str += f"'{v}'"
+            else:
+                increase_str += f"'{v}' or "
+
+    if(len(decrease_param) == 1):
+        decrease_str = f"'{decrease_param[0]}'"
+    elif(len(decrease_param) >= 2):
+        decrease_str = ""
+        for i, v in enumerate(decrease_param):
+            if(i == len(decrease_param)-1):
+                decrease_str += f"'{v}'"
+            else:
+                decrease_str += f"'{v}' or "
+
+    if(increase_param and decrease_param):
+        print(f"[Error] Please increase {increase_str} or decrease {decrease_str}.")
+    elif(increase_param):
+        print(f"[Error] Please increase {increase_str}.")
+    elif(decrease_param):
+        print(f"[Error] Please decrease {decrease_str}.")
+    exit(1)
+
+
 def load_normal_config(config_yaml_file) -> Dict:
     conf = _load_yaml(config_yaml_file)
     _check_config_format('normal', conf)
 
     # Check 'In-degree' and 'Out-degree' feasibility
     if(conf['In-degree']['Max'] < conf['Out-degree']['Min']):
-        print("[Error] Please increase 'Max' of 'In-degree' or decrease 'Min' of 'Out-degree'.")
-        exit(1)
+        _error_increase_or_decrease(['In-degree: Max'], ['Out-degree: Min'])
     if(conf['Out-degree']['Max'] < conf['In-degree']['Min']):
-        print("[Error] Please increase 'Max' of 'Out-degree' or decrease 'Min' of 'In-degree'.")
-        exit(1)
-
-    # Check 'Max ratio of execution time to period' feasibility
-    if('Use multi-period' in conf.keys()):
-        max_exec_time = None
-        if('Use list' in conf['Execution time'].keys()):
-            max_exec_time = max(conf['Execution time']['Use list'])
-        else:
-            max_exec_time = conf['Execution time']['Max']
-
-        max_period = None
-        if('Use list' in conf['Use multi-period'].keys()):
-            max_period = max(conf['Use multi-period']['Use list'])
-        else:
-            max_period = conf['Use multi-period']['Max']
-
-        max_lower_bound = np.ceil(max_exec_time
-                                  / conf['Use multi-period']['Max ratio of execution time to period'])
-        if(max_lower_bound > max_period):
-            print("[Error] 'Max ratio of execution time to period' may not be satisfied. \
-                  Please increase the maximum value of period or decrease the maximum value of execution time.")
-            exit(1)
+        _error_increase_or_decrease(['Out-degree: Max'], ['In-degree: Min'])
 
     # Check 'Max number of same-depth nodes' feasibility
     if('Max number of same-depth nodes' in conf.keys()):
@@ -348,11 +355,8 @@ def load_normal_config(config_yaml_file) -> Dict:
                                  int(np.ceil(
                                      conf['Number of entry nodes']*conf['Out-degree']['Min']
                                      / conf['In-degree']['Max'])))
-
         if(conf['Max number of same-depth nodes'] < min_same_depth_num):
-            print("[Error] 'Max number of same-depth nodes' is too small. \
-                  Please increase 'Max number of same-depth nodes'.")
-            exit(1)
+            _error_increase_or_decrease(['Max number of same-depth nodes'])
 
     return conf
 
@@ -365,37 +369,26 @@ def load_chain_config(config_yaml_file) -> Dict:
     if((conf['Number of chains']
                 *(conf['Chain length']['Max']*conf['Chain width']['Max'] - conf['Chain width']['Max'] + 1))
                 < conf['Number of nodes']):
-        print("[Error] Please increase 'Chain length: Max' or 'Chain width: Max' \
-               or decrease 'Number of nodes'.")
-        exit(1)
+        _error_increase_or_decrease(['Chain length: Max', 'Chain width: Max'], ['Number of nodes'])
     if((conf['Number of chains']
                 *(conf['Chain length']['Min'] + conf['Chain width']['Min'] - 1))
                 > conf['Number of nodes']):
-        print("[Error] Please decrease 'Chain length: Max' or 'Chain width: Max' \
-               or increase 'Number of nodes'.")
-        exit(1)
+        _error_increase_or_decrease(['Number of nodes'], ['Chain length: Max', 'Chain width: Max'])
 
-    # Check 'Max ratio of execution time to period' feasibility
-    if('Use multi-period' in conf.keys()):
-        max_exec_time = None
-        if('Use list' in conf['Execution time'].keys()):
-            max_exec_time = max(conf['Execution time']['Use list'])
-        else:
-            max_exec_time = conf['Execution time']['Max']
-
-        max_period = None
-        if('Use list' in conf['Use multi-period'].keys()):
-            max_period = max(conf['Use multi-period']['Use list'])
-        else:
-            max_period = conf['Use multi-period']['Max']
-
-        max_lower_bound = np.ceil(max_exec_time
-                                  / conf['Use multi-period']['Max ratio of execution time to period'])
-        if(max_lower_bound > max_period):
-            print("[Error] 'Max ratio of execution time to period' may not be satisfied. \
-                  Please increase the maximum value of period or decrease the maximum value of execution time.")
+    # Check 'Vertically link chains' feasibility
+    if('Vertically link chains' in conf.keys()):
+        max_num_chains = (conf['Vertically link chains']['Max level of vertical links']
+                          * conf['Vertically link chains']['Max number of parallel chains'])
+        if(conf['Number of chains'] > max_num_chains):
+            print("[Error] Please increase 'Vertically link chains: Max level of vertical links' \
+                   or 'Vertically link chains: Max number of parallel chains' \
+                   or decrease 'Number of chains'.")
             exit(1)
-        
-        
+        if('Number of entry nodes' in conf.keys() and conf['Number of entry nodes']
+                > conf['Vertically link chains']['Max number of parallel chains']):
+            print("[Error] Please increase 'Vertically link chains: Max level of vertical links' \
+                   or 'Vertically link chains: Max number of parallel chains' \
+                   or decrease 'Number of chains'.")
+            exit(1)
 
     return conf

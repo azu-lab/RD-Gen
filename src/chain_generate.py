@@ -52,6 +52,16 @@ def _generate_chain(conf, num_nodes: int, G: nx.DiGraph) -> List[int]:
     return chain
 
 
+def _vertically_link_chains(conf, chains: List[int], G: nx.DiGraph) -> None:
+    # Number of entry nodes がある場合、これも考慮
+    pass # TODO
+
+
+def _merge_chains(conf, chains: List[int], G: nx.DiGraph) -> None:
+    # Number of exit nodes がある場合、これも考慮
+    pass # TODO
+
+
 def main(conf, dest_dir):
     for dag_i in range(conf['Number of DAGs']):
         random.seed(conf['Initial seed'] + dag_i)
@@ -74,6 +84,14 @@ def main(conf, dest_dir):
         for num_nodes_in_one_chain in chain_num_nodes_combo:
             chains.append(_generate_chain(conf, num_nodes_in_one_chain, G))
 
+        # (Optional) Vertically link chains
+        if('Vertically link chains' in conf.keys()):
+            _vertically_link_chains(conf, chains, G)
+
+        # (Optional) Merge chains
+        if('Merge chains'in conf.keys()):
+            _merge_chains(conf, chains, G)
+
         # (Optional) Use communication time
         if('Use communication time' in conf.keys()):
             for start_i, end_i in G.edges():
@@ -83,11 +101,6 @@ def main(conf, dest_dir):
         # (Optional) Use multi-period
         if('Use multi-period' in conf.keys()):
             random_set_period(conf, G)
-
-        # (Optional) Vertically link chains TODO
-        # (Optional) Merge chains TODO
-        # (Optional) Number of entry nodes TODO
-        # (Optional) Number of exit nodes TODO
 
         # (Optional) Use end-to-end deadline
         if('Use end-to-end deadline' in conf.keys()):

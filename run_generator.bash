@@ -117,7 +117,7 @@ else
 fi
 
 if [ $? -ne 0 ]; then
-    echo "$0 is Failed. Please fix [Error] in the log."
+    echo "$0 is Failed. Please fix [Error]."
 else
     cp ${CONFIG_YAML_PATH} ${DEST_DIR}
     echo "$0 is successfully completed." 1>&2
