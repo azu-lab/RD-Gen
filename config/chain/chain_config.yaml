@@ -1,8 +1,8 @@
 # Compulsory parameters
 Number of DAGs: 3
 Initial seed: 0
-Number of nodes: 15
-Number of chains: 3
+Number of nodes: 20
+Number of chains: 5
 Chain length:
   Min: 3
   Max: 7
@@ -16,13 +16,12 @@ Execution time:
 
 # Optional parameters
 Vertically link chains:
-  Number of entry nodes: 3
-  Max level of vertical links: 2
-  Max number of parallel chains: 2
+  Number of entry nodes: 2
+  Max level of vertical links: 3
 Merge chains:
   Middle of chain: True
-  Exit nodes: True
-  Head of next level chain: True
+  Exit node: True
+  Head of chain: True
 Number of exit nodes: 3
 Use end-to-end deadline:
   Ratio of deadlines to critical path length: 1.2
