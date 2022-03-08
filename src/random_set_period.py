@@ -109,7 +109,7 @@ def _set_period_chain(conf, G: nx.DiGraph, chains: List[Chain]) -> None:
                                            - _get_settable_max_period(conf)))
                 goal_sum_cost = chain.get_sum_cost(conf, G) - decrease_vol
                 decrease_options = chain.nodes + chain.get_edges(G)
-                while(chain.get_sum_cost(conf, G) > goal_sum_cost):
+                while(chain.get_sum_cost(conf, G) > goal_sum_cost and decrease_options):
                     choose = random.choice(decrease_options)
                     if(isinstance(choose, tuple)):
                         s, t = choose

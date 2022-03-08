@@ -122,7 +122,7 @@ def merge_chains(conf, chains: List[Chain], G: nx.DiGraph) -> None:
     target_nodes = set()
     true_keys = [k for k, v in conf['Merge chains'].items() if v==True]
     if('Head of chain' in true_keys):
-        target_nodes |= {c.head for c in chains}
+        target_nodes |= {c.head for c in chains} - {v for v, d in G.in_degree() if d == 0}
     if('Exit node' in true_keys):
         target_nodes |= set(exit_nodes)
     if('Middle of chain' in true_keys):
