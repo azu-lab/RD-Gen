@@ -1,4 +1,5 @@
 import networkx as nx
+import numpy as np
 import random
 import copy
 import itertools
@@ -14,6 +15,28 @@ class Chain:
         self.tails = tails
         self.unlinked_tails = tails
         self.level = -1
+
+    def get_sum_cost(self, conf, G: nx.DiGraph) -> int:
+        sum_cost = 0
+        if('Use communication time' in conf.keys()):
+            edges_in_chain = set()
+            for node_i in self.nodes:
+                sum_cost += G.nodes[node_i]['execution_time']
+                edges_in_chain |= {(s, t) for s, t in G.out_edges(node_i) if t in self.nodes}
+            for s, t in edges_in_chain:
+                sum_cost += G.edges[s, t]['communication_time']
+        else:
+            for node_i in self.nodes:
+                sum_cost += G.nodes[node_i]['execution_time']
+
+        return sum_cost
+
+    def get_edges(self, G: nx.DiGraph) -> int:
+        edges_in_chain = set()
+        for node_i in self.nodes:
+            edges_in_chain |= {(s, t) for s, t in G.out_edges(node_i) if t in self.nodes}
+
+        return list(edges_in_chain)
 
 
 def _create_chain(conf, num_nodes: int, G: nx.DiGraph) -> Chain:
@@ -66,7 +89,7 @@ def _create_chain(conf, num_nodes: int, G: nx.DiGraph) -> Chain:
     return Chain(chain, head, tails)
 
 
-def _vertically_link_chains(conf, chains: List[Chain], G: nx.DiGraph) -> None:
+def vertically_link_chains(conf, chains: List[Chain], G: nx.DiGraph) -> None:
     source_chains = random.sample(chains, conf['Vertically link chains']['Number of entry nodes'])
     for source_chain in source_chains:
         source_chain.level = 1
@@ -87,7 +110,7 @@ def _vertically_link_chains(conf, chains: List[Chain], G: nx.DiGraph) -> None:
             source_chains.remove(source_chain)
 
 
-def _merge_chains(conf, chains: List[int], G: nx.DiGraph) -> None:
+def merge_chains(conf, chains: List[Chain], G: nx.DiGraph) -> None:
     # Determine source tails
     exit_options = []
     for chain in chains:

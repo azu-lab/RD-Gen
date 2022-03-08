@@ -22,7 +22,7 @@ def option_parser() -> Tuple[argparse.FileType, str]:
     return args.config_yaml_path, args.dest_dir
 
 
-def get_cp_and_cp_len(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
+def _get_cp_and_cp_len(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
     cp = []
     cp_len = 0
 
@@ -53,7 +53,7 @@ def set_end_to_end_deadlines(conf, G: nx.DiGraph) -> None:
         for exit_i in [v for v, d in G.out_degree() if d == 0]:
             max_cp_len = 0
             for entry_i in [v for v, d in G.in_degree() if d == 0]:
-                _, cp_len = get_cp_and_cp_len(G, entry_i, exit_i)
+                _, cp_len = _get_cp_and_cp_len(G, entry_i, exit_i)
                 if(cp_len > max_cp_len):
                     max_cp_len = cp_len
             G.nodes[exit_i]['deadline'] = int(
@@ -75,3 +75,24 @@ def random_get_exec_time(conf) -> int:
     else:
         return random.randint(conf['Execution time']['Min'],
                               conf['Execution time']['Max'])
+
+
+def _get_settable_min_exec(conf) -> int:
+    if('Use list' in conf['Execution time'].keys()):
+        return min(conf['Execution time']['Use list'])
+    else:
+        return conf['Execution time']['Min']
+
+
+def _get_settable_min_comm(conf) -> int:
+    if('Use list' in conf['Use communication time'].keys()):
+        return min(conf['Use communication time']['Use list'])
+    else:
+        return conf['Use communication time']['Min']
+
+
+def _get_settable_max_period(conf) -> int:
+    if('Use list' in conf['Use multi-period'].keys()):
+        return max(conf['Use multi-period']['Use list'])
+    else:
+        return conf['Use multi-period']['Max']

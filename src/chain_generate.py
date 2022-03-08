@@ -6,7 +6,7 @@ import itertools
 from typing import List, Tuple
 
 from utils import option_parser, set_end_to_end_deadlines, random_get_comm_time
-from chain import _create_chain, _vertically_link_chains, _merge_chains
+from chain import _create_chain, vertically_link_chains, merge_chains
 from file_handling_helper import load_chain_config
 from write_dag import write_dag
 from random_set_period import random_set_period
@@ -36,11 +36,11 @@ def main(conf, dest_dir):
 
         # (Optional) Vertically link chains
         if('Vertically link chains' in conf.keys()):
-            _vertically_link_chains(conf, chains, G)
+            vertically_link_chains(conf, chains, G)
 
         # (Optional) Merge chains
         if('Merge chains'in conf.keys()):
-            _merge_chains(conf, chains, G)
+            merge_chains(conf, chains, G)
 
         # (Optional) Use communication time
         if('Use communication time' in conf.keys()):
@@ -50,7 +50,10 @@ def main(conf, dest_dir):
 
         # (Optional) Use multi-period
         if('Use multi-period' in conf.keys()):
-            random_set_period(conf, G)
+            if(conf['Use multi-period']['Periodic type'] == 'Chain'):
+                random_set_period(conf, G, chains)
+            else:
+                random_set_period(conf, G)
 
         # (Optional) Use end-to-end deadline
         if('Use end-to-end deadline' in conf.keys()):

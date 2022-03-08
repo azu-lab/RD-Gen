@@ -21,7 +21,7 @@ Vertically link chains:
 Merge chains:
   Number of exit nodes: 1
   Middle of chain: False
-  Exit node: False
+  Exit node: True
   Head of chain: True
 Use end-to-end deadline:
   Ratio of deadlines to critical path length: 1.2
@@ -29,16 +29,16 @@ Use end-to-end deadline:
 Use communication time:
   Min: 2
   Max: 3
-  Use list: [2, 3, 4, 5]
+  Use list: [2, 13, 4, 15]
 Use multi-period:
   Periodic type: 'Chain'
   Min: 10
   Max: 30
-  Use list: [10, 20, 30, 40]
-  Entry node periods: [20, 40]
-  Exit node periods: [30]
+  Use list: [10, 20, 30, 40, 50]
+  # Entry node periods: [20, 40]
+  # Exit node periods: [30]
   Max ratio of execution time to period: 0.8
-  Descendants have larger period: False
+  Descendants have larger period: True
 
 # Output formats
 DAG format:
