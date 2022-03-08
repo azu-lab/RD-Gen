@@ -28,13 +28,65 @@ normal_format = {
     'Force merge to exit nodes': {'Requirement':'optional', 'Children':{
         'Number of exit nodes': {'Requirement':'compulsory', 'Children':None, 'Type':'int'}}},
     'Use end-to-end deadline': {'Requirement':'optional', 'Children':{
-        'Ratio of deadlines to critical path length': {'Requirement':'compulsory', 'Children':None, 'Type':'float'}}},
+        'Ratio of deadlines to critical path length': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'},
+        'Ratio of deadlines to max period': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'}}},
     'Use communication time': {'Requirement':'optional', 'Children':{
         'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
         'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
         'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'}}},
     'Use multi-period': {'Requirement':'optional', 'Children':{
         'Periodic type': {'Requirement':'compulsory', 'Children':None, 'Type':['Entry', 'All']},
+        'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'},
+        'Entry node periods': {'Requirement':'optional', 'Children':None, 'Type':'List[int]'},
+        'Exit node periods': {'Requirement':'optional', 'Children':None, 'Type':'List[int]'},
+        'Max ratio of execution time to period': {'Requirement':'compulsory', 'Children':None, 'Type':'float'},
+        'Descendants have larger period': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}},
+    'DAG format': {'Requirement':'default', 'Children':{
+        'yaml': {'Requirement':'default', 'Children':None, 'Type':'bool', 'Default':True},
+        'json': {'Requirement':'optional', 'Children':None, 'Type':'bool'},
+        'xml': {'Requirement':'optional', 'Children':None, 'Type':'bool'},
+        'dot': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}},
+    'Figure format': {'Requirement':'default', 'Children':{
+        'pdf': {'Requirement':'default', 'Children':None, 'Type':'bool', 'Default':True},
+        'png': {'Requirement':'optional', 'Children':None, 'Type':'bool'},
+        'svg': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}}
+}
+
+
+chain_format = {
+    'Number of DAGs': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+    'Initial seed': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+    'Number of nodes': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+    'Number of chains': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+    'Chain length': {'Requirement':'compulsory', 'Children':{
+        'Min': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':'compulsory', 'Children':None, 'Type':'int'}}},
+    'Chain width': {'Requirement':'compulsory', 'Children':{
+        'Min': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':'compulsory', 'Children':None, 'Type':'int'}}},
+    'Execution time': {'Requirement':'compulsory', 'Children':{
+        'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'}}},
+    'Vertically link chains': {'Requirement':'optional', 'Children':{
+        'Number of entry nodes': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+        'Max level of vertical links': {'Requirement':'optional', 'Children':None, 'Type':'int'}}},
+    'Merge chains': {'Requirement':'optional', 'Children':{
+        'Number of exit nodes': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
+        'Middle of chain': {'Requirement':[{'Middle of chain'}, {'Exit node'}, {'Head of chain'}], 'Children':None, 'Type':'bool'},
+        'Exit node': {'Requirement':[{'Middle of chain'}, {'Exit node'}, {'Head of chain'}], 'Children':None, 'Type':'bool'},
+        'Head of chain': {'Requirement':[{'Middle of chain'}, {'Exit node'}, {'Head of chain'}], 'Children':None, 'Type':'bool'}}},
+    'Use end-to-end deadline': {'Requirement':'optional', 'Children':{
+        'Ratio of deadlines to critical path length': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'},
+        'Ratio of deadlines to max period': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'}}},
+    'Use communication time': {'Requirement':'optional', 'Children':{
+        'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
+        'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'}}},
+    'Use multi-period': {'Requirement':'optional', 'Children':{
+        'Periodic type': {'Requirement':'compulsory', 'Children':None, 'Type':['Entry', 'All', 'Chain']},
         'Min': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
         'Max': {'Requirement':[{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'int'},
         'Use list': {'Requirement': [{'Min','Max'}, {'Use list'}], 'Children':None, 'Type':'List[int]'},
@@ -93,7 +145,7 @@ def _show_config_format(mode: str) -> None:
     if(mode == 'normal'):
         format = normal_format
     elif(mode == 'chain'):
-        # format = chain_format # TODO
+        format = chain_format
         pass
     
     print('\n')
@@ -214,8 +266,7 @@ def _check_config_format(mode: str, conf) -> None:
     if(mode == 'normal'):
         format = normal_format
     elif(mode == 'chain'):
-        # format = chain_format  # TODO
-        pass
+        format = chain_format
     input_top_keys = conf.keys()
 
     # Check 'Requirement' meets
@@ -257,38 +308,45 @@ def _check_config_format(mode: str, conf) -> None:
                 _error_invalid_type(mode, input_top_key, correct_type)
 
 
+def _error_increase_or_decrease(increase_param: List[str]=[], decrease_param: List[str]=[]) -> None:
+    if(len(increase_param) == 1):
+        increase_str = f"'{increase_param[0]}'"
+    elif(len(increase_param) >= 2):
+        increase_str = ""
+        for i, v in enumerate(increase_param):
+            if(i == len(increase_param)-1):
+                increase_str += f"'{v}'"
+            else:
+                increase_str += f"'{v}' or "
+
+    if(len(decrease_param) == 1):
+        decrease_str = f"'{decrease_param[0]}'"
+    elif(len(decrease_param) >= 2):
+        decrease_str = ""
+        for i, v in enumerate(decrease_param):
+            if(i == len(decrease_param)-1):
+                decrease_str += f"'{v}'"
+            else:
+                decrease_str += f"'{v}' or "
+
+    if(increase_param and decrease_param):
+        print(f"[Error] Please increase {increase_str} or decrease {decrease_str}.")
+    elif(increase_param):
+        print(f"[Error] Please increase {increase_str}.")
+    elif(decrease_param):
+        print(f"[Error] Please decrease {decrease_str}.")
+    exit(1)
+
+
 def load_normal_config(config_yaml_file) -> Dict:
     conf = _load_yaml(config_yaml_file)
     _check_config_format('normal', conf)
 
     # Check 'In-degree' and 'Out-degree' feasibility
     if(conf['In-degree']['Max'] < conf['Out-degree']['Min']):
-        print("[Error] Please increase 'Max' of 'In-degree' or decrease 'Min' of 'Out-degree'.")
-        exit(1)
+        _error_increase_or_decrease(['In-degree: Max'], ['Out-degree: Min'])
     if(conf['Out-degree']['Max'] < conf['In-degree']['Min']):
-        print("[Error] Please increase 'Max' of 'Out-degree' or decrease 'Min' of 'In-degree'.")
-        exit(1)
-
-    # Check 'Max ratio of execution time to period' feasibility
-    if('Use multi-period' in conf.keys()):
-        max_exec_time = None
-        if('Use list' in conf['Execution time'].keys()):
-            max_exec_time = max(conf['Execution time']['Use list'])
-        else:
-            max_exec_time = conf['Execution time']['Max']
-
-        max_period = None
-        if('Use list' in conf['Use multi-period'].keys()):
-            max_period = max(conf['Use multi-period']['Use list'])
-        else:
-            max_period = conf['Use multi-period']['Max']
-
-        max_lower_bound = np.ceil(max_exec_time
-                                  / conf['Use multi-period']['Max ratio of execution time to period'])
-        if(max_lower_bound > max_period):
-            print("[Error] 'Max ratio of execution time to period' may not be satisfied. \
-                  Please increase the maximum value of period or decrease the maximum value of execution time.")
-            exit(1)
+        _error_increase_or_decrease(['Out-degree: Max'], ['In-degree: Min'])
 
     # Check 'Max number of same-depth nodes' feasibility
     if('Max number of same-depth nodes' in conf.keys()):
@@ -296,10 +354,41 @@ def load_normal_config(config_yaml_file) -> Dict:
                                  int(np.ceil(
                                      conf['Number of entry nodes']*conf['Out-degree']['Min']
                                      / conf['In-degree']['Max'])))
-
         if(conf['Max number of same-depth nodes'] < min_same_depth_num):
-            print("[Error] 'Max number of same-depth nodes' is too small. \
-                  Please increase 'Max number of same-depth nodes'.")
+            _error_increase_or_decrease(['Max number of same-depth nodes'])
+
+    return conf
+
+
+def load_chain_config(config_yaml_file) -> Dict:
+    conf = _load_yaml(config_yaml_file)
+    _check_config_format('chain', conf)
+    
+    # Check 'Number of nodes' feasibility
+    if((conf['Number of chains']
+                *(conf['Chain length']['Max']*conf['Chain width']['Max'] - conf['Chain width']['Max'] + 1))
+                < conf['Number of nodes']):
+        _error_increase_or_decrease(['Chain length: Max', 'Chain width: Max'], ['Number of nodes'])
+    if((conf['Number of chains']
+                *(conf['Chain length']['Min'] + conf['Chain width']['Min'] - 1))
+                > conf['Number of nodes']):
+        _error_increase_or_decrease(['Number of nodes'], ['Chain length: Max', 'Chain width: Max'])
+
+    # Check 'Vertically link chains' feasibility
+    if('Vertically link chains' in conf.keys()):
+        if('Max level of vertical links' in conf['Vertically link chains'].keys()):
+            max_num_chains = (conf['Vertically link chains']['Max level of vertical links']
+                            * conf['Vertically link chains']['Number of entry nodes'])
+            if(conf['Number of chains'] > max_num_chains):
+                _error_increase_or_decrease(['Vertically link chains: Max level of vertical links',
+                                            'Vertically link chains: Max number of parallel chains'],
+                                            ['Number of chains'])
+
+    # Check at least one of parameter of 'Merge chains' is True
+    if('Merge chains' in conf.keys()):
+        true_param = [k for k, v in conf['Merge chains'].items() if v==True]
+        if(not true_param):
+            print(f"[Error] At least one of 'Merge chains: Middle of chain', 'Merge chains: Exit node', or 'Merge chains: Head of chain' must be specified as True.")
             exit(1)
 
     return conf

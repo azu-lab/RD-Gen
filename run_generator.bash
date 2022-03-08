@@ -111,13 +111,13 @@ fi
 
 ### generate DAGs
 if [ ${USE_CHAIN} ]; then
-    python3 ${PYTHON_SCRIPT_DIR}/chain_based_generate.py --config_yaml_path "${CONFIG_YAML_PATH}" --dest_dir "${DEST_DIR}"
+    python3 ${PYTHON_SCRIPT_DIR}/chain_generate.py --config_yaml_path "${CONFIG_YAML_PATH}" --dest_dir "${DEST_DIR}"
 else
     python3 ${PYTHON_SCRIPT_DIR}/normal_generate.py --config_yaml_path "${CONFIG_YAML_PATH}" --dest_dir "${DEST_DIR}"
 fi
 
 if [ $? -ne 0 ]; then
-    echo "$0 is Failed. Please fix [Error] in the log."
+    echo "$0 is Failed. Please fix [Error]."
 else
     cp ${CONFIG_YAML_PATH} ${DEST_DIR}
     echo "$0 is successfully completed." 1>&2
