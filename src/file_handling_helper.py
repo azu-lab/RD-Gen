@@ -74,10 +74,10 @@ chain_format = {
         'Number of entry nodes': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
         'Max level of vertical links': {'Requirement':'optional', 'Children':None, 'Type':'int'}}},
     'Merge chains': {'Requirement':'optional', 'Children':{
+        'Number of exit nodes': {'Requirement':'compulsory', 'Children':None, 'Type':'int'},
         'Middle of chain': {'Requirement':[{'Middle of chain'}, {'Exit node'}, {'Head of chain'}], 'Children':None, 'Type':'bool'},
         'Exit node': {'Requirement':[{'Middle of chain'}, {'Exit node'}, {'Head of chain'}], 'Children':None, 'Type':'bool'},
         'Head of chain': {'Requirement':[{'Middle of chain'}, {'Exit node'}, {'Head of chain'}], 'Children':None, 'Type':'bool'}}},
-    'Number of exit nodes': {'Requirement':'optional', 'Children':None, 'Type':'int'},
     'Use end-to-end deadline': {'Requirement':'optional', 'Children':{
         'Ratio of deadlines to critical path length': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'},
         'Ratio of deadlines to max period': {'Requirement':[{'Ratio of deadlines to critical path length'},{'Ratio of deadlines to max period'}], 'Children':None, 'Type':'float'}}},
@@ -383,5 +383,12 @@ def load_chain_config(config_yaml_file) -> Dict:
                 _error_increase_or_decrease(['Vertically link chains: Max level of vertical links',
                                             'Vertically link chains: Max number of parallel chains'],
                                             ['Number of chains'])
+
+    # Check at least one of parameter of 'Merge chains' is True
+    if('Merge chains' in conf.keys()):
+        true_param = [k for k, v in conf['Merge chains'].items() if v==True]
+        if(not true_param):
+            print(f"[Error] At least one of 'Merge chains: Middle of chain', 'Merge chains: Exit node', or 'Merge chains: Head of chain' must be specified as True.")
+            exit(1)
 
     return conf

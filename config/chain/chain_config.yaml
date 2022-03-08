@@ -19,10 +19,10 @@ Vertically link chains:
   Number of entry nodes: 2
   Max level of vertical links: 3
 Merge chains:
-  Middle of chain: True
-  Exit node: True
+  Number of exit nodes: 1
+  Middle of chain: False
+  Exit node: False
   Head of chain: True
-Number of exit nodes: 3
 Use end-to-end deadline:
   Ratio of deadlines to critical path length: 1.2
   # Ratio of deadlines to max period: 1.0

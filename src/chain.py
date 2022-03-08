@@ -88,5 +88,29 @@ def _vertically_link_chains(conf, chains: List[Chain], G: nx.DiGraph) -> None:
 
 
 def _merge_chains(conf, chains: List[int], G: nx.DiGraph) -> None:
-    # Number of exit nodes がある場合、これも考慮
-    pass # TODO
+    # Determine source tails
+    exit_options = []
+    for chain in chains:
+        exit_options += chain.unlinked_tails
+    exit_nodes = random.sample(exit_options, conf['Merge chains']['Number of exit nodes'])
+    source_tails = list(set(exit_options) - set(exit_nodes))
+
+    # Determine target nodes
+    target_nodes = set()
+    true_keys = [k for k, v in conf['Merge chains'].items() if v==True]
+    if('Head of chain' in true_keys):
+        target_nodes |= {c.head for c in chains}
+    if('Exit node' in true_keys):
+        target_nodes |= set(exit_nodes)
+    if('Middle of chain' in true_keys):
+        for chain in chains:
+            nodes_except_head = copy.deepcopy(chain.nodes)
+            nodes_except_head.remove(chain.head)
+            target_nodes |= set(nodes_except_head) - set(chain.tails)
+
+    # Merge
+    while(source_tails):
+        source_tail = random.choice(source_tails)
+        target_node = random.choice(list(target_nodes - set(nx.ancestors(G, source_tail))))
+        G.add_edge(source_tail, target_node)
+        source_tails.remove(source_tail)
