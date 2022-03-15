@@ -3,7 +3,7 @@
 ## Setup flow
 Clone this repository to your own workspace.
 ```
-git clone git@github.com:atsushi421/Random_DAG_Generator.git
+git clone https://github.com/atsushi421/Random_DAG_Generator.git
 cd Random_DAG_Generator
 ./setup.bash
 ```
