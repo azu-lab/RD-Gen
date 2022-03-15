@@ -36,7 +36,7 @@ def _random_get_period(node_i, conf, dag: nx.DiGraph, chain: Chain=None) -> Tupl
             return True, random.choice(period_options)
         else:
             return True, random.randint(lower_bound, conf['Use multi-period']['Max'])
-    except IndexError:
+    except (IndexError, ValueError):
         return False, None
 
 

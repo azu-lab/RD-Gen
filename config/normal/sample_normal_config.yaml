@@ -1,13 +1,13 @@
 # Compulsory parameters
-Number of DAGs: 3
+Number of DAGs: 10
 Initial seed: 0
-Number of nodes: 15
+Number of nodes: 6
 Number of entry nodes: 2
 In-degree:
-  Min: 2
+  Min: 1
   Max: 2
 Out-degree:
-  Min: 2
+  Min: 1
   Max: 2
 Execution time:
   Min: 2
@@ -15,7 +15,7 @@ Execution time:
   Use list: [2, 3, 4, 5]
 
 # Optional parameters
-Max number of same-depth nodes: 1
+Max number of same-depth nodes: 3
 Force merge to exit nodes:
   Number of exit nodes: 1
 Use end-to-end deadline:

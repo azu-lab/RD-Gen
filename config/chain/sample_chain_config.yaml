@@ -1,23 +1,22 @@
 # Compulsory parameters
-Number of DAGs: 3
+Number of DAGs: 1
 Initial seed: 0
-Number of nodes: 20
-Number of chains: 5
+Number of nodes: 50
+Number of chains: 8
 Chain length:
-  Min: 3
-  Max: 7
+  Min: 2
+  Max: 10
 Chain width:
   Min: 1
-  Max: 2
+  Max: 4
 Execution time:
   Min: 2
-  Max: 70
-  Use list: [2, 3, 4, 5]
+  Max: 200
 
 # Optional parameters
 Vertically link chains:
-  Number of entry nodes: 2
-  Max level of vertical links: 3
+  Number of entry nodes: 5
+  Max level of vertical links: 5
 Merge chains:
   Number of exit nodes: 1
   Middle of chain: False
@@ -28,13 +27,11 @@ Use end-to-end deadline:
   # Ratio of deadlines to max period: 1.0
 Use communication time:
   Min: 2
-  Max: 3
-  Use list: [2, 13, 4, 15]
+  Max: 20
 Use multi-period:
   Periodic type: 'Chain'
-  Min: 10
-  Max: 30
-  Use list: [10, 20, 30, 40, 50]
+  Min: 20
+  Max: 400
   # Entry node periods: [20, 40]
   # Exit node periods: [30]
   Max ratio of execution time to period: 0.8
