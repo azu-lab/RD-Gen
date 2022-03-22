@@ -45,7 +45,7 @@ def try_extend_dag(conf, dag: nx.DiGraph) -> Tuple[bool, nx.DiGraph]:
                 dag.number_of_nodes(), dag.number_of_nodes()+num_next)]
         for next_node_i in next_nodes_i:
             dag.add_node(next_node_i,
-                         execution_time=random_get_exec_time(conf))
+                         exec=random_get_exec_time(conf))
 
         # Determine the number of edges to next-depth nodes
         num_edges_to_next = random.randint(
@@ -126,7 +126,7 @@ def force_merge_to_exit_nodes(conf, G: nx.DiGraph) -> None:
     for i in range(conf['Force merge to exit nodes']['Number of exit nodes']):
         exit_nodes_i.append(G.number_of_nodes())
         G.add_node(G.number_of_nodes(),
-                   execution_time=random_get_exec_time(conf))
+                   exec=random_get_exec_time(conf))
 
     if(len(leaves) > len(exit_nodes_i)):
         no_in_degree_i = copy.deepcopy(exit_nodes_i)
@@ -155,7 +155,7 @@ def main(conf, dest_dir):
         # Add entry nodes
         for i in range(conf['Number of entry nodes']):
             G.add_node(G.number_of_nodes(),
-                       execution_time=random_get_exec_time(conf))
+                       exec=random_get_exec_time(conf))
 
         # Extend dag
         max_num_try = 100  # HACK
@@ -176,7 +176,7 @@ def main(conf, dest_dir):
         # (Optional) Use communication time
         if('Use communication time' in conf.keys()):
             for start_i, end_i in G.edges():
-                G.edges[start_i, end_i]['communication_time'] = \
+                G.edges[start_i, end_i]['comm'] = \
                         random_get_comm_time(conf)
 
         # (Optional) Use multi-period

@@ -28,7 +28,7 @@ def write_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
     # draw node label
     for node_i in range(G.number_of_nodes()):
         G.nodes[node_i]['label'] = f'[{node_i}]\n' \
-                                   f'C: {G.nodes[node_i]["execution_time"]}'
+                                   f'C: {G.nodes[node_i]["exec"]}'
         if('period' in list(G.nodes[node_i].keys())):
             G.nodes[node_i]['shape'] = 'box'
             G.nodes[node_i]['label'] += f'\nT: {G.nodes[node_i]["period"]}'
@@ -40,7 +40,7 @@ def write_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
     if('Use communication time' in config.keys()):
         for start_i, end_i in G.edges():
             G.edges[start_i, end_i]['label'] = \
-                    f'{G.edges[start_i, end_i]["communication_time"]}'
+                    f'{G.edges[start_i, end_i]["comm"]}'
 
     pdot = nx.drawing.nx_pydot.to_pydot(G)
     fig_formats = [k for k, v in config['Figure format'].items() if v]

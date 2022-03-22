@@ -15,7 +15,7 @@ def _random_get_period(node_i, conf, dag: nx.DiGraph, chain: Chain=None) -> Tupl
         lower_bound = np.ceil(chain.get_sum_cost(conf, dag)
                           / conf['Use multi-period']['Max ratio of execution time to period'])
     else:
-        lower_bound = np.ceil(dag.nodes[node_i]['execution_time']
+        lower_bound = np.ceil(dag.nodes[node_i]['exec']
                             / conf['Use multi-period']['Max ratio of execution time to period'])
 
     if('Descendants have larger period' in conf['Use multi-period'].keys() and
@@ -94,8 +94,11 @@ def _set_period_chain(conf, G: nx.DiGraph, chains: List[Chain]) -> None:
             G.nodes[chain.head]['period'] = value
         else:
             # Check feasibility
-            min_sum_cost = (_get_settable_min_exec(conf)*len(chain.nodes)
-                            + _get_settable_min_comm(conf)*len(chain.get_edges(G)))
+            if('Use communication time' in conf.keys()):
+                min_sum_cost = (_get_settable_min_exec(conf)*len(chain.nodes)
+                                + _get_settable_min_comm(conf)*len(chain.get_edges(G)))
+            else:
+                min_sum_cost = _get_settable_min_exec(conf)*len(chain.nodes)
             min_lower_bound = np.ceil(min_sum_cost
                           / conf['Use multi-period']['Max ratio of execution time to period'])
             if(min_lower_bound > _get_settable_max_period(conf)):
@@ -113,23 +116,23 @@ def _set_period_chain(conf, G: nx.DiGraph, chains: List[Chain]) -> None:
                     choose = random.choice(decrease_options)
                     if(isinstance(choose, tuple)):
                         s, t = choose
-                        if(G.edges[s, t]['communication_time'] == _get_settable_min_comm(conf)):
+                        if(G.edges[s, t]['comm'] == _get_settable_min_comm(conf)):
                             decrease_options.remove(choose)
                         else:
                             if('Use list' in conf['Use communication time']):
                                 sorted_comm = sorted(conf['Use communication time']['Use list'])
-                                G.edges[s, t]['communication_time'] = sorted_comm[sorted_comm.index(G.edges[s, t]['communication_time']) - 1]
+                                G.edges[s, t]['comm'] = sorted_comm[sorted_comm.index(G.edges[s, t]['comm']) - 1]
                             else:
-                                G.edges[s, t]['communication_time'] -= 1
+                                G.edges[s, t]['comm'] -= 1
                     else:
-                        if(G.nodes[choose]['execution_time'] == _get_settable_min_exec(conf)):
+                        if(G.nodes[choose]['exec'] == _get_settable_min_exec(conf)):
                             decrease_options.remove(choose)
                         else:
                             if('Use list' in conf['Execution time']):
                                 sorted_exec = sorted(conf['Execution time']['Use list'])
-                                G.nodes[choose]['execution_time'] = sorted_exec[sorted_exec.index(G.nodes[choose]['execution_time']) - 1]
+                                G.nodes[choose]['exec'] = sorted_exec[sorted_exec.index(G.nodes[choose]['exec']) - 1]
                             else:
-                                G.nodes[choose]['execution_time'] -= 1
+                                G.nodes[choose]['exec'] -= 1
 
             # Set period
             result, value = _random_get_period(chain.head, conf, G, chain)

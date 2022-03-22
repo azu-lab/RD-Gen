@@ -45,7 +45,7 @@ def main(conf, dest_dir):
         # (Optional) Use communication time
         if('Use communication time' in conf.keys()):
             for start_i, end_i in G.edges():
-                G.edges[start_i, end_i]['communication_time'] = \
+                G.edges[start_i, end_i]['comm'] = \
                         random_get_comm_time(conf)
 
         # (Optional) Use multi-period

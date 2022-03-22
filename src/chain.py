@@ -21,13 +21,13 @@ class Chain:
         if('Use communication time' in conf.keys()):
             edges_in_chain = set()
             for node_i in self.nodes:
-                sum_cost += G.nodes[node_i]['execution_time']
+                sum_cost += G.nodes[node_i]['exec']
                 edges_in_chain |= {(s, t) for s, t in G.out_edges(node_i) if t in self.nodes}
             for s, t in edges_in_chain:
-                sum_cost += G.edges[s, t]['communication_time']
+                sum_cost += G.edges[s, t]['comm']
         else:
             for node_i in self.nodes:
-                sum_cost += G.nodes[node_i]['execution_time']
+                sum_cost += G.nodes[node_i]['exec']
 
         return sum_cost
 
@@ -59,7 +59,7 @@ def _create_chain(conf, num_nodes: int, G: nx.DiGraph) -> Chain:
     for sub_chain_i, sub_chain_len in enumerate(sub_chain_len_combo):
         for _ in range(sub_chain_len):
             sub_chain_dict[str(sub_chain_i)].append(G.number_of_nodes())
-            G.add_node(G.number_of_nodes(), execution_time=random_get_exec_time(conf))
+            G.add_node(G.number_of_nodes(), exec=random_get_exec_time(conf))
             if(len(sub_chain_dict[str(sub_chain_i)]) >= 2):
                 G.add_edge(sub_chain_dict[str(sub_chain_i)][-2], sub_chain_dict[str(sub_chain_i)][-1])
     
