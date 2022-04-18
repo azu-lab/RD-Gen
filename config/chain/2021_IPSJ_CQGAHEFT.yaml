@@ -1,0 +1,38 @@
+# Compulsory parameters
+Number of DAGs: 100
+Initial seed: 0
+Number of nodes: 16
+Number of chains: 5
+Chain length:
+  Min: 2
+  Max: 5
+Chain width:
+  Min: 1
+  Max: 2
+Execution time:
+  Min: 50
+  Max: 200
+
+# Optional parameters
+# Vertically link chains:
+#   Number of entry nodes: 6
+#   Max level of vertical links: 2
+Merge chains:
+  Number of exit nodes: 1
+  Middle of chain: False
+  Exit node: True
+  Head of chain: False
+Use communication time:
+  Min: 5
+  Max: 20
+
+# Output formats
+DAG format:
+  yaml: False
+  json: False
+  xml: False
+  dot: True
+Figure format:
+  pdf: False
+  png: True
+  svg: False

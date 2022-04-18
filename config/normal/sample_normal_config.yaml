@@ -1,18 +1,18 @@
 # Compulsory parameters
-Number of DAGs: 10
+Number of DAGs: 50
 Initial seed: 0
-Number of nodes: 6
-Number of entry nodes: 2
+Number of nodes: 10
+Number of entry nodes: 1
 In-degree:
   Min: 1
-  Max: 2
+  Max: 3
 Out-degree:
   Min: 1
-  Max: 2
+  Max: 3
 Execution time:
-  Min: 2
-  Max: 70
-  Use list: [2, 3, 4, 5]
+  Min: 1
+  Max: 50
+  # Use list: [2, 3, 4, 5]
 
 # Optional parameters
 Max number of same-depth nodes: 3
@@ -42,6 +42,6 @@ DAG format:
   xml: False
   dot: False
 Figure format:
-  pdf: False
-  png: True
+  pdf: True
+  png: False
   svg: False

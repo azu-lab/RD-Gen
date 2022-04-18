@@ -1,49 +1,48 @@
 # Compulsory parameters
-Number of DAGs: 1
+Number of DAGs: 10
 Initial seed: 0
-Number of nodes: 50
-Number of chains: 8
+Number of nodes: 10
+Number of chains: 5
 Chain length:
-  Min: 2
-  Max: 10
+  Min: 1
+  Max: 7
 Chain width:
   Min: 1
-  Max: 4
+  Max: 2
 Execution time:
-  Min: 2
-  Max: 200
+  Min: 10
+  Max: 50
 
 # Optional parameters
 Vertically link chains:
   Number of entry nodes: 5
-  Max level of vertical links: 5
+  Max level of vertical links: 2
 Merge chains:
-  Number of exit nodes: 1
-  Middle of chain: False
+  Number of exit nodes: 2
+  Middle of chain: True
   Exit node: True
   Head of chain: True
-Use end-to-end deadline:
-  Ratio of deadlines to critical path length: 1.2
-  # Ratio of deadlines to max period: 1.0
+# Use end-to-end deadline:
+#   Ratio of deadlines to critical path length: 1.2
+#   Ratio of deadlines to max period: 1.0
 Use communication time:
-  Min: 2
-  Max: 20
+  Min: 1
+  Max: 10
 Use multi-period:
-  Periodic type: 'Chain'
-  Min: 20
-  Max: 400
-  # Entry node periods: [20, 40]
-  # Exit node periods: [30]
-  Max ratio of execution time to period: 0.8
-  Descendants have larger period: True
+  Periodic type: 'All'
+  Use list: [10, 20, 30, 40, 50, 60, 70, 80]
+  # Entry node periods: [10, 100]
+  # Exit node periods: [10]
+  Max ratio of execution time to period: 1.0
+  # Descendants have larger period: True
 
 # Output formats
 DAG format:
-  yaml: True
+  yaml: False
   json: False
   xml: False
-  dot: False
+  dot: True
 Figure format:
-  pdf: False
-  png: True
+  pdf: True
+  png: False
   svg: False

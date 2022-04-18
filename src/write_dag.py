@@ -42,6 +42,19 @@ def write_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
             G.edges[start_i, end_i]['label'] = \
                     f'{G.edges[start_i, end_i]["comm"]}'
 
+    # draw legend
+    legend_str = ('----- Legend ----\n\n'
+                  '[i]:  Task index\l'
+                  'C:  Worst-case execution time (WCET)\l')
+    if('Use multi-period' in config.keys()):
+        legend_str += 'T:  Period\l'
+    if('Use end-to-end deadline' in config.keys()):
+        legend_str += 'D:  End-to-end deadline\l'
+    if('Use communication time' in config.keys()):
+        legend_str += 'Number attached to arrow:  Communication time\l'
+    
+    G.add_node(G.number_of_nodes(), label=legend_str, fontsize=10, shape='box3d')
+
     pdot = nx.drawing.nx_pydot.to_pydot(G)
     fig_formats = [k for k, v in config['Figure format'].items() if v]
     if('png' in fig_formats):
