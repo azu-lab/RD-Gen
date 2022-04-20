@@ -31,7 +31,7 @@ class Chain:
 
         return sum_cost
 
-    def get_edges(self, G: nx.DiGraph) -> int:
+    def get_edges(self, G: nx.DiGraph) -> List[int]:
         edges_in_chain = set()
         for node_i in self.nodes:
             edges_in_chain |= {(s, t) for s, t in G.out_edges(node_i) if t in self.nodes}

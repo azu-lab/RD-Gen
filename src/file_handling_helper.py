@@ -51,7 +51,8 @@ normal_format = {
     'Figure format': {'Requirement':'default', 'Children':{
         'pdf': {'Requirement':'default', 'Children':None, 'Type':'bool', 'Default':True},
         'png': {'Requirement':'optional', 'Children':None, 'Type':'bool'},
-        'svg': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}}
+        'svg': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}},
+    'Draw legend': {'Requirement':'optional', 'Children':None, 'Type':'bool', 'Default':True}
 }
 
 
@@ -102,7 +103,8 @@ chain_format = {
     'Figure format': {'Requirement':'default', 'Children':{
         'pdf': {'Requirement':'default', 'Children':None, 'Type':'bool', 'Default':True},
         'png': {'Requirement':'optional', 'Children':None, 'Type':'bool'},
-        'svg': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}}
+        'svg': {'Requirement':'optional', 'Children':None, 'Type':'bool'}}},
+    'Draw legend': {'Requirement':'default', 'Children':None, 'Type':'bool', 'Default':True}
 }
 
 
@@ -285,15 +287,20 @@ def _check_config_format(mode: str, conf) -> None:
     # Check 'default' parameters
     top_default_keys = [k for k, v in format.items() if v['Requirement'] == 'default']
     for top_default_key in top_default_keys:
-        default_list = [(k, v['Default']) for k, v in format[top_default_key]['Children'].items()
-                                        if v['Requirement'] == 'default']
-        default_child_k, default_child_v = default_list[0]  # HACK
-        if(top_default_key not in input_top_keys or not conf[top_default_key]):
-            conf[top_default_key] = {default_child_k: default_child_v}
-            _warn_use_default(top_default_key, default_child_k)
-        elif(True not in conf[top_default_key].values()):
-            conf[top_default_key][default_child_k] = True
-            _warn_use_default(top_default_key, default_child_k)
+        if(format[top_default_key]['Children']):
+            default_list = [(k, v['Default']) for k, v in format[top_default_key]['Children'].items()
+                                            if v['Requirement'] == 'default']
+            default_child_k, default_child_v = default_list[0]  # HACK
+            if(top_default_key not in input_top_keys or not conf[top_default_key]):
+                conf[top_default_key] = {default_child_k: default_child_v}
+                _warn_use_default(top_default_key, default_child_k)
+            elif(True not in conf[top_default_key].values()):
+                conf[top_default_key][default_child_k] = True
+                _warn_use_default(top_default_key, default_child_k)
+        else:
+            if(top_default_key not in conf.keys()):
+                conf[top_default_key] = True
+                _warn_use_default(top_default_key, 'True')
 
     # Check type correctness
     for input_top_key in input_top_keys:

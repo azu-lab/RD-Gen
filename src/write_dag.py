@@ -36,24 +36,28 @@ def write_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
             G.nodes[node_i]['style'] = 'bold'
             G.nodes[node_i]['label'] += f'\nD: {G.nodes[node_i]["deadline"]}'
 
-    # draw communication time
+    # draw communication time & adjust style
     if('Use communication time' in config.keys()):
         for start_i, end_i in G.edges():
             G.edges[start_i, end_i]['label'] = \
                     f'{G.edges[start_i, end_i]["comm"]}'
+            G.edges[start_i, end_i]['fontsize'] = 11
+            G.edges[start_i, end_i]['labeldistance '] = 3
 
-    # draw legend
-    legend_str = ('----- Legend ----\n\n'
-                  '[i]:  Task index\l'
-                  'C:  Worst-case execution time (WCET)\l')
-    if('Use multi-period' in config.keys()):
-        legend_str += 'T:  Period\l'
-    if('Use end-to-end deadline' in config.keys()):
-        legend_str += 'D:  End-to-end deadline\l'
-    if('Use communication time' in config.keys()):
-        legend_str += 'Number attached to arrow:  Communication time\l'
-    
-    G.add_node(G.number_of_nodes(), label=legend_str, fontsize=10, shape='box3d')
+    # draw legend  # TODO: optional
+    if(config['Draw legend']):
+        legend_str = ['----- Legend ----\n\n',
+                      'Circle node:  Event-driven node\l',
+                      '[i]:  Task index\l',
+                      'C:  Worst-case execution time (WCET)\l']
+        if('Use multi-period' in config.keys()):
+            legend_str.insert(1,'Square node:  Timer-driven node\l')
+            legend_str.append('T:  Period\l')
+        if('Use end-to-end deadline' in config.keys()):
+            legend_str.append('D:  End-to-end deadline\l')
+        if('Use communication time' in config.keys()):
+            legend_str.append('Number attached to arrow:  Communication time\l')
+        G.add_node(-1, label=''.join(legend_str), fontsize=15, shape='box3d')
 
     pdot = nx.drawing.nx_pydot.to_pydot(G)
     fig_formats = [k for k, v in config['Figure format'].items() if v]

@@ -111,7 +111,10 @@ def _set_period_chain(conf, G: nx.DiGraph, chains: List[Chain]) -> None:
                                            / conf['Use multi-period']['Max ratio of execution time to period']
                                            - _get_settable_max_period(conf)))
                 goal_sum_cost = chain.get_sum_cost(conf, G) - decrease_vol
-                decrease_options = chain.nodes + chain.get_edges(G)
+                decrease_options = chain.nodes
+                if('Use communication time' in conf.keys()):
+                    decrease_options += chain.get_edges(G)
+
                 while(chain.get_sum_cost(conf, G) > goal_sum_cost and decrease_options):
                     choose = random.choice(decrease_options)
                     if(isinstance(choose, tuple)):
