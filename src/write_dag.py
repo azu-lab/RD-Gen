@@ -44,7 +44,7 @@ def write_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
             G.edges[start_i, end_i]['fontsize'] = 11
             G.edges[start_i, end_i]['labeldistance '] = 3
 
-    # draw legend  # TODO: optional
+    # draw legend
     if(config['Draw legend']):
         legend_str = ['----- Legend ----\n\n',
                       'Circle node:  Event-driven node\l',

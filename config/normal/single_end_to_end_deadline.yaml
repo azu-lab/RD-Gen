@@ -1,0 +1,32 @@
+Number of DAGs: 1
+Initial seed: 0
+Number of nodes: 15
+Number of entry nodes: 3
+In-degree:
+  Min: 1
+  Max: 3
+Out-degree:
+  Min: 1
+  Max: 3
+Execution time:
+  Min: 1
+  Max: 50
+Force merge to exit nodes:
+  Number of exit nodes: 1
+Use end-to-end deadline:
+  Ratio of deadlines to critical path length: 1.2
+Use communication time:
+  Min: 1
+  Max: 10
+
+# Output formats
+DAG format:
+  yaml: True
+  json: False
+  xml: False
+  dot: False
+Figure format:
+  pdf: True
+  png: False
+  svg: False
+Draw legend: False

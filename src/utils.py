@@ -32,7 +32,7 @@ def _get_cp_and_cp_len(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
         for i in range(len(path)):
             path_len += dag.nodes[path[i]]['exec']
             if(i != len(path)-1 and
-                    'comm' in list(dag.nodes[path[i]].keys())):
+                    'comm' in list(dag.edges[path[i], path[i+1]].keys())):
                 path_len += dag.edges[path[i], path[i+1]]['comm']
         if(path_len > cp_len):
             cp = path
