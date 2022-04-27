@@ -1,0 +1,39 @@
+# Compulsory parameters
+Number of DAGs: 100
+Initial seed: 20
+Number of nodes: 8
+Number of chains: 2
+Chain length:
+  Min: 1
+  Max: 5
+Chain width:
+  Min: 1
+  Max: 2
+Execution time:
+  Min: 1
+  Max: 50
+
+# Optional parameters
+Merge chains:
+  Number of exit nodes: 1
+  Middle of chain: True
+  Exit node: True
+  Head of chain: False
+Use multi-period:
+  Periodic type: 'All'
+  Use list: [10, 20, 30, 40, 50, 60, 70, 80]
+  Entry node periods: [10, 100]
+  Exit node periods: [10]
+  Max ratio of execution time to period: 0.5
+
+# Output formats
+DAG format:
+  yaml: False
+  json: False
+  xml: False
+  dot: True
+Figure format:
+  pdf: True
+  png: False
+  svg: False
+Draw legend: False

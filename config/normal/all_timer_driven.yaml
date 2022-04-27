@@ -1,19 +1,22 @@
 Number of DAGs: 20
 Initial seed: 0
-Number of nodes: 30
-Number of entry nodes: 1
+Number of nodes: 10
+Number of entry nodes: 3
 In-degree:
   Min: 1
-  Max: 1
+  Max: 2
 Out-degree:
   Min: 1
-  Max: 4
+  Max: 3
 Execution time:
   Min: 1
   Max: 50
 Force merge to exit nodes:
-  Number of exit nodes: 1
-# Max number of same-depth nodes: 8
+  Number of exit nodes: 3
+Use multi-period:
+  Periodic type: 'All'
+  Use list: [20, 40, 60, 80, 100]
+  Max ratio of execution time to period: 0.5
 
 # Output formats
 DAG format:
