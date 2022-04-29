@@ -8,13 +8,12 @@ from typing import List, Tuple, Union, Dict
 from logging import getLogger
 
 from src.utils import (
-    get_args_from_tuple_str,
     option_parser, set_end_to_end_deadlines,
     random_get_comm_time,
     random_get_exec_time,
     choice_one_from_cfg
 )
-from src.file_handling_helper import load_normal_config, get_all_combo_cfg
+from src.file_handling_helper import load_normal_config, get_preprocessed_all_combo
 from src.write_dag import write_dag
 from src.random_set_period import random_set_period
 from src.abbreviation import ToA, ToO
@@ -192,11 +191,10 @@ def generate(cfg, dest_dir):
         if('Force merge to exit nodes' in cfg.keys()):
             force_merge_to_exit_nodes(cfg, G)
 
-        # (Optional) Use communication time
+        ### (Optional) Use communication time
         if('Use communication time' in cfg.keys()):
             for start_i, end_i in G.edges():
-                G.edges[start_i, end_i]['comm'] = \
-                        random_get_comm_time(cfg)
+                G.edges[start_i, end_i]['comm'] = random_get_comm_time(cfg)
 
         # (Optional) Use multi-period
         if('Use multi-period' in cfg.keys()):
@@ -213,7 +211,7 @@ if __name__ == '__main__':
     config_yaml_file, dest_dir = option_parser()
     cfg = load_normal_config(config_yaml_file)
 
-    all_combo_dir_name, all_combo_log, all_combo_cfg = get_all_combo_cfg(cfg, 'normal')
+    all_combo_dir_name, all_combo_log, all_combo_cfg = get_preprocessed_all_combo(cfg, 'normal')
     for combo_dir_name, combo_log, combo_cfg in zip(all_combo_dir_name, all_combo_log, all_combo_cfg):
         dest_dir += f'/{combo_dir_name}'
         os.mkdir(dest_dir)

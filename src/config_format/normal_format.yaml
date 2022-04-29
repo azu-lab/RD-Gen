@@ -110,6 +110,6 @@ Figure format:
 Naming of combination directory:
   Requirement: 'default'
   Type:
-        - 'Full spell'
-        - 'Abbreviation'
-        - 'Index of combination'
+    - 'Full spell'
+    - 'Abbreviation'
+    - 'Index of combination'

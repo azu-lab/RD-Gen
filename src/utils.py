@@ -43,31 +43,6 @@ def choice_one_from_cfg(param_cfg: dict) -> Union[int, float]:
             return param_cfg['Fixed']
 
 
-def convert_to_num(num_str: str) -> Union[int, float]:
-        temp_float = round(float(num_str), 4)
-        if(temp_float.is_integer()):
-            return int(temp_float)
-        else:
-            return temp_float
-
-
-def get_args_from_tuple_str(tuple_str: str) -> Dict:
-    tuple_str = tuple_str.replace('(', '')
-    tuple_str = tuple_str.replace(')', '')
-    tuple_str = tuple_str.replace(' ', '')
-
-    args_dict = {'start': None, 'stop': None, 'step': None}
-    for i, arg in enumerate(tuple_str.split(',')):
-        if(i==0 or 'start' in arg):
-            args_dict['start'] = convert_to_num(arg.replace('start=', ''))
-        elif(i==1 or 'stop' in arg):
-            args_dict['stop'] = convert_to_num(arg.replace('stop=', ''))
-        elif(i==2 or 'step' in arg):
-            args_dict['step'] = convert_to_num(arg.replace('step=', ''))
-
-    return args_dict
-
-
 def _get_cp_and_cp_len(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
     cp = []
     cp_len = 0

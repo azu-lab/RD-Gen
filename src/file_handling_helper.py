@@ -6,7 +6,6 @@ import itertools
 import numpy as np
 from typing import Dict, List, Union, Tuple
 
-from src.utils import get_args_from_tuple_str, convert_to_num
 from src.abbreviation import ToA, ToO
 
 
@@ -20,8 +19,33 @@ def _load_yaml(config_yaml_file):
     return cfg
 
 
-def get_all_combo_cfg(cfg, mode: str) -> Tuple[List[str], List[Dict], List[Dict]]:
-    def get_children_param_name(top_param: str) -> Union[List[str], None]:
+def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], List[Dict]]:
+    def get_list_from_tuple_str(tuple_str: str) -> List:
+        def convert_to_num(num_str: str) -> Union[int, float]:
+            temp_float = round(float(num_str), 4)
+            if(temp_float.is_integer()):
+                return int(temp_float)
+            else:
+                return temp_float
+
+        tuple_str = tuple_str.replace('(', '')
+        tuple_str = tuple_str.replace(')', '')
+        tuple_str = tuple_str.replace(' ', '')
+
+        args_dict = {'start': None, 'stop': None, 'step': None}
+        for i, arg in enumerate(tuple_str.split(',')):
+            if(i==0 or 'start' in arg):
+                args_dict['start'] = float(arg.replace('start=', ''))
+            elif(i==1 or 'stop' in arg):
+                args_dict['stop'] = float(arg.replace('stop=', ''))
+            elif(i==2 or 'step' in arg):
+                args_dict['step'] = float(arg.replace('step=', ''))
+
+        args_dict['stop'] += args_dict['step']  # include stop
+
+        return [convert_to_num(v) for v in np.arange(**args_dict)]
+    
+    def get_children_name(top_param: str) -> Union[List[str], None]:
         if('Children' in format[top_param].keys()):
             return format[top_param]['Children'].keys()
         else:
@@ -73,6 +97,7 @@ def get_all_combo_cfg(cfg, mode: str) -> Tuple[List[str], List[Dict], List[Dict]
         return combo_dir_name
 
 
+    ### Load format
     if(mode == 'normal'):
         with open(f'{os.path.dirname(__file__)}/config_format/normal_format.yaml') as f:
             format = yaml.safe_load(f)
@@ -80,31 +105,41 @@ def get_all_combo_cfg(cfg, mode: str) -> Tuple[List[str], List[Dict], List[Dict]
         with open(f'{os.path.dirname(__file__)}/config_format/chain_format.yaml') as f:
             format = yaml.safe_load(f)
 
-    # Search combination
+    ### Search 'Combination' & Convert Tuple to List of 'Random'
     in_top_params = set(cfg.keys())
     combo_param_dict = {}
-    for in_top_param in in_top_params - {'Number of DAGs', 'Seed', 'Naming of combination directory'}:
+    one_line_params = {'Number of DAGs', 'Seed', 'Naming of combination directory'}
+    for in_top_param in in_top_params - one_line_params:
         if('Combination' in cfg[in_top_param].keys()):
             if(isinstance(cfg[in_top_param]['Combination'], str)):
-                args = get_args_from_tuple_str(cfg[in_top_param]['Combination'])
-                args['stop'] += args['step']  # include stop
-                combo_param_dict[ToA[in_top_param]] = [convert_to_num(v) for v in np.arange(**args)]  # HACK
+                combo_param_dict[ToA[in_top_param]] = \
+                        get_list_from_tuple_str(cfg[in_top_param]['Combination'])
             else:
                 combo_param_dict[ToA[in_top_param]] = cfg[in_top_param]['Combination']
 
-        # Search children parameter
-        elif(children_param_names := get_children_param_name(in_top_param)):
-            for child_param_name in children_param_names:
-                if(format[in_top_param]['Children'][child_param_name]['Type'] in ['int', 'float']
-                        and child_param_name in cfg[in_top_param].keys()
-                        and 'Combination' in cfg[in_top_param][child_param_name].keys()):
-                    if(isinstance(cfg[in_top_param][child_param_name]['Combination'], str)):
-                        args = get_args_from_tuple_str(cfg[in_top_param][child_param_name]['Combination'])
-                        args['stop'] += args['step']  # include stop
-                        combo_param_dict[f'{ToA[in_top_param]}_{ToA[child_param_name]}'] = [convert_to_num(v) for v in np.arange(**args)]  # HACK
-                    else:
-                        combo_param_dict[f'{ToA[in_top_param]}_{ToA[child_param_name]}'] = cfg[in_top_param][child_param_name]['Combination']
+        elif('Random' in cfg[in_top_param].keys()
+                    and isinstance(cfg[in_top_param]['Random'], str)):
+            cfg[in_top_param]['Random'] = get_list_from_tuple_str(cfg[in_top_param]['Random'])
 
+        ### Children parameter
+        elif(children_names := get_children_name(in_top_param)):
+            for child_name in children_names:
+                if(format[in_top_param]['Children'][child_name]['Type'] in ['int', 'float']
+                        and child_name in cfg[in_top_param].keys()):
+                    if('Combination' in cfg[in_top_param][child_name].keys()):
+                        if(isinstance(cfg[in_top_param][child_name]['Combination'], str)):
+                            combo_param_dict[f'{ToA[in_top_param]}_{ToA[child_name]}'] = \
+                                    get_list_from_tuple_str(cfg[in_top_param][child_name]['Combination'])
+                        else:
+                            combo_param_dict[f'{ToA[in_top_param]}_{ToA[child_name]}'] = \
+                                    cfg[in_top_param][child_name]['Combination']
+
+                    elif('Random' in cfg[in_top_param][child_name].keys()
+                                and isinstance(cfg[in_top_param][child_name]['Random'], str)):
+                        cfg[in_top_param][child_name]['Random'] = \
+                                get_list_from_tuple_str(cfg[in_top_param][child_name]['Random'])
+
+    ### Create all_combo lists
     all_dest_dir_name = []
     all_combo_log = []
     all_combo_cfg = []
