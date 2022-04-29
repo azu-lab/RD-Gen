@@ -110,6 +110,7 @@ fi
 
 
 ### generate DAGs
+export PYTHONPATH="${PYTHON_SCRIPT_DIR}/"
 if [ ${USE_CHAIN} ]; then
     python3 ${PYTHON_SCRIPT_DIR}/chain_generate.py --config_yaml_path "${CONFIG_YAML_PATH}" --dest_dir "${DEST_DIR}"
 else

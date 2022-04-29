@@ -4,58 +4,80 @@ import random
 import copy
 import yaml
 import os
-import json
-from typing import List, Tuple
-from src.utils import get_all_combo_cfg
+from typing import List, Tuple, Union, Dict
+from logging import getLogger
 
-from utils import option_parser, set_end_to_end_deadlines, random_get_comm_time, random_get_exec_time
-from file_handling_helper import load_normal_config
-from write_dag import write_dag
-from random_set_period import random_set_period
+from src.utils import (
+    get_args_from_tuple_str,
+    option_parser, set_end_to_end_deadlines,
+    random_get_comm_time,
+    random_get_exec_time,
+    choice_one_from_cfg
+)
+from src.file_handling_helper import load_normal_config, get_all_combo_cfg
+from src.write_dag import write_dag
+from src.random_set_period import random_set_period
+from src.abbreviation import ToA, ToO
 
 
-def try_extend_dag(conf, dag: nx.DiGraph) -> Tuple[bool, nx.DiGraph]:
-    dag = copy.deepcopy(dag)
-    end_num = conf['Number of nodes']
-    if('Force merge to exit nodes' in conf.keys()):
-        end_num -= conf['Force merge to exit nodes']['Number of exit nodes']
+logger = getLogger(__name__)
 
-    while(dag.number_of_nodes() != end_num):
-        leaves = [v for v, d in dag.out_degree() if d == 0]
 
-        # Determine the number of next-depth nodes
+def try_extend_dag(cfg, dag: nx.DiGraph) -> Tuple[bool, nx.DiGraph]:
+    def get_min_of_range(param_cfg: Dict) -> Union[float, int]:
+        if('Random' in param_cfg.keys()):
+            return min(param_cfg['Random'])
+        elif('Fixed' in param_cfg.keys()):
+            return param_cfg['Fixed']
+
+    def get_max_of_range(param_cfg: Dict) -> Union[float, int]:
+        if('Random' in param_cfg.keys()):
+            return max(param_cfg['Random'])
+        elif('Fixed' in param_cfg.keys()):
+            return param_cfg['Fixed']
+
+    G = copy.deepcopy(dag)
+
+    ### Determine end_num
+    end_num = choice_one_from_cfg(cfg['Number of nodes'])
+    if('Force merge to exit nodes' in cfg.keys()):
+        end_num -= choice_one_from_cfg(cfg[ToO['FME']][ToO['NEX']])
+
+    while(G.number_of_nodes() != end_num):
+        leaves = [v for v, d in G.out_degree() if d == 0]
+
+        ### Determine the number of next-depth nodes
         num_next = 0
-        min_num = max(conf['Out-degree']['Min'],
-                      int(np.ceil(len(leaves)*conf['Out-degree']['Min']
-                                  / conf['In-degree']['Max'])))
-        max_num = int(np.floor(len(leaves)*conf['Out-degree']['Max']
-                               / conf['In-degree']['Min']))
-        if('Max number of same-depth nodes' in conf.keys()):
-            max_num = min(max_num, conf['Max number of same-depth nodes'])
+        min_num = max(get_min_of_range(cfg['Out-degree']),
+                      int(np.ceil(len(leaves)*get_min_of_range(cfg['Out-degree'])
+                                  / get_max_of_range(cfg['In-degree']))))
+        max_num = int(np.floor(len(leaves)*get_max_of_range(cfg['Out-degree'])
+                               / get_min_of_range(cfg['In-degree'])))
+        if(ToO['MNSD'] in cfg.keys()):
+            max_num = min(max_num, choice_one_from_cfg(cfg[ToO['MNSD']]))
 
-        if(dag.number_of_nodes()+min_num <= end_num and
-                dag.number_of_nodes()+max_num >= end_num):
-            num_next = end_num - dag.number_of_nodes()
-        elif(dag.number_of_nodes()+min_num > end_num):
-            return False, dag
+        if(G.number_of_nodes()+min_num <= end_num and
+                G.number_of_nodes()+max_num >= end_num):
+            num_next = end_num - G.number_of_nodes()
+        elif(G.number_of_nodes()+min_num > end_num):
+            return False, G
         else:
             num_next = random.randint(min_num, max_num)
 
-        # Add next-depth nodes
+        ### Add next-depth nodes
         next_nodes_i = [i for i in range(
-                dag.number_of_nodes(), dag.number_of_nodes()+num_next)]
+                G.number_of_nodes(), G.number_of_nodes()+num_next)]
         for next_node_i in next_nodes_i:
-            dag.add_node(next_node_i,
-                         exec=random_get_exec_time(conf))
+            G.add_node(next_node_i)
 
-        # Determine the number of edges to next-depth nodes
+        ### Determine the number of edges to next-depth nodes
         num_edges_to_next = random.randint(
-                max(len(leaves)*conf['Out-degree']['Min'],
-                    num_next*conf['In-degree']['Min']),
-                min(len(leaves)*conf['Out-degree']['Max'],
-                    num_next*conf['In-degree']['Max']))
+                max(len(leaves)*get_min_of_range(cfg['Out-degree']),
+                    num_next*get_min_of_range(cfg['In-degree'])),
+                min(len(leaves)*get_max_of_range(cfg['Out-degree']),
+                    num_next*get_max_of_range(cfg['In-degree'])))
 
-        # Add edges_to_next_depth
+        ### Add edges_to_next_depth
         add_edge_count = 0
         nodes_lack_out = copy.deepcopy(leaves)
         nodes_max_out = set()
@@ -63,24 +85,24 @@ def try_extend_dag(conf, dag: nx.DiGraph) -> Tuple[bool, nx.DiGraph]:
         nodes_max_in = set()
 
         while(add_edge_count != num_edges_to_next):
-            # Check feasibility
+            ### Check feasibility
             feasibility = False
             only_lack_out_feasibility = False
             for start_i in list(set(leaves) - nodes_max_out):
                 if(nodes_lack_in):
-                    targets = list(set(nodes_lack_in) - set(dag.succ[start_i]))
+                    targets = list(set(nodes_lack_in) - set(G.succ[start_i]))
                 else:
                     targets = list(set(next_nodes_i)
-                                   - set(dag.succ[start_i])
+                                   - set(G.succ[start_i])
                                    - nodes_max_in)
                 if(targets):
                     feasibility = True
                     if(start_i in nodes_lack_out):
                         only_lack_out_feasibility = True
             if(not feasibility):
-                return False, dag
+                return False, G
 
-            # Determine start_nodes_i
+            ### Determine start_nodes_i
             start_nodes_i = []
             if(only_lack_out_feasibility):
                 start_nodes_i = nodes_lack_out
@@ -90,44 +112,43 @@ def try_extend_dag(conf, dag: nx.DiGraph) -> Tuple[bool, nx.DiGraph]:
                                      - nodes_max_out)
 
             for start_node_i in start_nodes_i:
-                # Determine target_node_i
+                ### Determine target_node_i
                 target_node_i = -1
                 if(nodes_lack_in):
                     targets = list(set(nodes_lack_in)
-                                   - set(dag.succ[start_node_i]))
+                                   - set(G.succ[start_node_i]))
                 else:
                     targets = list(set(next_nodes_i)
-                                   - set(dag.succ[start_node_i])
+                                   - set(G.succ[start_node_i])
                                    - nodes_max_in)
                 if(targets):
                     target_node_i = random.choice(targets)
                 else:
                     continue
 
-                # Add edge
-                dag.add_edge(start_node_i, target_node_i)
+                ### Add edge
+                G.add_edge(start_node_i, target_node_i)
                 add_edge_count += 1
-                if(dag.out_degree(start_node_i) == conf['Out-degree']['Min']):
+                if(G.out_degree(start_node_i) == get_min_of_range(cfg['Out-degree'])):
                     nodes_lack_out.remove(start_node_i)
-                if(dag.out_degree(start_node_i) == conf['Out-degree']['Max']):
+                if(G.out_degree(start_node_i) == get_max_of_range(cfg['Out-degree'])):
                     nodes_max_out.add(start_node_i)
-                if(dag.in_degree(target_node_i) == conf['In-degree']['Min']):
+                if(G.in_degree(target_node_i) == get_min_of_range(cfg['In-degree'])):
                     nodes_lack_in.remove(target_node_i)
-                if(dag.in_degree(target_node_i) == conf['In-degree']['Max']):
+                if(G.in_degree(target_node_i) == get_max_of_range(cfg['In-degree'])):
                     nodes_max_in.add(target_node_i)
                 if(add_edge_count == num_edges_to_next):
                     break
 
-    return True, dag
+    return True, G
 
 
 def force_merge_to_exit_nodes(conf, G: nx.DiGraph) -> None:
     leaves = [v for v, d in G.out_degree() if d == 0]
     exit_nodes_i = []
-    for i in range(conf['Force merge to exit nodes']['Number of exit nodes']):
+    for _ in range(choice_one_from_cfg(conf[ToO['FME']][ToO['NEX']])):
         exit_nodes_i.append(G.number_of_nodes())
-        G.add_node(G.number_of_nodes(),
-                   exec=random_get_exec_time(conf))
+        G.add_node(G.number_of_nodes())
 
     if(len(leaves) > len(exit_nodes_i)):
         no_in_degree_i = copy.deepcopy(exit_nodes_i)
@@ -148,47 +169,44 @@ def force_merge_to_exit_nodes(conf, G: nx.DiGraph) -> None:
                 exit_nodes_i.remove(exit_node_i)
 
 
-def generate(conf, dest_dir):
-    for dag_i in range(conf['Number of DAGs']):
-        random.seed(conf['Initial seed'] + dag_i)
+def generate(cfg, dest_dir):
+    for dag_i in range(cfg['Number of DAGs']):
         G = nx.DiGraph()
 
-        # Add entry nodes
-        for i in range(conf['Number of entry nodes']):
-            G.add_node(G.number_of_nodes(),
-                       exec=random_get_exec_time(conf))
+        ### Add entry nodes
+        for _ in range(choice_one_from_cfg(cfg['Number of entry nodes'])):
+            G.add_node(G.number_of_nodes())
 
-        # Extend dag
-        max_num_try = 100  # HACK
-        for num_try in range(1, max_num_try+1):
-            result, extended_dag = try_extend_dag(conf, G)
+        ### Extend dag
+        for num_try in range(max_try := 100):  # HACK
+            result, extended_dag = try_extend_dag(cfg, G)
             if(result):
                 G = extended_dag
                 break
-            if(num_try == max_num_try):
-                print("[Error] Cannot create DAGs. \
-                       Please specify the feasible parameters.")
-                exit(1)
+            if(num_try+1 == max_try):
+                msg = ('Cannot create DAGs. '
+                       'Please specify the feasible parameters.')
+                logger.warning(msg)
 
-        # (Optional) Force merge to exit nodes
-        if('Force merge to exit nodes' in conf.keys()):
-            force_merge_to_exit_nodes(conf, G)
+        ### (Optional) Force merge to exit nodes
+        if('Force merge to exit nodes' in cfg.keys()):
+            force_merge_to_exit_nodes(cfg, G)
 
         # (Optional) Use communication time
-        if('Use communication time' in conf.keys()):
+        if('Use communication time' in cfg.keys()):
             for start_i, end_i in G.edges():
                 G.edges[start_i, end_i]['comm'] = \
-                        random_get_comm_time(conf)
+                        random_get_comm_time(cfg)
 
         # (Optional) Use multi-period
-        if('Use multi-period' in conf.keys()):
-            random_set_period(conf, G)
+        if('Use multi-period' in cfg.keys()):
+            random_set_period(cfg, G)
 
         # (Optional) Use end-to-end deadline
-        if('Use end-to-end deadline' in conf.keys()):
-            set_end_to_end_deadlines(conf, G)
+        if('Use end-to-end deadline' in cfg.keys()):
+            set_end_to_end_deadlines(cfg, G)
 
-        write_dag(conf, dest_dir, f'dag_{dag_i}', G)
+        write_dag(cfg, dest_dir, f'dag_{dag_i}', G)
 
 
 if __name__ == '__main__':
@@ -201,4 +219,6 @@ if __name__ == '__main__':
         os.mkdir(dest_dir)
         with open(f'{dest_dir}/combination_log.yaml', 'w') as f:
             yaml.dump(combo_log, f)
+
+        random.seed(cfg['Seed'])
         generate(combo_cfg, dest_dir)

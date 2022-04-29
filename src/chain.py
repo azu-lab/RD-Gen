@@ -5,7 +5,7 @@ import copy
 import itertools
 from typing import List
 
-from utils import random_get_exec_time
+from src.utils import random_get_exec_time
 
 
 class Chain:

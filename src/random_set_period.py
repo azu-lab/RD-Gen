@@ -4,8 +4,8 @@ import random
 import copy
 from typing import List, Tuple
 
-from chain import Chain
-from utils import _get_settable_min_exec, _get_settable_min_comm, _get_settable_max_period
+from src.chain import Chain
+from src.utils import _get_settable_min_exec, _get_settable_min_comm, _get_settable_max_period
 # from file_handling_helper import _error_increase_or_decrease
 
 
