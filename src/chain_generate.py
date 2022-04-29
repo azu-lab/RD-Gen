@@ -5,7 +5,7 @@ import copy
 import itertools
 from typing import List, Tuple
 
-from utils import option_parser, set_end_to_end_deadlines, random_get_comm_time
+from utils import option_parser, set_end_to_end_deadlines, random_get_comm
 from chain import _create_chain, vertically_link_chains, merge_chains
 from file_handling_helper import load_chain_config
 from write_dag import write_dag
@@ -46,7 +46,7 @@ def main(conf, dest_dir):
         if('Use communication time' in conf.keys()):
             for start_i, end_i in G.edges():
                 G.edges[start_i, end_i]['comm'] = \
-                        random_get_comm_time(conf)
+                        random_get_comm(conf)
 
         # (Optional) Use multi-period
         if('Use multi-period' in conf.keys()):

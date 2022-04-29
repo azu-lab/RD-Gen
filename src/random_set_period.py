@@ -5,7 +5,7 @@ import copy
 from typing import List, Tuple
 
 from src.chain import Chain
-from src.utils import _get_settable_min_exec, _get_settable_min_comm, _get_settable_max_period
+from src.utils import get_settable_min_exec, get_settable_min_comm, get_settable_max_period
 # from file_handling_helper import _error_increase_or_decrease
 
 
@@ -95,13 +95,13 @@ def _set_period_chain(conf, G: nx.DiGraph, chains: List[Chain]) -> None:
         else:
             # Check feasibility
             if('Use communication time' in conf.keys()):
-                min_sum_cost = (_get_settable_min_exec(conf)*len(chain.nodes)
-                                + _get_settable_min_comm(conf)*len(chain.get_edges(G)))
+                min_sum_cost = (get_settable_min_exec(conf)*len(chain.nodes)
+                                + get_settable_min_comm(conf)*len(chain.get_edges(G)))
             else:
-                min_sum_cost = _get_settable_min_exec(conf)*len(chain.nodes)
+                min_sum_cost = get_settable_min_exec(conf)*len(chain.nodes)
             min_lower_bound = np.ceil(min_sum_cost
                           / conf['Use multi-period']['Max ratio of execution time to period'])
-            if(min_lower_bound > _get_settable_max_period(conf)):
+            if(min_lower_bound > get_settable_max_period(conf)):
                 _error_increase_or_decrease(['Use multi-period: Max', 'Use multi-period: Max ratio of execution time to period'],
                                             ['Execution time: Min', 'Use communication time: Min'])
 
@@ -109,7 +109,7 @@ def _set_period_chain(conf, G: nx.DiGraph, chains: List[Chain]) -> None:
             else:
                 decrease_vol = int(np.ceil(chain.get_sum_cost(conf, G)
                                            / conf['Use multi-period']['Max ratio of execution time to period']
-                                           - _get_settable_max_period(conf)))
+                                           - get_settable_max_period(conf)))
                 goal_sum_cost = chain.get_sum_cost(conf, G) - decrease_vol
                 decrease_options = chain.nodes
                 if('Use communication time' in conf.keys()):
@@ -119,7 +119,7 @@ def _set_period_chain(conf, G: nx.DiGraph, chains: List[Chain]) -> None:
                     choose = random.choice(decrease_options)
                     if(isinstance(choose, tuple)):
                         s, t = choose
-                        if(G.edges[s, t]['comm'] == _get_settable_min_comm(conf)):
+                        if(G.edges[s, t]['comm'] == get_settable_min_comm(conf)):
                             decrease_options.remove(choose)
                         else:
                             if('Use list' in conf['Use communication time']):
@@ -128,7 +128,7 @@ def _set_period_chain(conf, G: nx.DiGraph, chains: List[Chain]) -> None:
                             else:
                                 G.edges[s, t]['comm'] -= 1
                     else:
-                        if(G.nodes[choose]['exec'] == _get_settable_min_exec(conf)):
+                        if(G.nodes[choose]['exec'] == get_settable_min_exec(conf)):
                             decrease_options.remove(choose)
                         else:
                             if('Use list' in conf['Execution time']):

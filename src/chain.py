@@ -5,7 +5,7 @@ import copy
 import itertools
 from typing import List
 
-from src.utils import random_get_exec_time
+from src.utils import random_get_exec
 
 
 class Chain:
@@ -59,7 +59,7 @@ def _create_chain(conf, num_nodes: int, G: nx.DiGraph) -> Chain:
     for sub_chain_i, sub_chain_len in enumerate(sub_chain_len_combo):
         for _ in range(sub_chain_len):
             sub_chain_dict[str(sub_chain_i)].append(G.number_of_nodes())
-            G.add_node(G.number_of_nodes(), exec=random_get_exec_time(conf))
+            G.add_node(G.number_of_nodes(), exec=random_get_exec(conf))
             if(len(sub_chain_dict[str(sub_chain_i)]) >= 2):
                 G.add_edge(sub_chain_dict[str(sub_chain_i)][-2], sub_chain_dict[str(sub_chain_i)][-1])
     

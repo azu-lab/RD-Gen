@@ -1,11 +1,6 @@
-from operator import concat
 import networkx as nx
 import argparse
 import random
-import yaml
-import os
-import copy
-import itertools
 import numpy as np
 
 from typing import List, Tuple, Dict, Union
@@ -32,18 +27,13 @@ def option_parser() -> Tuple[argparse.FileType, str]:
 
 
 def choice_one_from_cfg(param_cfg: dict) -> Union[int, float]:
-        if('Random' in param_cfg.keys()):
-            if(isinstance(param_cfg['Random'], str)):
-                args = get_args_from_tuple_str(param_cfg['Random'])
-                choices = [convert_to_num(v) for v in np.arange(**args)]
-                return random.choice(choices)
-            elif(isinstance(param_cfg['Random'], List)):
-                return random.choice(param_cfg['Random'])
-        elif('Fixed' in param_cfg.keys()):
-            return param_cfg['Fixed']
+    if('Random' in param_cfg.keys()):
+        return random.choice(param_cfg['Random'])
+    elif('Fixed' in param_cfg.keys()):
+        return param_cfg['Fixed']
 
 
-def _get_cp_and_cp_len(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
+def get_cp(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
     cp = []
     cp_len = 0
 
@@ -74,7 +64,7 @@ def set_end_to_end_deadlines(conf, G: nx.DiGraph) -> None:
         for exit_i in [v for v, d in G.out_degree() if d == 0]:
             max_cp_len = 0
             for entry_i in [v for v, d in G.in_degree() if d == 0]:
-                _, cp_len = _get_cp_and_cp_len(G, entry_i, exit_i)
+                _, cp_len = get_cp(G, entry_i, exit_i)
                 if(cp_len > max_cp_len):
                     max_cp_len = cp_len
             G.nodes[exit_i]['deadline'] = int(
@@ -82,7 +72,7 @@ def set_end_to_end_deadlines(conf, G: nx.DiGraph) -> None:
                     * conf['Use end-to-end deadline']['Ratio of deadlines to critical path length'])
 
 
-def random_get_comm_time(conf) -> int:
+def random_get_comm(conf) -> int:
     if('Use list' in conf['Use communication time'].keys()):
         return random.choice(conf['Use communication time']['Use list'])
     else:
@@ -90,7 +80,7 @@ def random_get_comm_time(conf) -> int:
                               conf['Use communication time']['Max'])
 
 
-def random_get_exec_time(conf) -> int:
+def random_get_exec(conf) -> int:
     if('Use list' in conf['Execution time'].keys()):
         return random.choice(conf['Execution time']['Use list'])
     else:
@@ -98,21 +88,21 @@ def random_get_exec_time(conf) -> int:
                               conf['Execution time']['Max'])
 
 
-def _get_settable_min_exec(conf) -> int:
+def get_settable_min_exec(conf) -> int:
     if('Use list' in conf['Execution time'].keys()):
         return min(conf['Execution time']['Use list'])
     else:
         return conf['Execution time']['Min']
 
 
-def _get_settable_min_comm(conf) -> int:
+def get_settable_min_comm(conf) -> int:
     if('Use list' in conf['Use communication time'].keys()):
         return min(conf['Use communication time']['Use list'])
     else:
         return conf['Use communication time']['Min']
 
 
-def _get_settable_max_period(conf) -> int:
+def get_settable_max_period(conf) -> int:
     if('Use list' in conf['Use multi-period'].keys()):
         return max(conf['Use multi-period']['Use list'])
     else:

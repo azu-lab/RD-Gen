@@ -9,8 +9,8 @@ from logging import getLogger
 
 from src.utils import (
     option_parser, set_end_to_end_deadlines,
-    random_get_comm_time,
-    random_get_exec_time,
+    random_get_comm,
+    random_get_exec,
     choice_one_from_cfg
 )
 from src.file_handling_helper import load_normal_config, get_preprocessed_all_combo
@@ -191,14 +191,17 @@ def generate(cfg, dest_dir):
         if('Force merge to exit nodes' in cfg.keys()):
             force_merge_to_exit_nodes(cfg, G)
 
+        ### (Optional) Use multi-period
+        if('Use multi-period' in cfg.keys()):
+            random_set_period(cfg, G)
+
+        ### Set execution time
+        # random_set_exec(cfg, G)  # TODO
+
         ### (Optional) Use communication time
         if('Use communication time' in cfg.keys()):
             for start_i, end_i in G.edges():
-                G.edges[start_i, end_i]['comm'] = random_get_comm_time(cfg)
-
-        # (Optional) Use multi-period
-        if('Use multi-period' in cfg.keys()):
-            random_set_period(cfg, G)
+                G.edges[start_i, end_i]['comm'] = choice_one_from_cfg(cfg[ToO['UCT']])
 
         # (Optional) Use end-to-end deadline
         if('Use end-to-end deadline' in cfg.keys()):
