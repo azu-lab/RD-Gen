@@ -12,10 +12,10 @@ Number of entry nodes:
   Requirement: 'compulsory'
   Type: 'int'
 In-degree: 
-  Requirement: 'compulsory',
+  Requirement: 'compulsory'
   Type: 'int'
 Out-degree: 
-  Requirement: 'compulsory',
+  Requirement: 'compulsory'
   Type: 'int'
 Execution time: 
   Requirement: 'compulsory'
@@ -60,12 +60,12 @@ Use multi-period:
     Period:
       Requirement: 'compulsory'
       Type: 'int'
-    Entry node period:
+    Entry node periods:
       Requirement: 'optional'
-      Type: 'List[int]'
-    Exit node period':
+      Type: 'int'
+    Exit node periods:
       Requirement: 'optional'
-      Type: 'List[int]'
+      Type: 'int'
     Max ratio of execution time to period:
       Requirement: 'compulsory'
       Type: 'float'
@@ -107,3 +107,9 @@ Figure format:
       Requirement: 'default'
       Type: 'bool'
       Default: True
+Naming of combination directory:
+  Requirement: 'default'
+  Type:
+        - 'Full spell'
+        - 'Abbreviation'
+        - 'Index of combination'

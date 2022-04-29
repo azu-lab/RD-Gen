@@ -68,6 +68,11 @@ Use end-to-end deadline:
           - 'Ratio of deadlines to max period'
       Type: 'float'
     Ratio of deadlines to max period: 
+      Requirement:
+        At least one:
+          - 'Ratio of deadlines to critical path length'
+          - 'Ratio of deadlines to max period'
+      Type: 'float'
 Use communication time:
   Requirement: 'optional'
   Type: 'int'
@@ -83,10 +88,10 @@ Use multi-period:
     Period:
       Requirement: 'compulsory'
       Type: 'int'
-    Entry node period:
+    Entry node periods:
       Requirement: 'optional'
       Type: 'List[int]'
-    Exit node period':
+    Exit node periods':
       Requirement: 'optional'
       Type: 'List[int]'
     Max ratio of execution time to period:
@@ -130,3 +135,9 @@ Figure format:
       Requirement: 'default'
       Type: 'bool'
       Default: True
+Naming of combination directory:
+  Requirement: 'default'
+  Type:
+        - 'Full spell'
+        - 'Abbreviation'
+        - 'Index of combination'

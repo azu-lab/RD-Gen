@@ -3,11 +3,12 @@ import networkx as nx
 import random
 import copy
 import yaml
-import json
+import os
 from typing import List, Tuple
 from networkx.readwrite import json_graph
+from src.utils import get_all_combo_cfg
 
-from utils import option_parser, set_end_to_end_deadlines, random_get_comm_time, random_get_exec_time
+from utils import option_parser, set_end_to_end_deadlines, random_get_comm_time, random_get_exec_time, get_all_combo_dfg
 from file_handling_helper import load_normal_config
 from write_dag import write_dag
 from random_set_period import random_set_period
@@ -147,7 +148,7 @@ def force_merge_to_exit_nodes(conf, G: nx.DiGraph) -> None:
                 exit_nodes_i.remove(exit_node_i)
 
 
-def main(conf, dest_dir):
+def generate(conf, dest_dir):
     for dag_i in range(conf['Number of DAGs']):
         random.seed(conf['Initial seed'] + dag_i)
         G = nx.DiGraph()
@@ -192,5 +193,12 @@ def main(conf, dest_dir):
 
 if __name__ == '__main__':
     config_yaml_file, dest_dir = option_parser()
-    config = load_normal_config(config_yaml_file)
-    main(config, dest_dir)
+    cfg = load_normal_config(config_yaml_file)
+
+    all_combo_dir_name, all_combo_cfg = get_all_combo_cfg(cfg)
+    for combo_dir_name, combo_cfg in zip(all_combo_dir_name, all_combo_cfg):
+        dest_dir += f'/{combo_dir_name}'
+        os.mkdir(dest_dir)
+        with open(f'{dest_dir}/parameter_log.txt', 'w') as f:
+            yaml.dump(combo_cfg, f)
+        generate(combo_cfg, dest_dir)
