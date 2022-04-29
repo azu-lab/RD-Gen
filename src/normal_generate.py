@@ -4,11 +4,11 @@ import random
 import copy
 import yaml
 import os
+import json
 from typing import List, Tuple
-from networkx.readwrite import json_graph
 from src.utils import get_all_combo_cfg
 
-from utils import option_parser, set_end_to_end_deadlines, random_get_comm_time, random_get_exec_time, get_all_combo_dfg
+from utils import option_parser, set_end_to_end_deadlines, random_get_comm_time, random_get_exec_time
 from file_handling_helper import load_normal_config
 from write_dag import write_dag
 from random_set_period import random_set_period
@@ -195,10 +195,10 @@ if __name__ == '__main__':
     config_yaml_file, dest_dir = option_parser()
     cfg = load_normal_config(config_yaml_file)
 
-    all_combo_dir_name, all_combo_cfg = get_all_combo_cfg(cfg)
-    for combo_dir_name, combo_cfg in zip(all_combo_dir_name, all_combo_cfg):
+    all_combo_dir_name, all_combo_log, all_combo_cfg = get_all_combo_cfg(cfg, 'normal')
+    for combo_dir_name, combo_log, combo_cfg in zip(all_combo_dir_name, all_combo_log, all_combo_cfg):
         dest_dir += f'/{combo_dir_name}'
         os.mkdir(dest_dir)
-        with open(f'{dest_dir}/parameter_log.txt', 'w') as f:
-            yaml.dump(combo_cfg, f)
+        with open(f'{dest_dir}/combination_log.yaml', 'w') as f:
+            yaml.dump(combo_log, f)
         generate(combo_cfg, dest_dir)

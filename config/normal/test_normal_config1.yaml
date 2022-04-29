@@ -1,0 +1,46 @@
+### Compulsory parameters
+Number of DAGs: 50
+Seed: 0
+Number of nodes:
+  Combination: (start=10, stop=20, step=2)
+Number of entry nodes:
+  Combination: [2, 3, 4, 5]
+In-degree:
+  Random: [1, 2, 3]
+Out-degree:
+  Random: [1, 2, 3]
+Execution time:
+  Random: (1, 50, 1)
+
+### Optional parameters
+Force merge to exit nodes:
+  Number of exit nodes:
+    Fixed: 1
+Use end-to-end deadline:
+  Ratio of deadlines to critical path length:
+    Combination: (1.0, 1.5, 0.1)
+Use communication time:
+  Random: [2, 3, 4, 5]
+Use multi-period:
+  Periodic type: 'All'
+  Period:
+    Random: [10, 20, 30, 40]
+  Entry node periods:
+    Combination: [10, 100]
+  Exit node periods:
+    Fixed: 10
+  Max ratio of execution time to period:
+    Ramdom: (0.3, 0.8, 0.1)
+
+### Output formats
+DAG format:
+  yaml: True
+  json: False
+  xml: False
+  dot: False
+Figure format:
+  pdf: True
+  png: False
+  svg: False
+  Draw legend: False
+Naming of combination directory: 'Abbreviation'

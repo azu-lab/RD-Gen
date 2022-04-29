@@ -4,7 +4,6 @@ import argparse
 import random
 import yaml
 import os
-import re
 import copy
 import itertools
 import numpy as np
@@ -32,14 +31,15 @@ def option_parser() -> Tuple[argparse.FileType, str]:
     return args.config_yaml_path, args.dest_dir
 
 
-def get_args_from_tuple_str(combo_str: str) -> Dict:
-    def convert_to_num(num_str: str) -> Union[int, float]:
-        temp_float = float(num_str)
+def convert_to_num(num_str: str) -> Union[int, float]:
+        temp_float = round(float(num_str), 4)
         if(temp_float.is_integer()):
             return int(temp_float)
         else:
             return temp_float
-    
+
+
+def get_args_from_tuple_str(combo_str: str) -> Dict:
     combo_str = combo_str.replace('(', '')
     combo_str = combo_str.replace(')', '')
     combo_str = combo_str.replace(' ', '')
@@ -56,7 +56,7 @@ def get_args_from_tuple_str(combo_str: str) -> Dict:
     return args_dict
 
 
-def get_all_combo_cfg(cfg, mode: str) -> Tuple[List[str], List[Dict]]:
+def get_all_combo_cfg(cfg, mode: str) -> Tuple[List[str], List[Dict], List[Dict]]:
     def get_children_param_name(top_param: str) -> Union[List[str], None]:
         if('Children' in format[top_param].keys()):
             return format[top_param]['Children'].keys()
@@ -77,16 +77,16 @@ def get_all_combo_cfg(cfg, mode: str) -> Tuple[List[str], List[Dict]]:
 
         return combo_cfg
 
-    def create_combo_dir_name(index: int,
-                              param_names: List[str],
-                              combo: List[Union[int, float]]
-    ) -> str:
-        def remove_parent(param_name: str) -> str:
+    def remove_parent(param_name: str) -> str:
             if('_' in param_name):
                 return param_name.split('_')[1]
             else:
                 return param_name
 
+    def create_combo_dir_name(index: int,
+                              param_names: List[str],
+                              combo: List[Union[int, float]]
+    ) -> str:
         combo_dir_name = None
         if(cfg['Naming of combination directory'] == 'Full spell'):
             for param_name, value in zip(param_names, combo):
@@ -124,7 +124,7 @@ def get_all_combo_cfg(cfg, mode: str) -> Tuple[List[str], List[Dict]]:
             if(isinstance(cfg[in_top_param]['Combination'], str)):
                 args = get_args_from_tuple_str(cfg[in_top_param]['Combination'])
                 args['stop'] += args['step']  # include stop
-                combo_param_dict[PAC[in_top_param]] = [round(v, 4) for v in np.arange(**args)]  # HACK
+                combo_param_dict[PAC[in_top_param]] = [convert_to_num(v) for v in np.arange(**args)]  # HACK
             else:
                 combo_param_dict[PAC[in_top_param]] = cfg[in_top_param]['Combination']
 
@@ -137,17 +137,19 @@ def get_all_combo_cfg(cfg, mode: str) -> Tuple[List[str], List[Dict]]:
                     if(isinstance(cfg[in_top_param][child_param_name]['Combination'], str)):
                         args = get_args_from_tuple_str(cfg[in_top_param][child_param_name]['Combination'])
                         args['stop'] += args['step']  # include stop
-                        combo_param_dict[f'{PAC[in_top_param]}_{PAC[child_param_name]}'] = [round(v, 4) for v in np.arange(**args)]  # HACK
+                        combo_param_dict[f'{PAC[in_top_param]}_{PAC[child_param_name]}'] = [convert_to_num(v) for v in np.arange(**args)]  # HACK
                     else:
                         combo_param_dict[f'{PAC[in_top_param]}_{PAC[child_param_name]}'] = cfg[in_top_param][child_param_name]['Combination']
 
-    dest_dir_name = []
+    all_dest_dir_name = []
+    all_combo_log = []
     all_combo_cfg = []
     for i, combo in enumerate(list(itertools.product(*list(combo_param_dict.values())))):
-        dest_dir_name.append(create_combo_dir_name(i, list(combo_param_dict.keys()), list(combo)))
+        all_dest_dir_name.append(create_combo_dir_name(i, list(combo_param_dict.keys()), list(combo)))
+        all_combo_log.append({to_ori(remove_parent(key)): combo[i] for i, key in enumerate(list(combo_param_dict.keys()))})
         all_combo_cfg.append(create_combo_cfg(list(combo_param_dict.keys()), list(combo)))
 
-    return dest_dir_name, all_combo_cfg
+    return all_dest_dir_name, all_combo_log, all_combo_cfg
 
 
 def _get_cp_and_cp_len(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
