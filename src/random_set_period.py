@@ -6,7 +6,6 @@ import copy
 from typing import List, Tuple
 
 from src.chain import Chain
-from src.utils import get_settable_min_exec, get_settable_min_comm, get_settable_max_period
 from src.abbreviation import ToO, ToA
 from src.exceptions import NoSettablePeriodError
 

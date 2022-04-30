@@ -9,11 +9,11 @@ from logging import getLogger
 
 from src.utils import (
     option_parser,
-    set_end_to_end_deadlines,
+    random_set_e2e_deadline,
     choice_one_from_cfg
 )
 from src.file_handling_helper import load_normal_config, get_preprocessed_all_combo
-from src.write_dag import write_dag
+from src.output_dag import output_dag
 from src.random_set_period import random_set_period
 from src.random_set_exec import random_set_exec
 from src.abbreviation import ToA, ToO
@@ -213,9 +213,9 @@ def generate(cfg, dest_dir):
 
         # (Optional) Use end-to-end deadline
         if('Use end-to-end deadline' in cfg.keys()):
-            set_end_to_end_deadlines(cfg, G)
+            random_set_e2e_deadline(cfg, G)
 
-        write_dag(cfg, dest_dir, f'dag_{dag_i}', G)
+        output_dag(cfg, dest_dir, f'dag_{dag_i}', G)
 
 
 if __name__ == '__main__':

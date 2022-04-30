@@ -5,10 +5,10 @@ import copy
 import itertools
 from typing import List, Tuple
 
-from utils import option_parser, set_end_to_end_deadlines, random_get_comm
+from utils import option_parser, random_set_e2e_deadline
 from chain import _create_chain, vertically_link_chains, merge_chains
 from file_handling_helper import load_chain_config
-from write_dag import write_dag
+from src.output_dag import output_dag
 from random_set_period import random_set_period
 
 
@@ -57,9 +57,9 @@ def main(conf, dest_dir):
 
         # (Optional) Use end-to-end deadline
         if('Use end-to-end deadline' in conf.keys()):
-            set_end_to_end_deadlines(conf, G)
+            random_set_e2e_deadline(conf, G)
 
-        write_dag(conf, dest_dir, f'dag_{dag_i}', G)
+        output_dag(conf, dest_dir, f'dag_{dag_i}', G)
 
 
 if __name__ == '__main__':

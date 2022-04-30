@@ -4,7 +4,7 @@ import json
 from networkx.readwrite import json_graph
 
 
-def write_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
+def output_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
     ### Output DAG description files
     dag_formats = [k for k, v in config['DAG format'].items() if v]
     if('xml' in dag_formats):
