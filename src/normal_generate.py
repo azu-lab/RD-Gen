@@ -224,10 +224,10 @@ if __name__ == '__main__':
 
     all_combo_dir_name, all_combo_log, all_combo_cfg = get_preprocessed_all_combo(cfg, 'normal')
     for combo_dir_name, combo_log, combo_cfg in zip(all_combo_dir_name, all_combo_log, all_combo_cfg):
-        dest_dir += f'/{combo_dir_name}'
-        os.mkdir(dest_dir)
-        with open(f'{dest_dir}/combination_log.yaml', 'w') as f:
+        combo_dest_dir = dest_dir + f'/{combo_dir_name}'
+        os.mkdir(combo_dest_dir)
+        with open(f'{combo_dest_dir}/combination_log.yaml', 'w') as f:
             yaml.dump(combo_log, f)
 
         random.seed(cfg['Seed'])
-        generate(combo_cfg, dest_dir)
+        generate(combo_cfg, combo_dest_dir)

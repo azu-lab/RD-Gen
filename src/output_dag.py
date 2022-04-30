@@ -4,9 +4,9 @@ import json
 from networkx.readwrite import json_graph
 
 
-def output_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
+def output_dag(cfg, dest_dir, filename, G: nx.DiGraph) -> None:
     ### Output DAG description files
-    dag_formats = [k for k, v in config['DAG format'].items() if v]
+    dag_formats = [k for k, v in cfg['DAG format'].items() if v]
     if('xml' in dag_formats):
         nx.write_graphml_xml(G, f'{dest_dir}/{filename}.xml')
     if('dot' in dag_formats):
@@ -37,7 +37,7 @@ def output_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
             G.nodes[node_i]['label'] += f'\nD: {G.nodes[node_i]["deadline"]}'
 
     # draw communication time & adjust style
-    if('Use communication time' in config.keys()):
+    if('Use communication time' in cfg.keys()):
         for start_i, end_i in G.edges():
             G.edges[start_i, end_i]['label'] = \
                     f'{G.edges[start_i, end_i]["comm"]}'
@@ -45,22 +45,22 @@ def output_dag(config, dest_dir, filename, G: nx.DiGraph) -> None:
             G.edges[start_i, end_i]['labeldistance '] = 3
 
     # draw legend
-    if(config['Draw legend']):
+    if(cfg['Figure format']['Draw legend']):
         legend_str = ['----- Legend ----\n\n',
                       'Circle node:  Event-driven node\l',
                       '[i]:  Task index\l',
                       'C:  Worst-case execution time (WCET)\l']
-        if('Use multi-period' in config.keys()):
+        if('Use multi-period' in cfg.keys()):
             legend_str.insert(1,'Square node:  Timer-driven node\l')
             legend_str.append('T:  Period\l')
-        if('Use end-to-end deadline' in config.keys()):
+        if('Use end-to-end deadline' in cfg.keys()):
             legend_str.append('D:  End-to-end deadline\l')
-        if('Use communication time' in config.keys()):
+        if('Use communication time' in cfg.keys()):
             legend_str.append('Number attached to arrow:  Communication time\l')
         G.add_node(-1, label=''.join(legend_str), fontsize=15, shape='box3d')
 
     pdot = nx.drawing.nx_pydot.to_pydot(G)
-    fig_formats = [k for k, v in config['Figure format'].items() if v]
+    fig_formats = [k for k, v in cfg['Figure format'].items() if v]
     if('png' in fig_formats):
         pdot.write_png(f'{dest_dir}/{filename}.png')
     if('svg' in fig_formats):
