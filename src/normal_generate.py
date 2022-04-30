@@ -19,7 +19,7 @@ from src.output_dag import output_dag
 from src.random_set_period import random_set_period
 from src.random_set_exec import random_set_exec
 from src.abbreviation import ToA, ToO
-from src.exceptions import NoSettablePeriodError
+from src.exceptions import NoSettablePeriodError, InvalidConfigError
 
 
 logger = getLogger(__name__)
@@ -176,7 +176,7 @@ def generate(cfg, dest_dir):
                        'Please specify the feasible parameters.'
                        'Parameter combination file: '
                        f'{dest_dir}/combination_log.yaml')
-                logger.warning(msg)
+                raise InvalidConfigError(msg)
 
         ### (Optional) Force merge to exit nodes
         if('Force merge to exit nodes' in cfg.keys()):
@@ -191,7 +191,7 @@ def generate(cfg, dest_dir):
                        'Please specify the feasible parameters.'
                        'Parameter combination file: '
                        f'{dest_dir}/combination_log.yaml')
-                logger.warning(msg)
+                raise InvalidConfigError(msg)
 
         ### Set execution time
         random_set_exec(cfg, G)
@@ -220,4 +220,7 @@ if __name__ == '__main__':
             yaml.dump(combo_log, f)
 
         random.seed(cfg['Seed'])
-        generate(combo_cfg, combo_dest_dir)
+        try:
+            generate(combo_cfg, combo_dest_dir)
+        except InvalidConfigError as e:
+            logger.warning(e.message)

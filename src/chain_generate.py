@@ -19,9 +19,8 @@ from src.chain import generate_single_chain, vertically_link_chains, merge_chain
 from src.file_handling_helper import load_chain_config, get_preprocessed_all_combo
 from src.output_dag import output_dag
 from src.random_set_period import random_set_period
-from src.random_set_exec import random_set_exec
 from src.abbreviation import ToO
-from src.exceptions import NoSettablePeriodError
+from src.exceptions import NoSettablePeriodError, InvalidConfigError
 
 
 logger = getLogger(__name__)
@@ -60,16 +59,7 @@ def generate(cfg, dest_dir):
 
         ### (Optional) Use multi-period
         if('Use multi-period' in cfg.keys()):
-            try:
-                random_set_period(cfg, G)
-            except NoSettablePeriodError:
-                msg = ('No Settable Period. '
-                       'Please specify the feasible parameters.'
-                       'Parameter combination file: '
-                       f'{dest_dir}/combination_log.yaml')
-                logger.warning(msg)
-
-        ### set cost of chain TODO
+            random_set_period(cfg, G, chains)
 
         ### (Optional) Use communication time
         if('Use communication time' in cfg.keys()):
@@ -77,7 +67,15 @@ def generate(cfg, dest_dir):
                 G.edges[start_i, end_i]['comm'] = choice_one_from_cfg(cfg[ToO['UCT']])
 
         ### Set execution time
-        random_set_exec(cfg, G)
+        try:
+            for chain in chains:
+                    chain.random_set_exec(cfg, G)
+        except NoSettablePeriodError:
+            msg = ('No Settable Period. '
+                    'Please specify the feasible parameters.'
+                    'Parameter combination file: '
+                    f'{dest_dir}/combination_log.yaml')
+            raise InvalidConfigError(msg)
 
         # (Optional) Use end-to-end deadline
         if('Use end-to-end deadline' in cfg.keys()):
@@ -98,4 +96,7 @@ if __name__ == '__main__':
             yaml.dump(combo_log, f)
 
         random.seed(cfg['Seed'])
-        generate(combo_cfg, combo_dest_dir)
+        try:
+            generate(combo_cfg, combo_dest_dir)
+        except InvalidConfigError as e:
+            logger.warning(e.message)

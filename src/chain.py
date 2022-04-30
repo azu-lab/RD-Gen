@@ -3,35 +3,83 @@ import numpy as np
 import random
 import copy
 import itertools
-from typing import List
+from typing import List, Tuple
 
 from src.utils import choice_one_from_cfg, get_max_of_range, get_min_of_range, get_cp
+from src.random_set_exec import random_get_exec
 from src.abbreviation import ToO
+from src.exceptions import NoSettablePeriodError
 
 
 class Chain:
     def __init__(self, nodes: List[int], head: int, tails: List[int]) -> None:
         self.nodes = nodes
         self.head = head
-        self.tails = tails
-        self.unlinked_tails = tails
+        self.tails = copy.deepcopy(tails)
+        self.unlinked_tails = copy.deepcopy(tails)
         self.level = -1
 
-    def get_cp_len(self, dag: nx.DiGraph) -> int:
+    def _get_cp(self, dag: nx.DiGraph) -> Tuple[List[int], int]:
+        cp = None
         cp_len = 0
         for tail in self.tails:
-            _, path_len= get_cp(dag, self.head, tail)
+            path, path_len= get_cp(dag, self.head, tail)
             if(path_len > cp_len):
+                cp = path
                 cp_len = path_len
 
-        return cp_len
+        return cp, cp_len
 
-    def get_edges(self, G: nx.DiGraph) -> List[int]:
-        edges_in_chain = set()
-        for node_i in self.nodes:
-            edges_in_chain |= {(s, t) for s, t in G.out_edges(node_i) if t in self.nodes}
+    def random_set_exec(self, cfg, G: nx.DiGraph) -> None:
+        if(ToO['UMP'] in cfg.keys()
+           and cfg[ToO['UMP']][ToO['PT']] == 'Chain'):
+            upper_bound_cp_len = int(np.floor((G.nodes[self.head]['period']
+                                               * choice_one_from_cfg(cfg[ToO['UMP']][ToO['MREP']]))))
 
-        return list(edges_in_chain)
+            ### Determine the maximum execution time of a single node on longest path
+            max_hop = 0
+            for tail in self.tails:
+                if(self.head == tail):
+                    if(1 > max_hop):
+                        max_hop = 1
+                else:
+                    paths = nx.all_simple_paths(G, source=self.head, target=tail)
+                    if((hop := max([len(p) for p in paths])) > max_hop):
+                        max_hop = hop
+            max_exec = int(upper_bound_cp_len / max_hop)
+
+            ### Random set (temp)
+            if('Fixed' in cfg['Execution time'].keys()):
+                choices = [cfg['Execution time']['Fixed']]
+            elif('Random' in cfg['Execution time'].keys()):
+                choices = [v for v in cfg['Execution time']['Random'] if v <= max_exec]
+            for node_i in self.nodes:
+                G.nodes[node_i]['exec'] = random.choice(choices)
+
+            ### Adjustment not to exceed the upper bound
+            continue_flag = True
+            while(continue_flag):
+                cp, cp_len = self._get_cp(G)
+                if(cp_len > upper_bound_cp_len):
+                    decrease_flag = False
+                    random.shuffle(cp)
+                    for node_i in cp:
+                        if(G.nodes[node_i]['exec'] > get_min_of_range(cfg[ToO['ET']])):
+                            G.nodes[node_i]['exec'] -= 1
+                            decrease_flag = True
+                            break
+                    if(not decrease_flag):
+                        upper_bound_period = get_max_of_range(cfg[ToO['UMP']][ToO['P']])
+                        if(G.nodes[self.head]['period'] == upper_bound_period):
+                            raise NoSettablePeriodError
+                        else:
+                            G.nodes[self.head]['period'] = upper_bound_period  # HACK
+                else:
+                    continue_flag = False
+
+        else:
+            for node_i in self.nodes:
+                G.nodes[node_i]['exec'] = random_get_exec(cfg, G, node_i)
 
 
 def generate_single_chain(cfg, num_nodes: int, G: nx.DiGraph) -> Chain:
