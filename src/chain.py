@@ -59,40 +59,49 @@ def generate_chain(cfg, num_nodes: int, G: nx.DiGraph) -> Chain:
         choices = [v for v in cfg['Chain length']['Random'] if lower_bound <= v <= upper_bound]
         main_len = random.choice(choices)
 
-    ### Determine the length of each sub sequence
-    remain_num_nodes = num_nodes - main_len
-    choices_sub_len = list(range(1, main_len+1))
-    combos_sub_len = []
-    for combo in itertools.combinations_with_replacement(choices_sub_len, chain_width):
-        if(sum(combo) == remain_num_nodes):
-            combos_sub_len.append(combo)
+    ### Create length list of each sequence
+    if(chain_width == 1):
+        sequence_len_list = [main_len]
+    else:
+        ### Determine the length of each sub sequence
+        remain_num_nodes = num_nodes - main_len
+        choices_sub_len = list(range(1, main_len+1))
+        combos_sub_len = []
+        for combo in itertools.combinations_with_replacement(choices_sub_len, chain_width-1):
+            if(sum(combo) == remain_num_nodes):
+                combos_sub_len.append(combo)
 
-    sequence_len_list = list(random.choice(combos_sub_len)) + [main_len]
+        sequence_len_list = list(random.choice(combos_sub_len)) + [main_len]
 
-    ### Generate sub chains
-    sub_chain_dict = {str(sub_chain_i):[] for sub_chain_i in range(len(sub_chain_len_combo))}
-    for sub_chain_i, sub_chain_len in enumerate(sub_chain_len_combo):
-        for _ in range(sub_chain_len):
-            sub_chain_dict[str(sub_chain_i)].append(G.number_of_nodes())
-            G.add_node(G.number_of_nodes(), exec=random_get_exec(cfg))
-            if(len(sub_chain_dict[str(sub_chain_i)]) >= 2):
-                G.add_edge(sub_chain_dict[str(sub_chain_i)][-2], sub_chain_dict[str(sub_chain_i)][-1])
-    
-    # Merge into the longest subchain
-    longest_subchain_i = sub_chain_len_combo.index(max(sub_chain_len_combo))
-    longest_sub_chain = sub_chain_dict[str(longest_subchain_i)]
-    chain = copy.deepcopy(sub_chain_dict[str(longest_subchain_i)])
-    for sub_chain_i, nodes in sub_chain_dict.items():
-        if(sub_chain_i == str(longest_subchain_i)):
-            continue
-        if(cfg['Chain length']['Max'] - len(nodes) == 1):
-            source_i = longest_sub_chain[0]
-        else:
-            source_i = random.choice(longest_sub_chain[0:(cfg['Chain length']['Max']-len(nodes)+1)])
-        G.add_edge(source_i, nodes[0])
-        chain += nodes
+    ### Generate sequences
+    sequences_dict = {str(seq_i):[] for seq_i in range(len(sequence_len_list))}
+    for seq_i, seq_len in enumerate(sequence_len_list):
+        for _ in range(seq_len):
+            sequences_dict[str(seq_i)].append(G.number_of_nodes())
+            G.add_node(G.number_of_nodes())
+            if(len(sequences_dict[str(seq_i)]) >= 2):
+                G.add_edge(sequences_dict[str(seq_i)][-2], sequences_dict[str(seq_i)][-1])
 
-    # Create chain
+    if(chain_width == 1):
+        main_seq_i = sequence_len_list[0]
+        chain = sequences_dict[str(main_seq_i)]
+    else:
+        ### Merge the sub sequences into the main sequence
+        main_seq_i = sequence_len_list.index(max(sequence_len_list))
+        main_seq = sequences_dict[str(main_seq_i)]
+        chain = copy.deepcopy(main_seq)
+        for seq_i, nodes in sequences_dict.items():
+            if(seq_i == str(main_seq_i)):
+                continue
+            if(get_max_of_range(cfg[ToO['CL']]) - len(nodes) == 1):
+                source_i = main_seq[0]
+            else:
+                source_i = random.choice(
+                        main_seq[0 : (get_max_of_range(cfg[ToO['CL']])-len(nodes)+1)])
+            G.add_edge(source_i, nodes[0])
+            chain += nodes
+
+    ### Generate chain
     head = None
     tails = []
     for node_i in chain:
