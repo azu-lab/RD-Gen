@@ -2,7 +2,7 @@
 Number of DAGs: 
   Requirement: 'compulsory'
   Type: 'int'
-seed: 
+Seed: 
   Requirement: 'compulsory'
   Type: 'int'
 Number of nodes: 
@@ -37,14 +37,14 @@ Use end-to-end deadline:
     Ratio of deadlines to critical path length:
       Requirement: 
         At least one:
-          - Ratio of deadlines to critical path length
-          - Ratio of deadlines to max period
+          - 'Ratio of deadlines to critical path length'
+          - 'Ratio of deadlines to max period'
       Type: 'float'
     Ratio of deadlines to max period:
       Requirement:
         At least one:
-          - Ratio of deadlines to critical path length
-          - Ratio of deadlines to max period
+          - 'Ratio of deadlines to critical path length'
+          - 'Ratio of deadlines to max period'
       Type: 'float'
 Use communication time:
   Requirement: 'optional'

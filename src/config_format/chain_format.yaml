@@ -2,7 +2,7 @@
 Number of DAGs:
   Requirement: 'compulsory'
   Type: 'int'
-seed:
+Seed:
   Requirement: 'compulsory'
   Type: 'int'
 Number of nodes:
@@ -90,10 +90,10 @@ Use multi-period:
       Type: 'int'
     Entry node periods:
       Requirement: 'optional'
-      Type: 'List[int]'
+      Type: 'int'
     Exit node periods':
       Requirement: 'optional'
-      Type: 'List[int]'
+      Type: 'int'
     Max ratio of execution time to period:
       Requirement: 'compulsory'
       Type: 'float'
@@ -138,6 +138,6 @@ Figure format:
 Naming of combination directory:
   Requirement: 'default'
   Type:
-        - 'Full spell'
-        - 'Abbreviation'
-        - 'Index of combination'
+    - 'Full spell'
+    - 'Abbreviation'
+    - 'Index of combination'

@@ -67,3 +67,16 @@ def random_set_e2e_deadline(cfg, G: nx.DiGraph) -> None:
                     max_cp_len = cp_len
             G.nodes[exit_i]['deadline'] = \
                     int(max_cp_len * choice_one_from_cfg(cfg[ToO['UED']][ToO['RDC']]))
+
+
+def get_min_of_range(param_cfg: Dict) -> Union[float, int]:
+            if('Random' in param_cfg.keys()):
+                return min(param_cfg['Random'])
+            elif('Fixed' in param_cfg.keys()):
+                return param_cfg['Fixed']
+
+def get_max_of_range(param_cfg: Dict) -> Union[float, int]:
+    if('Random' in param_cfg.keys()):
+        return max(param_cfg['Random'])
+    elif('Fixed' in param_cfg.keys()):
+        return param_cfg['Fixed']

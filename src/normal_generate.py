@@ -10,7 +10,9 @@ from logging import getLogger
 from src.utils import (
     option_parser,
     random_set_e2e_deadline,
-    choice_one_from_cfg
+    choice_one_from_cfg,
+    get_min_of_range,
+    get_max_of_range
 )
 from src.file_handling_helper import load_normal_config, get_preprocessed_all_combo
 from src.output_dag import output_dag
@@ -25,18 +27,6 @@ logger = getLogger(__name__)
 
 def generate(cfg, dest_dir):
     def try_extend_dag(cfg, dag: nx.DiGraph) -> Tuple[bool, nx.DiGraph]:
-        def get_min_of_range(param_cfg: Dict) -> Union[float, int]:
-            if('Random' in param_cfg.keys()):
-                return min(param_cfg['Random'])
-            elif('Fixed' in param_cfg.keys()):
-                return param_cfg['Fixed']
-
-        def get_max_of_range(param_cfg: Dict) -> Union[float, int]:
-            if('Random' in param_cfg.keys()):
-                return max(param_cfg['Random'])
-            elif('Fixed' in param_cfg.keys()):
-                return param_cfg['Fixed']
-
         G = copy.deepcopy(dag)
 
         ### Determine end_num
