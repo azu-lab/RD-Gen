@@ -15,7 +15,7 @@ from src.utils import (
     get_max_of_range,
     get_min_of_range
 )
-# from src.chain import _create_chain, vertically_link_chains, merge_chains
+from src.chain import generate_chain
 from src.file_handling_helper import load_chain_config, get_preprocessed_all_combo
 from src.output_dag import output_dag
 from src.random_set_period import random_set_period
@@ -48,15 +48,15 @@ def generate(cfg, dest_dir):
         ### Generate each chain
         chains = []
         for num_nodes_in_one_chain in chain_num_nodes_combo:
-            chains.append(_create_chain(cfg, num_nodes_in_one_chain, G))
+            chains.append(generate_chain(cfg, num_nodes_in_one_chain, G))
 
-        # (Optional) Vertically link chains
-        if('Vertically link chains' in cfg.keys()):
-            vertically_link_chains(cfg, chains, G)
+        # ### (Optional) Vertically link chains
+        # if('Vertically link chains' in cfg.keys()):
+        #     vertically_link_chains(cfg, chains, G)
 
-        # (Optional) Merge chains
-        if('Merge chains'in cfg.keys()):
-            merge_chains(cfg, chains, G)
+        # ### (Optional) Merge chains
+        # if('Merge chains'in cfg.keys()):
+        #     merge_chains(cfg, chains, G)
 
         ### (Optional) Use multi-period
         if('Use multi-period' in cfg.keys()):
