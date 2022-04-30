@@ -10,13 +10,12 @@ from logging import getLogger
 from src.utils import (
     option_parser,
     set_end_to_end_deadlines,
-    random_get_comm,
-    random_get_exec,
     choice_one_from_cfg
 )
 from src.file_handling_helper import load_normal_config, get_preprocessed_all_combo
 from src.write_dag import write_dag
 from src.random_set_period import random_set_period
+from src.random_set_exec import random_set_exec
 from src.abbreviation import ToA, ToO
 from src.exceptions import NoSettablePeriodError
 
@@ -205,7 +204,7 @@ def generate(cfg, dest_dir):
                 logger.warning(msg)
 
         ### Set execution time
-        # random_set_exec(cfg, G)  # TODO
+        random_set_exec(cfg, G)
 
         ### (Optional) Use communication time
         if('Use communication time' in cfg.keys()):
