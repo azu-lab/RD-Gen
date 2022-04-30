@@ -32,25 +32,26 @@ def choice_one_from_cfg(param_cfg: dict) -> Union[int, float]:
         return param_cfg['Fixed']
 
 
+def get_cp(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
+    cp = []
+    cp_len = 0
+
+    paths = nx.all_simple_paths(dag, source=source, target=exit)
+    for path in paths:
+        path_len = 0
+        for i in range(len(path)):
+            path_len += dag.nodes[path[i]]['exec']
+            if(i != len(path)-1 and
+                    'comm' in list(dag.edges[path[i], path[i+1]].keys())):
+                path_len += dag.edges[path[i], path[i+1]]['comm']
+        if(path_len > cp_len):
+            cp = path
+            cp_len = path_len
+
+    return cp, cp_len
+
+
 def random_set_e2e_deadline(cfg, G: nx.DiGraph) -> None:
-    def get_cp(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
-        cp = []
-        cp_len = 0
-
-        paths = nx.all_simple_paths(dag, source=source, target=exit)
-        for path in paths:
-            path_len = 0
-            for i in range(len(path)):
-                path_len += dag.nodes[path[i]]['exec']
-                if(i != len(path)-1 and
-                        'comm' in list(dag.edges[path[i], path[i+1]].keys())):
-                    path_len += dag.edges[path[i], path[i+1]]['comm']
-            if(path_len > cp_len):
-                cp = path
-                cp_len = path_len
-
-        return cp, cp_len
-    
     if(ToO['UMP'] in cfg.keys() and
             ToO['RDP'] in cfg[ToO['UED']].keys()):
         max_period = max((nx.get_node_attributes(G, 'period')).values())

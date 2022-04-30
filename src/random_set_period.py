@@ -77,12 +77,9 @@ def random_set_period(cfg, G: nx.DiGraph, chains: List[Chain]=[]) -> None:
         
         ### Determine lower_bound
         lower_bound = None
-        # if(cfg['Use multi-period']['Periodic type'] == 'Chain'):
-        #     lower_bound = np.ceil(chain.get_sum_cost(cfg, dag)
-        #                     / cfg['Use multi-period']['Max ratio of execution time to period'])
-        # else:
-        #     lower_bound = np.ceil(dag.nodes[node_i]['exec']
-        #                         / cfg['Use multi-period']['Max ratio of execution time to period'])
+        if(cfg['Use multi-period']['Periodic type'] == 'Chain'):
+            lower_bound = int(np.ceil(chain.get_cp_len(dag)
+                                      / cfg[ToO['UMP']][ToO['MREP']]))
 
         if(ToO['DLP'] in cfg[ToO['UMP']].keys()):
             ancestors = list(nx.ancestors(dag, node_i))

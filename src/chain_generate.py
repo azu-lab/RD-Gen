@@ -15,7 +15,7 @@ from src.utils import (
     get_max_of_range,
     get_min_of_range
 )
-from src.chain import generate_chain
+from src.chain import generate_single_chain, vertically_link_chains, merge_chains
 from src.file_handling_helper import load_chain_config, get_preprocessed_all_combo
 from src.output_dag import output_dag
 from src.random_set_period import random_set_period
@@ -48,15 +48,15 @@ def generate(cfg, dest_dir):
         ### Generate each chain
         chains = []
         for num_nodes_in_one_chain in chain_num_nodes_combo:
-            chains.append(generate_chain(cfg, num_nodes_in_one_chain, G))
+            chains.append(generate_single_chain(cfg, num_nodes_in_one_chain, G))
 
-        # ### (Optional) Vertically link chains
-        # if('Vertically link chains' in cfg.keys()):
-        #     vertically_link_chains(cfg, chains, G)
+        ### (Optional) Vertically link chains
+        if('Vertically link chains' in cfg.keys()):
+            vertically_link_chains(cfg, chains, G)
 
-        # ### (Optional) Merge chains
-        # if('Merge chains'in cfg.keys()):
-        #     merge_chains(cfg, chains, G)
+        ### (Optional) Merge chains
+        if('Merge chains'in cfg.keys()):
+            merge_chains(cfg, chains, G)
 
         ### (Optional) Use multi-period
         if('Use multi-period' in cfg.keys()):
@@ -69,13 +69,15 @@ def generate(cfg, dest_dir):
                        f'{dest_dir}/combination_log.yaml')
                 logger.warning(msg)
 
-        ### Set execution time
-        random_set_exec(cfg, G)
+        ### set cost of chain TODO
 
         ### (Optional) Use communication time
         if('Use communication time' in cfg.keys()):
             for start_i, end_i in G.edges():
                 G.edges[start_i, end_i]['comm'] = choice_one_from_cfg(cfg[ToO['UCT']])
+
+        ### Set execution time
+        random_set_exec(cfg, G)
 
         # (Optional) Use end-to-end deadline
         if('Use end-to-end deadline' in cfg.keys()):
