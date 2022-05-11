@@ -4,23 +4,20 @@
 ### echo usage
 function show_usage () {
     echo "Usage: $0 [-h]"
-    echo "          [--chain]"
-    echo "          [-c or --config_yaml_name <file name>]"
+    echo "          [-c <path of config file> or --config_path <path of config file>]"
     echo "          [-d <path of dir> or --dest_dir <path of dir>]"
     exit 0;
 }
 
 
 ### initialize option variables
-USE_CHAIN=""
-CONFIG_YAML_NAME=""
-CONFIG_YAML_PATH=""
+CONFIG_PATH=""
 DEST_DIR="${PWD}/DAGs"
 PYTHON_SCRIPT_DIR="$(dirname $0)/src"
 
 
 ### parse command options
-OPT=`getopt -o hcd: -l help,chain,config_yaml_name:,dest_dir: -- "$@"`
+OPT=`getopt -o hc:d: -l help,config_path:,dest_dir: -- "$@"`
 
 
 if [ $? != 0 ] ; then
@@ -38,12 +35,8 @@ do
         show_usage;
         shift
         ;;
-    --chain)
-        USE_CHAIN="--use_chain"
-        shift
-        ;;
-    -c | --config_yaml_name)
-        CONFIG_YAML_NAME="$2"
+    -c | --config_path)
+        CONFIG_PATH="$2"
         shift 2
         ;;
     -d | --dest-dir)
@@ -57,22 +50,13 @@ do
     esac
 done
 
-# check config yaml file
-if [ -z "${CONFIG_YAML_NAME}" ]; then
-    echo "[Error] '--config_yaml_name' should be specified." 1>&2
+# check config file
+if [ -z "${CONFIG_PATH}" ]; then
+    echo "[Error] '--config_path' should be specified." 1>&2
     exit 1
-elif [ ${USE_CHAIN} ]; then
-    CONFIG_YAML_PATH="$(dirname $0)/config/chain/${CONFIG_YAML_NAME}"
-    if [ ! -f "${CONFIG_YAML_PATH}" ]; then
-        echo "[Error] ${CONFIG_YAML_NAME} not found." 1>&2
+elif [ ! -f  "${CONFIG_PATH}" ]; then
+        echo "[Error] ${CONFIG_PATH} not found." 1>&2
         exit 1
-    fi
-else
-    CONFIG_YAML_PATH="$(dirname $0)/config/normal/${CONFIG_YAML_NAME}"
-    if [ ! -f  "${CONFIG_YAML_PATH}" ]; then
-        echo "[Error] ${CONFIG_YAML_NAME} not found." 1>&2
-        exit 1
-    fi
 fi
 
 # check dest dir exist
@@ -110,16 +94,13 @@ fi
 
 
 ### generate DAGs
-if [ ${USE_CHAIN} ]; then
-    python3 ${PYTHON_SCRIPT_DIR}/chain_generate.py --config_yaml_path "${CONFIG_YAML_PATH}" --dest_dir "${DEST_DIR}"
-else
-    python3 ${PYTHON_SCRIPT_DIR}/normal_generate.py --config_yaml_path "${CONFIG_YAML_PATH}" --dest_dir "${DEST_DIR}"
-fi
+python3 ${PYTHON_SCRIPT_DIR}/generate.py --config_path "${CONFIG_PATH}" --dest_dir "${DEST_DIR}"
+
 
 if [ $? -ne 0 ]; then
     echo "$0 is Failed. Please fix [Error]."
 else
-    cp ${CONFIG_YAML_PATH} ${DEST_DIR}
+    cp ${CONFIG_PATH} ${DEST_DIR}
     echo "$0 is successfully completed." 1>&2
 fi
 
