@@ -3,6 +3,7 @@ from logging import getLogger
 
 import yaml
 
+from src.combo_generator import ComboGenerator
 from src.config_loader import ConfigLoader
 from src.format import Format
 
@@ -29,8 +30,11 @@ def main(config_file, dest_dir):
     cfg_raw = yaml.safe_load(config_file)
     format = Format(cfg_raw["Generation method"])
     config_loader = ConfigLoader(format, cfg_raw)
-
-    print('a')
+    combo_cfg = config_loader.load()
+    combo_generator = ComboGenerator(combo_cfg)
+    combo_iter = combo_generator.generate()
+    for dir_name, log, cfg in combo_iter:
+        pass  # TODO
 
 
 if __name__ == "__main__":
