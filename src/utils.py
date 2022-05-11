@@ -1,7 +1,10 @@
 import networkx as nx
 import argparse
 import random
-from typing import List, Tuple
+
+from typing import List, Tuple, Dict, Union
+
+from src.abbreviation import ToA, ToO
 
 
 def option_parser() -> Tuple[argparse.FileType, str]:
@@ -22,7 +25,14 @@ def option_parser() -> Tuple[argparse.FileType, str]:
     return args.config_yaml_path, args.dest_dir
 
 
-def _get_cp_and_cp_len(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
+def choice_one_from_cfg(param_cfg: dict) -> Union[int, float]:
+    if('Random' in param_cfg.keys()):
+        return random.choice(param_cfg['Random'])
+    elif('Fixed' in param_cfg.keys()):
+        return param_cfg['Fixed']
+
+
+def get_cp(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
     cp = []
     cp_len = 0
 
@@ -41,58 +51,33 @@ def _get_cp_and_cp_len(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
     return cp, cp_len
 
 
-def set_end_to_end_deadlines(conf, G: nx.DiGraph) -> None:
-    if('Use multi-period' in conf.keys() and
-            'Ratio of deadlines to max period' in conf['Use end-to-end deadline'].keys()):
+def random_set_e2e_deadline(cfg, G: nx.DiGraph) -> None:
+    if(ToO['UMP'] in cfg.keys() and
+            ToO['RDP'] in cfg[ToO['UED']].keys()):
         max_period = max((nx.get_node_attributes(G, 'period')).values())
         for exit_i in [v for v, d in G.out_degree() if d == 0]:
             G.nodes[exit_i]['deadline'] = \
-                    int(max_period * conf['Use end-to-end deadline']['Ratio of deadlines to max period'])
+                    int(max_period * choice_one_from_cfg(cfg[ToO['UED']][ToO['RDP']]))
 
-    elif('Ratio of deadlines to critical path length' in conf['Use end-to-end deadline'].keys()):
+    elif(ToO['RDC'] in cfg[ToO['UED']].keys()):
         for exit_i in [v for v, d in G.out_degree() if d == 0]:
             max_cp_len = 0
             for entry_i in [v for v, d in G.in_degree() if d == 0]:
-                _, cp_len = _get_cp_and_cp_len(G, entry_i, exit_i)
+                _, cp_len = get_cp(G, entry_i, exit_i)
                 if(cp_len > max_cp_len):
                     max_cp_len = cp_len
-            G.nodes[exit_i]['deadline'] = int(
-                    max_cp_len
-                    * conf['Use end-to-end deadline']['Ratio of deadlines to critical path length'])
+            G.nodes[exit_i]['deadline'] = \
+                    int(max_cp_len * choice_one_from_cfg(cfg[ToO['UED']][ToO['RDC']]))
 
 
-def random_get_comm_time(conf) -> int:
-    if('Use list' in conf['Use communication time'].keys()):
-        return random.choice(conf['Use communication time']['Use list'])
-    else:
-        return random.randint(conf['Use communication time']['Min'],
-                              conf['Use communication time']['Max'])
+def get_min_of_range(param_cfg: Dict) -> Union[float, int]:
+            if('Random' in param_cfg.keys()):
+                return min(param_cfg['Random'])
+            elif('Fixed' in param_cfg.keys()):
+                return param_cfg['Fixed']
 
-
-def random_get_exec_time(conf) -> int:
-    if('Use list' in conf['Execution time'].keys()):
-        return random.choice(conf['Execution time']['Use list'])
-    else:
-        return random.randint(conf['Execution time']['Min'],
-                              conf['Execution time']['Max'])
-
-
-def _get_settable_min_exec(conf) -> int:
-    if('Use list' in conf['Execution time'].keys()):
-        return min(conf['Execution time']['Use list'])
-    else:
-        return conf['Execution time']['Min']
-
-
-def _get_settable_min_comm(conf) -> int:
-    if('Use list' in conf['Use communication time'].keys()):
-        return min(conf['Use communication time']['Use list'])
-    else:
-        return conf['Use communication time']['Min']
-
-
-def _get_settable_max_period(conf) -> int:
-    if('Use list' in conf['Use multi-period'].keys()):
-        return max(conf['Use multi-period']['Use list'])
-    else:
-        return conf['Use multi-period']['Max']
+def get_max_of_range(param_cfg: Dict) -> Union[float, int]:
+    if('Random' in param_cfg.keys()):
+        return max(param_cfg['Random'])
+    elif('Fixed' in param_cfg.keys()):
+        return param_cfg['Fixed']

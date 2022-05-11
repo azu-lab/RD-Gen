@@ -4,8 +4,8 @@
 ### echo usage
 function show_usage () {
     echo "Usage: $0 [-h]"
-    echo "          [-c or --chain]"
-    echo "          [--config_yaml_name <file name>]"
+    echo "          [--chain]"
+    echo "          [-c or --config_yaml_name <file name>]"
     echo "          [-d <path of dir> or --dest_dir <path of dir>]"
     exit 0;
 }
@@ -38,11 +38,11 @@ do
         show_usage;
         shift
         ;;
-    -c | --chain)
+    --chain)
         USE_CHAIN="--use_chain"
         shift
         ;;
-    --config_yaml_name)
+    -c | --config_yaml_name)
         CONFIG_YAML_NAME="$2"
         shift 2
         ;;
