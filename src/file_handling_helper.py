@@ -1,10 +1,11 @@
-import sys
-import yaml
 import copy
-import os
 import itertools
+import os
+import sys
+from typing import Dict, List, Tuple, Union
+
 import numpy as np
-from typing import Dict, List, Union, Tuple
+import yaml
 
 from src.abbreviation import ToA, ToO
 
@@ -34,17 +35,17 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
 
         args_dict = {'start': None, 'stop': None, 'step': None}
         for i, arg in enumerate(tuple_str.split(',')):
-            if(i==0 or 'start' in arg):
+            if(i == 0 or 'start' in arg):
                 args_dict['start'] = float(arg.replace('start=', ''))
-            elif(i==1 or 'stop' in arg):
+            elif(i == 1 or 'stop' in arg):
                 args_dict['stop'] = float(arg.replace('stop=', ''))
-            elif(i==2 or 'step' in arg):
+            elif(i == 2 or 'step' in arg):
                 args_dict['step'] = float(arg.replace('step=', ''))
 
         args_dict['stop'] += args_dict['step']  # include stop
 
         return [convert_to_num(v) for v in np.arange(**args_dict)]
-    
+
     def get_children_name(top_param: str) -> Union[List[str], None]:
         if('Children' in format[top_param].keys()):
             return format[top_param]['Children'].keys()
@@ -57,8 +58,10 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
             if('_' in param_name):
                 top_param_name = param_name.split('_')[0]
                 child_param_name = param_name.split('_')[1]
-                del combo_cfg[ToO[top_param_name]][ToO[child_param_name]]['Combination']
-                combo_cfg[ToO[top_param_name]][ToO[child_param_name]]['Fixed'] = value
+                del combo_cfg[ToO[top_param_name]
+                              ][ToO[child_param_name]]['Combination']
+                combo_cfg[ToO[top_param_name]
+                          ][ToO[child_param_name]]['Fixed'] = value
             else:
                 del combo_cfg[ToO[param_name]]['Combination']
                 combo_cfg[ToO[param_name]]['Fixed'] = value
@@ -66,15 +69,15 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
         return combo_cfg
 
     def remove_parent(param_name: str) -> str:
-            if('_' in param_name):
-                return param_name.split('_')[1]
-            else:
-                return param_name
+        if('_' in param_name):
+            return param_name.split('_')[1]
+        else:
+            return param_name
 
     def create_combo_dir_name(index: int,
                               param_names: List[str],
                               combo: List[Union[int, float]]
-    ) -> str:
+                              ) -> str:
         combo_dir_name = None
         if(cfg['Naming of combination directory'] == 'Full spell'):
             for param_name, value in zip(param_names, combo):
@@ -96,8 +99,7 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
 
         return combo_dir_name
 
-
-    ### Load format
+    # Load format
     if(mode == 'normal'):
         with open(f'{os.path.dirname(__file__)}/config_format/normal_format.yaml') as f:
             format = yaml.safe_load(f)
@@ -105,23 +107,26 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
         with open(f'{os.path.dirname(__file__)}/config_format/chain_format.yaml') as f:
             format = yaml.safe_load(f)
 
-    ### Search 'Combination' & Convert Tuple to List of 'Random'
+    # Search 'Combination' & Convert Tuple to List of 'Random'
     in_top_params = set(cfg.keys())
     combo_param_dict = {}
-    one_line_params = {'Number of DAGs', 'Seed', 'Naming of combination directory'}
+    one_line_params = {'Number of DAGs', 'Seed',
+                       'Naming of combination directory'}
     for in_top_param in in_top_params - one_line_params:
         if('Combination' in cfg[in_top_param].keys()):
             if(isinstance(cfg[in_top_param]['Combination'], str)):
                 combo_param_dict[ToA[in_top_param]] = \
-                        get_list_from_tuple_str(cfg[in_top_param]['Combination'])
+                    get_list_from_tuple_str(cfg[in_top_param]['Combination'])
             else:
-                combo_param_dict[ToA[in_top_param]] = cfg[in_top_param]['Combination']
+                combo_param_dict[ToA[in_top_param]
+                                 ] = cfg[in_top_param]['Combination']
 
         elif('Random' in cfg[in_top_param].keys()
-                    and isinstance(cfg[in_top_param]['Random'], str)):
-            cfg[in_top_param]['Random'] = get_list_from_tuple_str(cfg[in_top_param]['Random'])
+             and isinstance(cfg[in_top_param]['Random'], str)):
+            cfg[in_top_param]['Random'] = get_list_from_tuple_str(
+                cfg[in_top_param]['Random'])
 
-        ### Children parameter
+        # Children parameter
         elif(children_names := get_children_name(in_top_param)):
             for child_name in children_names:
                 if(format[in_top_param]['Children'][child_name]['Type'] in ['int', 'float']
@@ -129,24 +134,29 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
                     if('Combination' in cfg[in_top_param][child_name].keys()):
                         if(isinstance(cfg[in_top_param][child_name]['Combination'], str)):
                             combo_param_dict[f'{ToA[in_top_param]}_{ToA[child_name]}'] = \
-                                    get_list_from_tuple_str(cfg[in_top_param][child_name]['Combination'])
+                                get_list_from_tuple_str(
+                                    cfg[in_top_param][child_name]['Combination'])
                         else:
                             combo_param_dict[f'{ToA[in_top_param]}_{ToA[child_name]}'] = \
-                                    cfg[in_top_param][child_name]['Combination']
+                                cfg[in_top_param][child_name]['Combination']
 
                     elif('Random' in cfg[in_top_param][child_name].keys()
-                                and isinstance(cfg[in_top_param][child_name]['Random'], str)):
+                         and isinstance(cfg[in_top_param][child_name]['Random'], str)):
                         cfg[in_top_param][child_name]['Random'] = \
-                                get_list_from_tuple_str(cfg[in_top_param][child_name]['Random'])
+                            get_list_from_tuple_str(
+                                cfg[in_top_param][child_name]['Random'])
 
-    ### Create all_combo lists
+    # Create all_combo lists
     all_dest_dir_name = []
     all_combo_log = []
     all_combo_cfg = []
     for i, combo in enumerate(list(itertools.product(*list(combo_param_dict.values())))):
-        all_dest_dir_name.append(create_combo_dir_name(i, list(combo_param_dict.keys()), list(combo)))
-        all_combo_log.append({ToO[remove_parent(key)]: combo[i] for i, key in enumerate(list(combo_param_dict.keys()))})
-        all_combo_cfg.append(create_combo_cfg(list(combo_param_dict.keys()), list(combo)))
+        all_dest_dir_name.append(create_combo_dir_name(
+            i, list(combo_param_dict.keys()), list(combo)))
+        all_combo_log.append({ToO[remove_parent(key)]: combo[i]
+                             for i, key in enumerate(list(combo_param_dict.keys()))})
+        all_combo_cfg.append(create_combo_cfg(
+            list(combo_param_dict.keys()), list(combo)))
 
     return all_dest_dir_name, all_combo_log, all_combo_cfg
 
@@ -182,7 +192,7 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
 #     elif(mode == 'chain'):
 #         format = chain_format
 #         pass
-    
+
 #     print('\n')
 #     print('Please describe the configuration file as follows:')
 #     print('--------------------------------------------------')
@@ -215,7 +225,7 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
 #     option_str_list = []
 #     for option in options:
 #         option_str_list.append('(' + ','.join(option) + ')')
-    
+
 #     options_str = ' or '.join(option_str_list)
 
 #     if(parent_param == ''):
@@ -403,7 +413,7 @@ def load_normal_config(config_yaml_file) -> Dict:
 def load_chain_config(config_yaml_file) -> Dict:
     conf = _load_yaml(config_yaml_file)
     # _check_config_format('chain', conf)
-    
+
     # # Check 'Number of nodes' feasibility
     # if((conf['Number of chains']
     #             *(conf['Chain length']['Max']*conf['Chain width']['Max'] - conf['Chain width']['Max'] + 1))

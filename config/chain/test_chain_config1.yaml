@@ -4,11 +4,11 @@ Seed: 0
 Number of nodes:
   Combination: (start=10, stop=20, step=2)
 Number of chains:
-  Combination: [2, 3, 4, 5]
+  Combination: [2, 3, 4]
 Chain length:
   Random: (1, 7, 1)
 Chain width:
-  Random: [1, 2, 3, 4, 5]
+  Random: [1, 2, 3]
 Execution time:
   Random: (1, 50, 1)
 
@@ -45,8 +45,9 @@ DAG format:
   xml: False
   dot: False
 Figure format:
-  pdf: True
+  pdf: False
   png: False
   svg: False
+  eps: True
   Draw legend: False
 Naming of combination directory: 'Abbreviation'
