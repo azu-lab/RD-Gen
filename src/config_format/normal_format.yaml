@@ -103,6 +103,9 @@ Figure format:
     svg:
       Requirement: 'optional'
       Type: 'bool'
+    eps:
+      Requirement: 'optional'
+      Type: 'bool'
     Draw legend:
       Requirement: 'default'
       Type: 'bool'

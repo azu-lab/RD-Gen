@@ -43,7 +43,7 @@ def output_dag(cfg, dest_dir, filename, G: nx.DiGraph) -> None:
             G.edges[start_i, end_i]['label'] = \
                 f'{G.edges[start_i, end_i]["comm"]}'
             G.edges[start_i, end_i]['fontsize'] = 11
-            G.edges[start_i, end_i]['labeldistance '] = 3
+            G.edges[start_i, end_i]['labeldistance '] = 5
 
     # draw legend
     if(cfg['Figure format']['Draw legend']):
