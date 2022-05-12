@@ -9,12 +9,12 @@ class Format:
         self,
         method_name: str
     ) -> None:
-        if method_name == "Layer by layer":
+        if method_name == "fan-in fan-out":
             format_path = (os.path.dirname(__file__)
-                           + "/layer_by_layer_format.yaml")
-        elif method_name == "Chain-based":
+                           + "/fan_in_fan_out_format.yaml")
+        elif method_name == "chain-based":
             format_path = (os.path.dirname(__file__)
-                           + "/chain_format.yaml")
+                           + "/chain_based_format.yaml")
         else:
             raise NotImplementedError
 

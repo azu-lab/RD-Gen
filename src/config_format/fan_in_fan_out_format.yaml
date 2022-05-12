@@ -2,8 +2,9 @@
 Generation method:
   Requirement: 'compulsory'
   Type:
-    - 'Layer by layer'
-    - 'Chain'
+    - 'fan-in fan-out'
+    - 'layer by layer'
+    - 'chain-based'
 Number of DAGs: 
   Requirement: 'compulsory'
   Type: 'int'

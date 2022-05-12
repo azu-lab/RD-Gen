@@ -1,6 +1,6 @@
 from typing import Dict, List, Union
 
-from src.input_parameter import InputParameter
+from src.abbreviation import TO_ABB, TO_ORI
 
 
 class Config():
@@ -12,9 +12,14 @@ class Config():
 
     def get_value(
         self,
-        param_name: str,
-        ancestors: List[str] = []
+        param_name_abb: str,
+        ancestors_abb: List[str] = []
     ) -> Union[str, int, float, List]:
+        # to original parameter name
+        param_name = TO_ORI[param_name_abb]
+        ancestors = [TO_ORI[a] for a in ancestors_abb]
+
+        # get param
         if ancestors:
             root_param = ancestors.pop(0)
             param = self._cfg[root_param].get_descendant_param(

@@ -7,7 +7,7 @@ from typing import Dict, List, Tuple, Union
 import numpy as np
 import yaml
 
-from src.abbreviation import ToA, ToO
+from src.abbreviation import TO_ABB, TO_ORI
 
 
 def _load_yaml(config_yaml_file):
@@ -58,13 +58,13 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
             if('_' in param_name):
                 top_param_name = param_name.split('_')[0]
                 child_param_name = param_name.split('_')[1]
-                del combo_cfg[ToO[top_param_name]
-                              ][ToO[child_param_name]]['Combination']
-                combo_cfg[ToO[top_param_name]
-                          ][ToO[child_param_name]]['Fixed'] = value
+                del combo_cfg[TO_ORI[top_param_name]
+                              ][TO_ORI[child_param_name]]['Combination']
+                combo_cfg[TO_ORI[top_param_name]
+                          ][TO_ORI[child_param_name]]['Fixed'] = value
             else:
-                del combo_cfg[ToO[param_name]]['Combination']
-                combo_cfg[ToO[param_name]]['Fixed'] = value
+                del combo_cfg[TO_ORI[param_name]]['Combination']
+                combo_cfg[TO_ORI[param_name]]['Fixed'] = value
 
         return combo_cfg
 
@@ -81,7 +81,7 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
         combo_dir_name = None
         if(cfg['Naming of combination directory'] == 'Full spell'):
             for param_name, value in zip(param_names, combo):
-                param_str_list = ToO[remove_parent(param_name)].split(' ')
+                param_str_list = TO_ORI[remove_parent(param_name)].split(' ')
                 param_str_list = [s.capitalize() for s in param_str_list]
                 if(combo_dir_name):
                     combo_dir_name += f'_{"".join(param_str_list)}_{value}'
@@ -115,10 +115,10 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
     for in_top_param in in_top_params - one_line_params:
         if('Combination' in cfg[in_top_param].keys()):
             if(isinstance(cfg[in_top_param]['Combination'], str)):
-                combo_param_dict[ToA[in_top_param]] = \
+                combo_param_dict[TO_ABB[in_top_param]] = \
                     get_list_from_tuple_str(cfg[in_top_param]['Combination'])
             else:
-                combo_param_dict[ToA[in_top_param]
+                combo_param_dict[TO_ABB[in_top_param]
                                  ] = cfg[in_top_param]['Combination']
 
         elif('Random' in cfg[in_top_param].keys()
@@ -133,11 +133,11 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
                         and child_name in cfg[in_top_param].keys()):
                     if('Combination' in cfg[in_top_param][child_name].keys()):
                         if(isinstance(cfg[in_top_param][child_name]['Combination'], str)):
-                            combo_param_dict[f'{ToA[in_top_param]}_{ToA[child_name]}'] = \
+                            combo_param_dict[f'{TO_ABB[in_top_param]}_{TO_ABB[child_name]}'] = \
                                 get_list_from_tuple_str(
                                     cfg[in_top_param][child_name]['Combination'])
                         else:
-                            combo_param_dict[f'{ToA[in_top_param]}_{ToA[child_name]}'] = \
+                            combo_param_dict[f'{TO_ABB[in_top_param]}_{TO_ABB[child_name]}'] = \
                                 cfg[in_top_param][child_name]['Combination']
 
                     elif('Random' in cfg[in_top_param][child_name].keys()
@@ -153,7 +153,7 @@ def get_preprocessed_all_combo(cfg, mode: str) -> Tuple[List[str], List[Dict], L
     for i, combo in enumerate(list(itertools.product(*list(combo_param_dict.values())))):
         all_dest_dir_name.append(create_combo_dir_name(
             i, list(combo_param_dict.keys()), list(combo)))
-        all_combo_log.append({ToO[remove_parent(key)]: combo[i]
+        all_combo_log.append({TO_ORI[remove_parent(key)]: combo[i]
                              for i, key in enumerate(list(combo_param_dict.keys()))})
         all_combo_cfg.append(create_combo_cfg(
             list(combo_param_dict.keys()), list(combo)))

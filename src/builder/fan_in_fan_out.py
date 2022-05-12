@@ -9,7 +9,7 @@ from src.config import Config
 logger = getLogger(__name__)
 
 
-class LayerByLayerBuilder(DAGBuilderBase):
+class FanInFanOutBuilder(DAGBuilderBase):
     def __init__(
         self,
         cfg: Config
@@ -17,6 +17,6 @@ class LayerByLayerBuilder(DAGBuilderBase):
         super().__init__(cfg)
 
     def build(self) -> Generator[nx.DiGraph, None, None]:
-        print(self._cfg.get_value('Number of DAGs'))
-        for dag_i in range(self.cfg['Number of DAGs']):
+        for dag_i in range(self._cfg.get_value('NG')):
             G = nx.DiGraph()
+            pass  # TODO

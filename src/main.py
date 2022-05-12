@@ -48,9 +48,11 @@ def main(config_file, dest_dir):
 
         try:
             # Build DAG
-            if generation_method == "Layer by layer":
+            if generation_method == "fan-in fan-out":
+                dag_builder = DAGBuilder.create_fan_in_fan_out_builder(cfg)
+            elif generation_method == "layer by layer":
                 dag_builder = DAGBuilder.create_layer_by_layer_builder(cfg)
-            elif generation_method == "Chain-based":
+            elif generation_method == "chain-based":
                 pass  # TODO
             else:
                 raise NotImplementedError

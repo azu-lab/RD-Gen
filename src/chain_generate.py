@@ -19,7 +19,7 @@ from src.builder.chain import generate_single_chain, vertically_link_chains, mer
 from src.file_handling_helper import load_chain_config, get_preprocessed_all_combo
 from src.output_dag import output_dag
 from src.random_set_period import random_set_period
-from src.abbreviation import ToO
+from src.abbreviation import TO_ORI
 from src.exceptions import NoSettablePeriodError, InvalidConfigError
 
 
@@ -33,15 +33,15 @@ def generate(cfg, dest_dir):
 
         # Determine the number of nodes in each chain
         min_nodes = get_min_of_range(
-            cfg[ToO['CL']]) + get_min_of_range(cfg[ToO['CW']]) - 1
-        max_nodes = (get_max_of_range(cfg[ToO['CL']])
-                     * get_max_of_range(cfg[ToO['CW']])
-                     - get_max_of_range(cfg[ToO['CW']])
+            cfg[TO_ORI['CL']]) + get_min_of_range(cfg[TO_ORI['CW']]) - 1
+        max_nodes = (get_max_of_range(cfg[TO_ORI['CL']])
+                     * get_max_of_range(cfg[TO_ORI['CW']])
+                     - get_max_of_range(cfg[TO_ORI['CW']])
                      + 1)
         combos = []
         for combo in itertools.combinations_with_replacement(
-                list(range(min_nodes, max_nodes+1)), choice_one_from_cfg(cfg[ToO['NC']])):
-            if(sum(combo) == choice_one_from_cfg(cfg[ToO['NN']])):
+                list(range(min_nodes, max_nodes+1)), choice_one_from_cfg(cfg[TO_ORI['NC']])):
+            if(sum(combo) == choice_one_from_cfg(cfg[TO_ORI['NN']])):
                 combos.append(list(combo))
         chain_num_nodes_combo = random.choice(combos)
 
@@ -67,7 +67,7 @@ def generate(cfg, dest_dir):
         if('Use communication time' in cfg.keys()):
             for start_i, end_i in G.edges():
                 G.edges[start_i, end_i]['comm'] = choice_one_from_cfg(
-                    cfg[ToO['UCT']])
+                    cfg[TO_ORI['UCT']])
 
         # Set execution time
         try:

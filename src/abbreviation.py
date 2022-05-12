@@ -1,4 +1,5 @@
-ToA = {
+TO_ABB = {
+    'Number of DAGs': 'NG',
     'Number of nodes': 'NN',
     'Number of entry nodes': 'NEN',
     'In-degree': 'ID',
@@ -30,7 +31,8 @@ ToA = {
     'Head of chain': 'HDC'
 }
 
-ToO = {
+TO_ORI = {
+    'NG': 'Number of DAGs',
     'NN': 'Number of nodes',
     'NEN': 'Number of entry nodes',
     'ID': 'In-degree',

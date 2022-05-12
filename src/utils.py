@@ -4,7 +4,7 @@ import random
 
 from typing import List, Tuple, Dict, Union
 
-from src.abbreviation import ToA, ToO
+from src.abbreviation import TO_ABB, TO_ORI
 
 
 def option_parser() -> Tuple[argparse.FileType, str]:
@@ -52,14 +52,15 @@ def get_cp(dag: nx.DiGraph, source, exit) -> Tuple[List[int], int]:
 
 
 def random_set_e2e_deadline(cfg, G: nx.DiGraph) -> None:
-    if(ToO['UMP'] in cfg.keys() and
-            ToO['RDP'] in cfg[ToO['UED']].keys()):
+    if(TO_ORI['UMP'] in cfg.keys() and
+            TO_ORI['RDP'] in cfg[TO_ORI['UED']].keys()):
         max_period = max((nx.get_node_attributes(G, 'period')).values())
         for exit_i in [v for v, d in G.out_degree() if d == 0]:
             G.nodes[exit_i]['deadline'] = \
-                    int(max_period * choice_one_from_cfg(cfg[ToO['UED']][ToO['RDP']]))
+                int(max_period *
+                    choice_one_from_cfg(cfg[TO_ORI['UED']][TO_ORI['RDP']]))
 
-    elif(ToO['RDC'] in cfg[ToO['UED']].keys()):
+    elif(TO_ORI['RDC'] in cfg[TO_ORI['UED']].keys()):
         for exit_i in [v for v, d in G.out_degree() if d == 0]:
             max_cp_len = 0
             for entry_i in [v for v, d in G.in_degree() if d == 0]:
@@ -67,14 +68,16 @@ def random_set_e2e_deadline(cfg, G: nx.DiGraph) -> None:
                 if(cp_len > max_cp_len):
                     max_cp_len = cp_len
             G.nodes[exit_i]['deadline'] = \
-                    int(max_cp_len * choice_one_from_cfg(cfg[ToO['UED']][ToO['RDC']]))
+                int(max_cp_len *
+                    choice_one_from_cfg(cfg[TO_ORI['UED']][TO_ORI['RDC']]))
 
 
 def get_min_of_range(param_cfg: Dict) -> Union[float, int]:
-            if('Random' in param_cfg.keys()):
-                return min(param_cfg['Random'])
-            elif('Fixed' in param_cfg.keys()):
-                return param_cfg['Fixed']
+    if('Random' in param_cfg.keys()):
+        return min(param_cfg['Random'])
+    elif('Fixed' in param_cfg.keys()):
+        return param_cfg['Fixed']
+
 
 def get_max_of_range(param_cfg: Dict) -> Union[float, int]:
     if('Random' in param_cfg.keys()):

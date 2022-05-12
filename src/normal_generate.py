@@ -18,7 +18,7 @@ from src.file_handling_helper import load_normal_config, get_preprocessed_all_co
 from src.output_dag import output_dag
 from src.random_set_period import random_set_period
 from src.random_set_exec import random_set_exec
-from src.abbreviation import ToA, ToO
+from src.abbreviation import TO_ABB, TO_ORI
 from src.exceptions import NoSettablePeriodError, InvalidConfigError
 
 
@@ -29,23 +29,24 @@ def generate(cfg, dest_dir):
     def try_extend_dag(cfg, dag: nx.DiGraph) -> Tuple[bool, nx.DiGraph]:
         G = copy.deepcopy(dag)
 
-        ### Determine end_num
+        # Determine end_num
         end_num = choice_one_from_cfg(cfg['Number of nodes'])
         if('Force merge to exit nodes' in cfg.keys()):
-            end_num -= choice_one_from_cfg(cfg[ToO['FME']][ToO['NEX']])
+            end_num -= choice_one_from_cfg(cfg[TO_ORI['FME']][TO_ORI['NEX']])
 
         while(G.number_of_nodes() != end_num):
             leaves = [v for v, d in G.out_degree() if d == 0]
 
-            ### Determine the number of next-depth nodes
+            # Determine the number of next-depth nodes
             num_next = 0
             min_num = max(get_min_of_range(cfg['Out-degree']),
-                        int(np.ceil(len(leaves)*get_min_of_range(cfg['Out-degree'])
-                                    / get_max_of_range(cfg['In-degree']))))
+                          int(np.ceil(len(leaves)*get_min_of_range(cfg['Out-degree'])
+                                      / get_max_of_range(cfg['In-degree']))))
             max_num = int(np.floor(len(leaves)*get_max_of_range(cfg['Out-degree'])
-                                / get_min_of_range(cfg['In-degree'])))
-            if(ToO['MNSD'] in cfg.keys()):
-                max_num = min(max_num, choice_one_from_cfg(cfg[ToO['MNSD']]))
+                                   / get_min_of_range(cfg['In-degree'])))
+            if(TO_ORI['MNSD'] in cfg.keys()):
+                max_num = min(max_num, choice_one_from_cfg(
+                    cfg[TO_ORI['MNSD']]))
 
             if(G.number_of_nodes()+min_num <= end_num and
                     G.number_of_nodes()+max_num >= end_num):
@@ -55,20 +56,20 @@ def generate(cfg, dest_dir):
             else:
                 num_next = random.randint(min_num, max_num)
 
-            ### Add next-depth nodes
+            # Add next-depth nodes
             next_nodes_i = [i for i in range(
-                    G.number_of_nodes(), G.number_of_nodes()+num_next)]
+                G.number_of_nodes(), G.number_of_nodes()+num_next)]
             for next_node_i in next_nodes_i:
                 G.add_node(next_node_i)
 
-            ### Determine the number of edges to next-depth nodes
+            # Determine the number of edges to next-depth nodes
             num_edges_to_next = random.randint(
-                    max(len(leaves)*get_min_of_range(cfg['Out-degree']),
-                        num_next*get_min_of_range(cfg['In-degree'])),
-                    min(len(leaves)*get_max_of_range(cfg['Out-degree']),
-                        num_next*get_max_of_range(cfg['In-degree'])))
+                max(len(leaves)*get_min_of_range(cfg['Out-degree']),
+                    num_next*get_min_of_range(cfg['In-degree'])),
+                min(len(leaves)*get_max_of_range(cfg['Out-degree']),
+                    num_next*get_max_of_range(cfg['In-degree'])))
 
-            ### Add edges_to_next_depth
+            # Add edges_to_next_depth
             add_edge_count = 0
             nodes_lack_out = copy.deepcopy(leaves)
             nodes_max_out = set()
@@ -76,16 +77,17 @@ def generate(cfg, dest_dir):
             nodes_max_in = set()
 
             while(add_edge_count != num_edges_to_next):
-                ### Check feasibility
+                # Check feasibility
                 feasibility = False
                 only_lack_out_feasibility = False
                 for start_i in list(set(leaves) - nodes_max_out):
                     if(nodes_lack_in):
-                        targets = list(set(nodes_lack_in) - set(G.succ[start_i]))
+                        targets = list(set(nodes_lack_in) -
+                                       set(G.succ[start_i]))
                     else:
                         targets = list(set(next_nodes_i)
-                                    - set(G.succ[start_i])
-                                    - nodes_max_in)
+                                       - set(G.succ[start_i])
+                                       - nodes_max_in)
                     if(targets):
                         feasibility = True
                         if(start_i in nodes_lack_out):
@@ -93,31 +95,31 @@ def generate(cfg, dest_dir):
                 if(not feasibility):
                     return False, G
 
-                ### Determine start_nodes_i
+                # Determine start_nodes_i
                 start_nodes_i = []
                 if(only_lack_out_feasibility):
                     start_nodes_i = nodes_lack_out
                 else:
                     start_nodes_i = list(set(leaves)
-                                        - set(nodes_lack_out)
-                                        - nodes_max_out)
+                                         - set(nodes_lack_out)
+                                         - nodes_max_out)
 
                 for start_node_i in start_nodes_i:
-                    ### Determine target_node_i
+                    # Determine target_node_i
                     target_node_i = -1
                     if(nodes_lack_in):
                         targets = list(set(nodes_lack_in)
-                                    - set(G.succ[start_node_i]))
+                                       - set(G.succ[start_node_i]))
                     else:
                         targets = list(set(next_nodes_i)
-                                    - set(G.succ[start_node_i])
-                                    - nodes_max_in)
+                                       - set(G.succ[start_node_i])
+                                       - nodes_max_in)
                     if(targets):
                         target_node_i = random.choice(targets)
                     else:
                         continue
 
-                    ### Add edge
+                    # Add edge
                     G.add_edge(start_node_i, target_node_i)
                     add_edge_count += 1
                     if(G.out_degree(start_node_i) == get_min_of_range(cfg['Out-degree'])):
@@ -136,7 +138,7 @@ def generate(cfg, dest_dir):
     def force_merge_to_exit_nodes(cfg, G: nx.DiGraph) -> None:
         leaves = [v for v, d in G.out_degree() if d == 0]
         exit_nodes_i = []
-        for _ in range(choice_one_from_cfg(cfg[ToO['FME']][ToO['NEX']])):
+        for _ in range(choice_one_from_cfg(cfg[TO_ORI['FME']][TO_ORI['NEX']])):
             exit_nodes_i.append(G.number_of_nodes())
             G.add_node(G.number_of_nodes())
 
@@ -161,11 +163,11 @@ def generate(cfg, dest_dir):
     for dag_i in range(cfg['Number of DAGs']):
         G = nx.DiGraph()
 
-        ### Add entry nodes
+        # Add entry nodes
         for _ in range(choice_one_from_cfg(cfg['Number of entry nodes'])):
             G.add_node(G.number_of_nodes())
 
-        ### Extend dag
+        # Extend dag
         for num_try in range(max_try := 100):  # HACK
             result, extended_dag = try_extend_dag(cfg, G)
             if(result):
@@ -178,11 +180,11 @@ def generate(cfg, dest_dir):
                        f'{dest_dir}/combination_log.yaml')
                 raise InvalidConfigError(msg)
 
-        ### (Optional) Force merge to exit nodes
+        # (Optional) Force merge to exit nodes
         if('Force merge to exit nodes' in cfg.keys()):
             force_merge_to_exit_nodes(cfg, G)
 
-        ### (Optional) Use multi-period
+        # (Optional) Use multi-period
         if('Use multi-period' in cfg.keys()):
             try:
                 random_set_period(cfg, G)
@@ -193,13 +195,14 @@ def generate(cfg, dest_dir):
                        f'{dest_dir}/combination_log.yaml')
                 raise InvalidConfigError(msg)
 
-        ### Set execution time
+        # Set execution time
         random_set_exec(cfg, G)
 
-        ### (Optional) Use communication time
+        # (Optional) Use communication time
         if('Use communication time' in cfg.keys()):
             for start_i, end_i in G.edges():
-                G.edges[start_i, end_i]['comm'] = choice_one_from_cfg(cfg[ToO['UCT']])
+                G.edges[start_i, end_i]['comm'] = choice_one_from_cfg(
+                    cfg[TO_ORI['UCT']])
 
         # (Optional) Use end-to-end deadline
         if('Use end-to-end deadline' in cfg.keys()):
@@ -212,7 +215,8 @@ if __name__ == '__main__':
     config_yaml_file, dest_dir = option_parser()
     cfg = load_normal_config(config_yaml_file)
 
-    all_combo_dir_name, all_combo_log, all_combo_cfg = get_preprocessed_all_combo(cfg, 'normal')
+    all_combo_dir_name, all_combo_log, all_combo_cfg = get_preprocessed_all_combo(
+        cfg, 'normal')
     for combo_dir_name, combo_log, combo_cfg in zip(all_combo_dir_name, all_combo_log, all_combo_cfg):
         combo_dest_dir = dest_dir + f'/{combo_dir_name}'
         os.mkdir(combo_dest_dir)

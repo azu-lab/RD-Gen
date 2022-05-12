@@ -2,7 +2,7 @@ import copy
 import itertools
 from typing import Dict, Generator, List, Tuple, Union
 
-from src.abbreviation import ToA
+from src.abbreviation import TO_ABB
 from src.config import Config
 from src.input_parameter import InputParameter
 
@@ -49,7 +49,7 @@ class ComboGenerator():
         elif(self._combo_cfg['Naming of combination directory'].value
              == 'Abbreviation'):
             for param_name, value in zip(self._combo_params, combo):
-                param_name = ToA[param_name[1]]
+                param_name = TO_ABB[param_name[1]]
                 if(combo_dir_name):
                     combo_dir_name += f'_{param_name}_{value}'
                 else:
