@@ -3,15 +3,8 @@ import itertools
 from typing import Dict, Generator, List, Tuple, Union
 
 from src.abbreviation import ToA
+from src.config import Config
 from src.input_parameter import InputParameter
-
-
-class Config():
-    def __init__(
-        self,
-        cfg: Dict
-    ) -> None:
-        self._cfg = cfg
 
 
 class ComboGenerator():

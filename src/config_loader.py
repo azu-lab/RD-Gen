@@ -1,7 +1,7 @@
 
 from typing import Dict
 
-from src.format import Format
+from src.config_format.format import Format
 from src.input_parameter import InputParameter
 
 

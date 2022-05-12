@@ -3,10 +3,15 @@ class Error(Exception):
 
 
 class NoSettablePeriodError(Error):
-    def __init__(self, message: str='') -> None:
+    def __init__(self, message: str = '') -> None:
         self.message = message
 
 
 class InvalidConfigError(Error):
-    def __init__(self, message: str='') -> None:
+    def __init__(self, message: str = '') -> None:
+        self.message = message
+
+
+class InvalidArgumentError(Error):
+    def __init__(self, message: str = '') -> None:
         self.message = message

@@ -11,10 +11,10 @@ class Format:
     ) -> None:
         if method_name == "Layer by layer":
             format_path = (os.path.dirname(__file__)
-                           + "/config_format/layer_by_layer_format.yaml")
-        elif method_name == "Chain":
+                           + "/layer_by_layer_format.yaml")
+        elif method_name == "Chain-based":
             format_path = (os.path.dirname(__file__)
-                           + "/config_format/chain_format.yaml")
+                           + "/chain_format.yaml")
         else:
             raise NotImplementedError
 

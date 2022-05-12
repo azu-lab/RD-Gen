@@ -1,9 +1,9 @@
 ### Compulsory parameters
 Generation method:
   Requirement: 'compulsory'
-      Type:
-        - 'Layer by layer'
-        - 'Chain'
+  Type:
+    - 'Layer by layer'
+    - 'Chain'
 Number of DAGs: 
   Requirement: 'compulsory'
   Type: 'int'
