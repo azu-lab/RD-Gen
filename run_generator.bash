@@ -94,7 +94,8 @@ fi
 
 
 ### generate DAGs
-python3 ${PYTHON_SCRIPT_DIR}/generate.py --config_path "${CONFIG_PATH}" --dest_dir "${DEST_DIR}"
+export PYTHONPATH="$(dirname $0)/"
+python3 ${PYTHON_SCRIPT_DIR}/main.py --config_path "${CONFIG_PATH}" --dest_dir "${DEST_DIR}"
 
 
 if [ $? -ne 0 ]; then

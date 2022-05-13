@@ -9,7 +9,7 @@ from src.builder.dag_builder_factory import DAGBuilder
 from src.combo_generator import ComboGenerator
 from src.config_format.format import Format
 from src.config_loader import ConfigLoader
-from src.exceptions import InvalidConfigError
+from src.exceptions import InvalidConfigError, MaxBuildFailError
 
 logger = getLogger(__name__)
 
@@ -46,19 +46,21 @@ def main(config_file, dest_dir):
         with open(f'{combo_dest_dir}/combination_log.yaml', 'w') as f:
             yaml.dump(log, f)
 
-        try:
-            # Build DAG
-            if generation_method == "fan-in fan-out":
-                dag_builder = DAGBuilder.create_fan_in_fan_out_builder(cfg)
-            elif generation_method == "layer by layer":
-                dag_builder = DAGBuilder.create_layer_by_layer_builder(cfg)
-            elif generation_method == "chain-based":
-                pass  # TODO
-            else:
-                raise NotImplementedError
-            dag_raw = dag_builder.build()
+        # Build DAG
+        if generation_method == "fan-in fan-out":
+            dag_builder = DAGBuilder.create_fan_in_fan_out_builder(cfg)
+        elif generation_method == "layer by layer":
+            dag_builder = DAGBuilder.create_layer_by_layer_builder(cfg)
+        elif generation_method == "chain-based":
+            pass  # TODO
+        else:
+            raise NotImplementedError
 
-        except InvalidConfigError as e:
+        dag_raw_iter = dag_builder.build()
+        try:
+            for d in dag_raw_iter:
+                pass
+        except MaxBuildFailError as e:
             logger.warning(e.message)
 
 

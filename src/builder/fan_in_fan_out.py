@@ -1,4 +1,5 @@
 
+import copy
 import random
 from logging import getLogger
 from typing import Generator, Tuple
@@ -17,25 +18,16 @@ class FanInFanOutBuilder(DAGBuilderBase):
         cfg: Config
     ) -> None:
         super().__init__(cfg)
-        self._max_build_fail = 100  # HACK
+        self._max_build_fail = 10000  # HACK
 
-        # Set max_out & max_in
+        # Set bound
         out_degree = self._cfg.get_value('OD')
         self._max_out = self.get_bound("max", out_degree)
         in_degree = self._cfg.get_value('ID')
         self._max_in = self.get_bound("max", in_degree)
-
-        # Determine range of "Number of nodes" (Loop finish condition)
         num_nodes = self._cfg.get_value('NN')
-        if isinstance(num_nodes, list):
-            self._min_num_nodes = min(num_nodes)
-            self._max_num_nodes = max(num_nodes)
-        else:
-            self._min_num_nodes = num_nodes
-            self._max_num_nodes = num_nodes
-        if num_exit := self._cfg.get_value('NEX', ['FME']):
-            self._min_num_nodes -= num_exit
-            self._max_num_nodes -= num_exit
+        self._min_num_nodes = self.get_bound("min", num_nodes)
+        self._max_num_nodes = self.get_bound("max", num_nodes)
 
     def _get_max_diff_node(
         self,
@@ -64,13 +56,51 @@ class FanInFanOutBuilder(DAGBuilderBase):
 
         return search_log["max_diff_node_i"], search_log["max_diff"]
 
+    def _force_merge_to_exit_nodes(  # HACK
+        self,
+        num_exit: int,
+        G: nx.DiGraph
+    ) -> None:
+        leaves = [v for v, d in G.out_degree() if d == 0]
+        exit_nodes_i = []
+        for _ in range(num_exit):
+            exit_nodes_i.append(G.number_of_nodes())
+            G.add_node(G.number_of_nodes())
+
+        if(len(leaves) > len(exit_nodes_i)):
+            no_in_degree_i = copy.deepcopy(exit_nodes_i)
+            for leaf in leaves:
+                if(no_in_degree_i):
+                    exit_node_i = random.choice(no_in_degree_i)
+                    G.add_edge(leaf, exit_node_i)
+                    no_in_degree_i.remove(exit_node_i)
+                else:
+                    G.add_edge(leaf, random.choice(exit_nodes_i))
+        else:
+            while(exit_nodes_i):
+                for leaf in leaves:
+                    if(not exit_nodes_i):
+                        break
+                    exit_node_i = random.choice(exit_nodes_i)
+                    G.add_edge(leaf, exit_node_i)
+                    exit_nodes_i.remove(exit_node_i)
+
     def build(self) -> Generator[nx.DiGraph, None, None]:
         for _ in range(self._cfg.get_value('NG')):
             num_build_fail = 0
             G = nx.DiGraph()
-            while not (self._min_num_nodes
-                       <= G.number_of_nodes()
-                       <= self._max_num_nodes):
+
+            # Determine number_of_nodes bound (Loop finish condition)
+            num_exit = self._cfg.get_value('NEX', ['FME'])
+            if num_exit:
+                num_exit = self.random_choice(num_exit)
+                lower = self._min_num_nodes - num_exit
+                upper = self._max_num_nodes - num_exit
+            else:
+                lower = self._min_num_nodes
+                upper = self._max_num_nodes
+
+            while not (lower <= G.number_of_nodes() <= upper):
                 # Add entry nodes
                 num_entry = self._cfg.get_value('NEN')
                 for i in range(self.random_choice(num_entry)):
@@ -105,12 +135,15 @@ class FanInFanOutBuilder(DAGBuilderBase):
                 if G.number_of_nodes() > self._max_num_nodes:
                     num_build_fail += 1
                     if num_build_fail == self._max_build_fail:
-                        msg = ("A DAG satisfying 'Number of nodes'"
-                               "could not be built"
+                        msg = ("A DAG satisfying 'Number of nodes' "
+                               "could not be built "
                                f"in {self._max_build_fail} tries.")
                         raise MaxBuildFailError(msg)
                     else:
                         G = nx.DiGraph()  # reset
 
-            # TODO: Add exit nodes (Optional)
-            print('a')
+            # Add exit nodes (Optional)
+            if num_exit:
+                self._force_merge_to_exit_nodes(num_exit, G)
+
+            yield G
