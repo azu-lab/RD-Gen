@@ -12,6 +12,11 @@ class InvalidConfigError(Error):
         self.message = message
 
 
+class MaxBuildFailError(Error):
+    def __init__(self, message: str = '') -> None:
+        self.message = message
+
+
 class InvalidArgumentError(Error):
     def __init__(self, message: str = '') -> None:
         self.message = message

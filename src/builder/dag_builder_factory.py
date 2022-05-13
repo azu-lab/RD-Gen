@@ -1,6 +1,7 @@
 from re import L
 
-from src.builder.layer_by_layer import FanInFanOutBuilder, LayerByLayerBuilder
+from src.builder.fan_in_fan_out import FanInFanOutBuilder
+from src.builder.layer_by_layer import LayerByLayerBuilder
 from src.config import Config
 
 
