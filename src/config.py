@@ -1,36 +1,70 @@
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from src.abbreviation import TO_ABB, TO_ORI
+from src.config_format.format import Format
+from src.input_parameter import InputParameter
 
 
 class Config():
     def __init__(
         self,
-        cfg: Dict
+        cfg_raw: Dict
     ) -> None:
-        self._cfg = cfg
+        self._cfg = {}
+        for input_top_param, value in cfg_raw.items():
+            self._cfg[input_top_param.lower()] = InputParameter(
+                input_top_param.lower(),
+                value
+            )
 
     def get_value(
         self,
-        param_name_abb: str,
-        ancestors_abb: List[str] = []
+        param_name_abb: List[str]
     ) -> Optional[Union[str, int, float, List]]:
         # to original parameter name
-        param_name = TO_ORI[param_name_abb]
-        ancestors = [TO_ORI[a] for a in ancestors_abb]
+        param_names = [TO_ORI[n] for n in param_name_abb]
 
         try:
-            # get param
-            if ancestors:
-                root_param = ancestors.pop(0)
-                param = self._cfg[root_param].get_descendant_param(
-                    param_name,
-                    ancestors
-                )
-            else:
-                param = self._cfg[param_name]
+            param = self._cfg[param_names[0]]
+            if len(param_names) > 1:
+                for param_name in param_names[1:]:
+                    param = param.children[param_name]
 
-            return param.get_value()
+            return param.value
 
         except KeyError:
             return None
+
+    def set_value(
+        self,
+        param_name_abb: List[str],
+        value: Dict
+    ) -> None:
+        # to original parameter name
+        param_names = [TO_ORI[n] for n in param_name_abb]
+
+        try:
+            param = self._cfg[param_names[0]]
+            if len(param_names) > 1:
+                for param_name in param_names[1:]:
+                    param = param.children[param_name]
+
+            param.value = value
+
+        except KeyError:
+            return None
+
+    def get_bottom_params(
+        self
+    ) -> List[InputParameter]:
+        bottom_params = []
+        for top_param in self._cfg.values():
+            bottom_params += top_param.get_bottom_params()
+
+        return bottom_params
+
+    def remove_num_value_dict(
+        self
+    ) -> None:
+        for top_param in self._cfg.values():
+            top_param.remove_num_value_dict()

@@ -1,6 +1,6 @@
 import copy
 import itertools
-from typing import Dict, Generator, List, Tuple, Union
+from typing import Generator, List, Tuple, Union
 
 from src.abbreviation import TO_ABB
 from src.config import Config
@@ -10,25 +10,20 @@ from src.input_parameter import InputParameter
 class ComboGenerator():
     def __init__(
             self,
-            combo_cfg: Dict
+            combo_cfg: Config
     ) -> None:
         self._combo_cfg = combo_cfg
-        self._combo_params = []
-        self._combo_values = []
+        self._combo_params: List[InputParameter] = []
+        self._combo_values: List[Union[List[int], List[float]]] = []
         self._search_combo()
 
     def _search_combo(self) -> None:
-        def recursive_search(param: InputParameter):
-            if param.children:
-                for child in param.children.values():
-                    recursive_search(child)
-            elif(isinstance(param.value, dict)
-                 and (combo_value := param.value.get("Combination"))):
-                self._combo_params.append((param.ancestors, param.name))
-                self._combo_values.append(combo_value)
-
-        for in_top_param in self._combo_cfg.values():
-            recursive_search(in_top_param)
+        bottom_params = self._combo_cfg.get_bottom_params()
+        for bottom_param in bottom_params:
+            if (isinstance(bottom_param.value, dict)
+                    and list(bottom_param.value.keys())[0] == "Combination"):
+                self._combo_params.append(bottom_param)
+                self._combo_values.append(list(bottom_param.value.values())[0])
 
     def _create_combo_dir_name(
         self,
@@ -36,27 +31,25 @@ class ComboGenerator():
         combo: List[Union[int, float]]
     ) -> str:
         combo_dir_name = None
-        if(self._combo_cfg['Naming of combination directory'].value
-           == 'Full spell'):
-            for param_name, value in zip(self._combo_params, combo):
-                param_str_list = param_name[1].split(' ')
+        naming = self._combo_cfg.get_value(["OF", "NCD"])
+        if naming == 'full spell':
+            for param, value in zip(self._combo_params, combo):
+                param_str_list = param.name[1].split(' ')
                 param_str_list = [s.capitalize() for s in param_str_list]
                 if(combo_dir_name):
                     combo_dir_name += f'_{"".join(param_str_list)}_{value}'
                 else:
                     combo_dir_name = f'{"".join(param_str_list)}_{value}'
 
-        elif(self._combo_cfg['Naming of combination directory'].value
-             == 'Abbreviation'):
-            for param_name, value in zip(self._combo_params, combo):
-                param_name = TO_ABB[param_name[1]]
+        elif naming == 'abbreviation':
+            for param, value in zip(self._combo_params, combo):
+                param = TO_ABB[param.name]
                 if(combo_dir_name):
-                    combo_dir_name += f'_{param_name}_{value}'
+                    combo_dir_name += f'_{param}_{value}'
                 else:
-                    combo_dir_name = f'{param_name}_{value}'
+                    combo_dir_name = f'{param}_{value}'
 
-        elif(self._combo_cfg['Naming of combination directory'].value
-             == 'Index of combination'):
+        elif naming == 'index of combination':
             combo_dir_name = f'combination_{index}'
 
         else:
@@ -68,27 +61,13 @@ class ComboGenerator():
         self,
         combo: List[Union[int, float]]
     ) -> Config:
-        def replace_combo_to_fix(
-            cfg: Dict,
-            param_name: Tuple,
-            fixed_value: Union[int, float]
-        ) -> None:
-            if ancestors := param_name[0]:
-                for i, ancestor in enumerate(ancestors):
-                    if i == 0:
-                        ancestor_param = cfg[ancestor]
-                    else:
-                        ancestor_param = ancestor_param.children[ancestor]
-                param = ancestor_param.children[param_name[1]]
-                param.value = {"Fixed": fixed_value}
-            else:
-                cfg[param_name[1]].value = {"Fixed": fixed_value}
-
         cfg = copy.deepcopy(self._combo_cfg)
-        for combo_param, value in zip(self._combo_params, combo):
-            replace_combo_to_fix(cfg, combo_param, value)
+        for combo_param, combo_value in zip(self._combo_params, combo):
+            family_tree = combo_param.get_family_tree_abb()
+            cfg.set_value(family_tree, {"Fixed": combo_value})
+        cfg.remove_num_value_dict()
 
-        return Config(cfg)
+        return cfg
 
     def generate(
         self
@@ -96,7 +75,7 @@ class ComboGenerator():
         all_combo = list(itertools.product(*self._combo_values))
         for i, combo in enumerate(all_combo):
             all_combo_dir_name = self._create_combo_dir_name(i, combo)
-            all_combo_log = {k[1]: v for k, v
+            all_combo_log = {k.name: v for k, v
                              in zip(self._combo_params, combo)}
             all_combo_cfg = self._create_cfg(combo)
 

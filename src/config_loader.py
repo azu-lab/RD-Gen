@@ -1,30 +1,21 @@
+import yaml
 
-from typing import Dict
-
-from src.config_format.format import Format
-from src.input_parameter import InputParameter
+from src.config import Config
 
 
 class ConfigLoader():
     def __init__(
         self,
-        format: Format,
-        cfg_raw: Dict
+        config_path: str
     ) -> None:
-        self._format = format
-        self._cfg_raw = cfg_raw
+        with open(config_path, "r") as f:
+            self._cfg_raw = yaml.safe_load(f)
         self._validate()
 
-    def load(self) -> Dict:
-        self._input_params = {}
-        for input_top_param, value in self._cfg_raw.items():
-            self._input_params[input_top_param] = InputParameter(
-                input_top_param,
-                value,
-                self._format
-            )
-
-        return self._input_params
+    def load(self) -> Config:
+        return Config(self._cfg_raw)
 
     def _validate(self) -> None:
-        pass  # TODO
+        if self._cfg_raw["Generation method"]:
+            pass  # TODO
+            # config_scheme = Schema()

@@ -2,8 +2,9 @@ from typing import Any, List, Optional, Union
 
 import numpy as np
 
-from src.config_format.format import Format
-from src.exceptions import InvalidArgumentError
+from src.abbreviation import TO_ABB
+
+NOT_PARAM_NAME = {"fixed", "random", "combination"}
 
 
 class InputParameter():
@@ -11,32 +12,44 @@ class InputParameter():
         self,
         name: str,
         value: Any,
-        format: Format,
-        ancestors: List[str] = [],
+        parent: Optional['InputParameter'] = None
     ) -> None:
         self.name = name
-        self.ancestors = ancestors
+        self.parent = parent
 
-        # Initialize children parameter
+        # Initialize children
         self.children = {}
-        if fmt_children := format.get_children(self.name,
-                                               self.ancestors):
-            if(input_children := (fmt_children & set(value.keys()))):
-                for input_child in input_children:
-                    self.children[input_child] = (
-                        InputParameter(input_child,
-                                       value[input_child],
-                                       format,
-                                       self.ancestors + [self.name])
-                    )
+        if self._has_child(value):
+            for child_name, value in value.items():
+                self.children[child_name.lower()] = (
+                    InputParameter(
+                        child_name.lower(),
+                        value,
+                        self
+                    ))
 
-        # bottom parameter
+        # Initialize value
         elif (isinstance(value, dict)
+              and list(value.keys())[0].lower() in NOT_PARAM_NAME
               and isinstance(list(value.values())[0], str)):
             self.value = {k: self._convert_tuple_to_list(v)
                           for k, v in value.items()}
+        elif isinstance(value, str):
+            self.value = value.lower()
         else:
             self.value = value
+
+    def _has_child(
+        self,
+        value: Any
+    ) -> bool:
+        if isinstance(value, dict):
+            if set(k.lower() for k in value.keys()) - NOT_PARAM_NAME:
+                return True
+            else:
+                return False
+        else:
+            return False
 
     def _convert_tuple_to_list(
         self,
@@ -73,35 +86,32 @@ class InputParameter():
 
         return converted
 
-    def get_descendant_param(
-        self,
-        param_name: str,
-        middle_params: List[str] = []
-    ) -> 'InputParameter':
-        """
-        Args:
-            param_name: target parameter name
-            middle_params (List[str]): root parameter -> [THIS ARG] -> target parameter (Optional)
-        """
+    def remove_num_value_dict(
+        self
+    ) -> None:
+        if self.children:
+            for child in self.children.values():
+                child.remove_num_value_dict()
+        elif isinstance(self.value, dict):
+            self.value = list(self.value.values())[0]
+
+    def get_bottom_params(
+        self
+    ) -> List['InputParameter']:
         if not self.children:
-            raise InvalidArgumentError
+            return [self]
 
-        if middle_params:
-            for i, middle_param in enumerate(middle_params):
-                if i == 0:
-                    param = self.children[middle_param]
-                else:
-                    param = param.children[middle_param]
-            param = param.children[param_name]
-        else:
-            param = self.children[param_name]
+        bottom_params = []
+        for child in self.children.values():
+            bottom_params += child.get_bottom_params()
 
-        return param
+        return bottom_params
 
-    def get_value(
-        self,
-    ) -> Union[str, int, float, List]:
-        if isinstance(self.value, dict):
-            return list(self.value.values())[0]
-        else:
-            return self.value
+    def get_family_tree_abb(
+        self
+    ) -> List[str]:
+        family_tree = [TO_ABB[self.name]]
+        if self.parent:
+            family_tree = self.parent.get_family_tree_abb() + family_tree
+
+        return family_tree
