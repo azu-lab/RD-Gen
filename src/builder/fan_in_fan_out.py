@@ -21,11 +21,11 @@ class FanInFanOutBuilder(DAGBuilderBase):
         self._max_build_fail = 10000  # HACK
 
         # Set bound
-        out_degree = self._cfg.get_value('OD')
+        out_degree = self._cfg.get_value(["GS", "OD"])
         self._max_out = self.get_bound("max", out_degree)
-        in_degree = self._cfg.get_value('ID')
+        in_degree = self._cfg.get_value(["GS", "ID"])
         self._max_in = self.get_bound("max", in_degree)
-        num_nodes = self._cfg.get_value('NN')
+        num_nodes = self._cfg.get_value(["GS", "NN"])
         self._min_num_nodes = self.get_bound("min", num_nodes)
         self._max_num_nodes = self.get_bound("max", num_nodes)
 
@@ -86,12 +86,12 @@ class FanInFanOutBuilder(DAGBuilderBase):
                     exit_nodes_i.remove(exit_node_i)
 
     def build(self) -> Generator[nx.DiGraph, None, None]:
-        for _ in range(self._cfg.get_value('NG')):
+        for _ in range(self._cfg.get_value(["NG"])):
             num_build_fail = 0
             G = nx.DiGraph()
 
             # Determine number_of_nodes bound (Loop finish condition)
-            num_exit = self._cfg.get_value('NEX', ['FME'])
+            num_exit = self._cfg.get_value(["GS", "NEX"])
             if num_exit:
                 num_exit = self.random_choice(num_exit)
                 lower = self._min_num_nodes - num_exit
@@ -102,7 +102,7 @@ class FanInFanOutBuilder(DAGBuilderBase):
 
             while not (lower <= G.number_of_nodes() <= upper):
                 # Add entry nodes
-                num_entry = self._cfg.get_value('NEN')
+                num_entry = self._cfg.get_value(["GS", "NEN"])
                 for i in range(self.random_choice(num_entry)):
                     G.add_node(G.number_of_nodes())
 

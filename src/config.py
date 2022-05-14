@@ -1,7 +1,6 @@
 from typing import Dict, List, Optional, Tuple, Union
 
-from src.abbreviation import TO_ABB, TO_ORI
-from src.config_format.format import Format
+from src.abbreviation import TO_ORI
 from src.input_parameter import InputParameter
 
 
