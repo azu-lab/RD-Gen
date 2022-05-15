@@ -10,10 +10,8 @@ class E2EDeadlineSetter(PropertySetterBase):
         self,
         base_param: InputParameter
     ) -> None:
-        if child := base_param.children.get("ratio of deadline to critical path"):
-            self._choices = child.value  # HACK
-        else:
-            raise NotImplementedError
+        self._choices = base_param.get_child_value(
+            "ratio of deadline to critical path")
 
     def _get_cp(
         self,

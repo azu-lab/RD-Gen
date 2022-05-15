@@ -42,13 +42,7 @@ class PropertySetter():
                 )
 
         # execution time & period & utilization
-        self._setters.append(
-            EPUSetter(
-                cfg.get_value(["PP", "ET"]),
-                cfg.get_value(["PP", "MP", "P"]),
-                cfg.get_value(["PP", "MP", "TU"])
-            )
-        )
+        self._setters.append(EPUSetter(cfg))
 
         # End-to-end deadline
         if param := cfg.get_param(["PP", "EED"]):

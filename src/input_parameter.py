@@ -39,6 +39,15 @@ class InputParameter():
         else:
             self.value = value
 
+    def get_child_value(
+        self,
+        child_name: str
+    ):
+        try:
+            return self.children[child_name].value
+        except KeyError:
+            return None
+
     def _has_child(
         self,
         value: Any

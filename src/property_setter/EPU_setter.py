@@ -3,19 +3,22 @@ from typing import List, Optional, Union
 
 import networkx as nx
 import numpy as np
+from src.config import Config
+from src.property_setter.period_setter import PeriodSetter
 from src.property_setter.property_setter_base import PropertySetterBase
 
 
 class EPUSetter(PropertySetterBase):
     def __init__(
         self,
-        E_value: Optional[Union[int, List[int]]],
-        P_value: Optional[Union[int, List[int]]],
-        U_value: Optional[Union[float, List[float]]]
+        cfg: Config
     ) -> None:
-        self._E_choices = E_value
-        self._P_choices = P_value
-        self._U_choices = U_value
+        self._E_choices = cfg.get_value(["PP", "ET"])
+        if base_param := cfg.get_param(["PP", "MP"]):
+            self._period_setter = PeriodSetter(base_param)
+        else:
+            self._period_setter = None
+        self._U_choices = cfg.get_value(["PP", "MP", "TU"])
 
     def _UUniFast(
         self,
@@ -30,15 +33,6 @@ class EPUSetter(PropertySetterBase):
             sum_U = next_sum_U
         G.nodes[n-1]["Utilization"] = sum_U
 
-    def _random_set_period(
-        self,
-        G: nx.DiGraph
-    ) -> None:
-        # TODO: periodic type
-        for node_i in G.nodes():
-            G.nodes[node_i]["Period"] = \
-                self.choice_one(self._P_choices)
-
     def set(
         self,
         G: nx.DiGraph
@@ -49,7 +43,7 @@ class EPUSetter(PropertySetterBase):
             self._UUniFast(G, total_U)
 
             # Set period
-            self._random_set_period(G)
+            self._period_setter.set(G)
 
             # Set execution time (E = U * P)
             for node_i in G.nodes():
@@ -61,8 +55,8 @@ class EPUSetter(PropertySetterBase):
                 G.nodes[node_i]["Execution time"] = exec
 
         else:
-            if self._P_choices:
-                self._random_set_period(G)
+            if self._period_setter:
+                self._period_setter.set(G)
             if self._E_choices:
                 for node_i in G.nodes():
                     G.nodes[node_i]["Execution time"] = \
