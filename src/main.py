@@ -1,6 +1,7 @@
 import argparse
 import os
 from logging import getLogger
+from msilib.schema import Property
 
 import yaml
 
@@ -8,6 +9,7 @@ from src.builder.dag_builder_factory import DAGBuilder
 from src.combo_generator import ComboGenerator
 from src.config_loader import ConfigLoader
 from src.exceptions import MaxBuildFailError
+from src.property_setter.property_setter import PropertySetter
 
 logger = getLogger(__name__)
 
@@ -34,12 +36,12 @@ def main(config_path, dest_dir):
     combo_iter = combo_generator.generate()
 
     for dir_name, log, cfg in combo_iter:
-        combo_dest_dir = dest_dir + f'/{dir_name}'
-        os.mkdir(combo_dest_dir)
-        with open(f'{combo_dest_dir}/combination_log.yaml', 'w') as f:
-            yaml.dump(log, f)
+        # combo_dest_dir = dest_dir + f'/{dir_name}'
+        # os.mkdir(combo_dest_dir)
+        # with open(f'{combo_dest_dir}/combination_log.yaml', 'w') as f:
+        #     yaml.dump(log, f)
 
-        # Build DAG
+        # Generate DAG iterator
         generation_method = cfg.get_value(["GM"])
         if generation_method == "fan-in/fan-out":
             dag_builder = DAGBuilder.create_fan_in_fan_out_builder(cfg)
@@ -49,11 +51,14 @@ def main(config_path, dest_dir):
             pass  # TODO
         else:
             raise NotImplementedError
-
         dag_raw_iter = dag_builder.build()
+
+        # Set properties & Output
+        property_setter = PropertySetter(cfg)
         try:
-            for d in dag_raw_iter:
-                pass
+            for dag_raw in dag_raw_iter:
+                property_setter.set(dag_raw)
+                # TODO:Output DAGs
         except MaxBuildFailError as e:
             logger.warning(e.message)
 

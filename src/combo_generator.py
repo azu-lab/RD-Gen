@@ -2,7 +2,7 @@ import copy
 import itertools
 from typing import Generator, List, Tuple, Union
 
-from src.abbreviation import TO_ABB
+from src.abbreviation import TO_ABB, TO_ORI
 from src.config import Config
 from src.input_parameter import InputParameter
 
@@ -43,7 +43,13 @@ class ComboGenerator():
 
         elif naming == 'abbreviation':
             for param, value in zip(self._combo_params, combo):
-                param = TO_ABB[param.name]
+                try:
+                    param = TO_ABB[param.name]
+                except KeyError:  # Additional parameter
+                    TO_ABB[param.name] = param.name  # HACK
+                    TO_ORI[param.name] = param.name  # HACK
+                    param = param.name
+
                 if(combo_dir_name):
                     combo_dir_name += f'_{param}_{value}'
                 else:

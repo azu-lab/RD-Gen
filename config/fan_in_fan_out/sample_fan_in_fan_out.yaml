@@ -22,16 +22,26 @@ Properties:
   End-to-end deadline:
     Ratio of deadline to critical path:
       Random: (1.0, 1.5, 0.1)
-  Period:
+  Multi-period:
+    Period:
+      Random: (10, 100, 10)
     Periodic type: "All"
-    Entry node periods:
+    Entry node period:
       Combination: [10, 100]
-    Exit node periods:
+    Exit node period:
       Fixed: 10
     Offset:
       Random: (1, 5, 1)
     Total utilization:
       Combination: (0.7, 1.5, 0.1)
+
+  Additional properties:
+    Node properties:
+      Weight:
+        Random: [1, 2, 3, 4, 5]
+    Edge properties:
+      Transfer:
+        Combination: [1, 2, 3, 4, 5] 
 
 Output formats:
   Naming of combination directory: "Abbreviation"

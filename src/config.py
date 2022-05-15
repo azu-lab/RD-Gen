@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Union
 
 from src.abbreviation import TO_ORI
 from src.input_parameter import InputParameter
@@ -30,6 +30,24 @@ class Config():
                     param = param.children[param_name]
 
             return param.value
+
+        except KeyError:
+            return None
+
+    def get_param(
+        self,
+        param_name_abb: List[str]
+    ) -> Optional[InputParameter]:
+        # to original parameter name
+        param_names = [TO_ORI[n] for n in param_name_abb]
+
+        try:
+            param = self._cfg[param_names[0]]
+            if len(param_names) > 1:
+                for param_name in param_names[1:]:
+                    param = param.children[param_name]
+
+            return param
 
         except KeyError:
             return None
