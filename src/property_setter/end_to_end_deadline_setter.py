@@ -15,17 +15,6 @@ class E2EDeadlineSetter(PropertySetterBase):
         else:
             raise NotImplementedError
 
-    @property
-    def choices(self):
-        return self._choices
-
-    @choices.setter
-    def choices(
-        self,
-        choices: Union[int, float, List]
-    ):
-        self._choices = choices
-
     def _get_cp(
         self,
         dag: nx.DiGraph,
@@ -62,4 +51,4 @@ class E2EDeadlineSetter(PropertySetterBase):
                 if(cp_len > max_cp_len):
                     max_cp_len = cp_len
             G.nodes[exit_i]['End-to-end deadline'] = \
-                int(max_cp_len * self.choice_one())
+                int(max_cp_len * self.choice_one(self._choices))

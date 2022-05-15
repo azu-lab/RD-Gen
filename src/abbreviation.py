@@ -1,4 +1,5 @@
 TO_ABB = {
+    'seed': 'seed',
     'offset': 'OS',
     'communication time': 'CT',
     'end-to-end deadline': 'EED',
@@ -45,6 +46,7 @@ TO_ABB = {
 }
 
 TO_ORI = {
+    'seed': 'seed',
     'OS': 'offset',
     'CT': 'communication time',
     'EED': 'end-to-end deadline',

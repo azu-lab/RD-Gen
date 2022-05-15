@@ -12,19 +12,8 @@ class RandomPropertySetter(PropertySetterBase):
         target: str
     ) -> None:
         self._property_name = property_name
-        self.choices = choices
-        self._target = target
-
-    @property
-    def choices(self):
-        return self._choices
-
-    @choices.setter
-    def choices(
-        self,
-        choices: Union[int, float, List]
-    ):
         self._choices = choices
+        self._target = target
 
     def set(
         self,
@@ -33,8 +22,8 @@ class RandomPropertySetter(PropertySetterBase):
         if self._target == "node":
             for node_i in G.nodes():
                 G.nodes[node_i][self._property_name] = \
-                    self.choice_one()
+                    self.choice_one(self._choices)
         else:
             for src_i, tgt_i in G.edges():
                 G.edges[src_i, tgt_i][self._property_name] = \
-                    self.choice_one()
+                    self.choice_one(self._choices)

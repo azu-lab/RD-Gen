@@ -3,6 +3,7 @@ from typing import List
 import networkx as nx
 from src.config import Config
 from src.property_setter.end_to_end_deadline_setter import E2EDeadlineSetter
+from src.property_setter.EPU_setter import EPUSetter
 from src.property_setter.property_setter_base import PropertySetterBase
 from src.property_setter.random_property_setter import RandomPropertySetter
 
@@ -40,14 +41,18 @@ class PropertySetter():
                         "edge")
                 )
 
+        # execution time & period & utilization
+        self._setters.append(
+            EPUSetter(
+                cfg.get_value(["PP", "ET"]),
+                cfg.get_value(["PP", "MP", "P"]),
+                cfg.get_value(["PP", "MP", "TU"])
+            )
+        )
+
         # End-to-end deadline
         if param := cfg.get_param(["PP", "EED"]):
             self._setters.append(E2EDeadlineSetter(param))
-
-        # # Check "ET", "P", "TU"
-        # ET_flag = True if cfg.get_value(["PP", "ET"]) else False
-        # P_flag = True if cfg.get_value(["PP", "P"]) else False
-        # TU_flag = True if cfg.get_value(["PP", "MP", "TU"]) else False
 
     def set(
         self,

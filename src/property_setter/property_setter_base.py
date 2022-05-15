@@ -1,15 +1,11 @@
 import random
 from abc import ABCMeta, abstractmethod, abstractproperty
-from typing import Union
+from typing import List, Union
 
 import networkx as nx
 
 
 class PropertySetterBase(metaclass=ABCMeta):
-    @abstractproperty
-    def choices(self):
-        raise NotImplementedError
-
     @abstractmethod
     def set(
         self,
@@ -19,8 +15,9 @@ class PropertySetterBase(metaclass=ABCMeta):
 
     def choice_one(
         self,
+        choices: Union[int, float, List]
     ) -> Union[int, float]:
-        if isinstance(self.choices, list):
-            return random.choice(self.choices)
+        if isinstance(choices, list):
+            return random.choice(choices)
         else:
-            return self.choices
+            return choices

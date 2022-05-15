@@ -1,7 +1,7 @@
 import argparse
 import os
+import random
 from logging import getLogger
-from msilib.schema import Property
 
 import yaml
 
@@ -32,6 +32,7 @@ def option_parser():
 def main(config_path, dest_dir):
     config_loader = ConfigLoader(config_path)
     combo_cfg = config_loader.load()
+    random.seed(combo_cfg.get_value(["seed"]))
     combo_generator = ComboGenerator(combo_cfg)
     combo_iter = combo_generator.generate()
 
