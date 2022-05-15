@@ -8,6 +8,7 @@ import yaml
 from src.builder.dag_builder_factory import DAGBuilder
 from src.combo_generator import ComboGenerator
 from src.config_loader import ConfigLoader
+from src.dag_exporter import DAGExporter
 from src.exceptions import MaxBuildFailError
 from src.property_setter.property_setter import PropertySetter
 
@@ -37,10 +38,10 @@ def main(config_path, dest_dir):
     combo_iter = combo_generator.generate()
 
     for dir_name, log, cfg in combo_iter:
-        # combo_dest_dir = dest_dir + f'/{dir_name}'
-        # os.mkdir(combo_dest_dir)
-        # with open(f'{combo_dest_dir}/combination_log.yaml', 'w') as f:
-        #     yaml.dump(log, f)
+        combo_dest_dir = dest_dir + f'/{dir_name}'
+        os.mkdir(combo_dest_dir)
+        with open(f'{combo_dest_dir}/combination_log.yaml', 'w') as f:
+            yaml.dump(log, f)
 
         # Generate DAG iterator
         generation_method = cfg.get_value(["GM"])
@@ -56,10 +57,11 @@ def main(config_path, dest_dir):
 
         # Set properties & Output
         property_setter = PropertySetter(cfg)
+        dag_exporter = DAGExporter(cfg)
         try:
-            for dag_raw in dag_raw_iter:
+            for i, dag_raw in enumerate(dag_raw_iter):
                 property_setter.set(dag_raw)
-                # TODO:Output DAGs
+                dag_exporter.export(combo_dest_dir, f"dag_{i}", dag_raw)
         except MaxBuildFailError as e:
             logger.warning(e.message)
 

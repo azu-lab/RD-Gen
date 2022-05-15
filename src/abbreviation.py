@@ -1,4 +1,15 @@
 TO_ABB = {
+    'PNG': 'PNG',
+    'SVG': 'SVG',
+    'PDF': 'PDF',
+    'EPS': 'EPS',
+    'draw legend': 'DL',
+    'YAML': 'YAML',
+    'JSON': 'JSON',
+    'DOT': 'DOT',
+    'XML': 'XML',
+    'figure': 'FIG',
+    'dag': 'dag',
     'seed': 'seed',
     'offset': 'OS',
     'communication time': 'CT',
@@ -46,6 +57,17 @@ TO_ABB = {
 }
 
 TO_ORI = {
+    'PNG': 'png',
+    'SVG': 'svg',
+    'PDF': 'pdf',
+    'EPS': 'eps',
+    'DL': 'draw legend',
+    'YAML': 'yaml',
+    'JSON': 'json',
+    'DOT': 'dot',
+    'XML': 'xml',
+    'FIG': 'figure',
+    'DAG': 'dag',
     'seed': 'seed',
     'OS': 'offset',
     'CT': 'communication time',

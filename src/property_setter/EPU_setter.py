@@ -52,12 +52,12 @@ class EPUSetter(PropertySetterBase):
                 ))
                 if exec == 0:
                     exec = 1
-                G.nodes[node_i]["Execution time"] = exec
+                G.nodes[node_i]["Execution_time"] = exec
 
         else:
             if self._period_setter:
                 self._period_setter.set(G)
             if self._E_choices:
                 for node_i in G.nodes():
-                    G.nodes[node_i]["Execution time"] = \
+                    G.nodes[node_i]["Execution_time"] = \
                         self.choice_one(self._E_choices)

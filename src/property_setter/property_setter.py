@@ -18,7 +18,7 @@ class PropertySetter():
         # Random properties
         if choices := cfg.get_value(["PP", "CT"]):
             self._setters.append(
-                RandomPropertySetter("Communication time", choices, "edge")
+                RandomPropertySetter("Communication_time", choices, "edge")
             )
         if choices := cfg.get_value(["PP", "MP", "OS"]):
             self._setters.append(

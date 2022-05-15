@@ -26,12 +26,12 @@ class E2EDeadlineSetter(PropertySetterBase):
         for path in paths:
             path_len = 0
             for i in range(len(path)):
-                path_len += dag.nodes[path[i]]['Execution time']
+                path_len += dag.nodes[path[i]]["Execution_time"]
                 if(i != len(path)-1 and
-                        'Communication time'
+                        "Communication_time"
                         in list(dag.edges[path[i], path[i+1]].keys())):
                     path_len += dag.edges[path[i],
-                                          path[i+1]]['Communication time']
+                                          path[i+1]]["Communication_time"]
             if(path_len > cp_len):
                 cp = path
                 cp_len = path_len
@@ -48,5 +48,5 @@ class E2EDeadlineSetter(PropertySetterBase):
                 _, cp_len = self._get_cp(G, entry_i, exit_i)
                 if(cp_len > max_cp_len):
                     max_cp_len = cp_len
-            G.nodes[exit_i]['End-to-end deadline'] = \
+            G.nodes[exit_i]['End_to_end_deadline'] = \
                 int(max_cp_len * self.choice_one(self._choices))
