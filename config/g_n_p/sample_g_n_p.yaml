@@ -1,0 +1,56 @@
+Seed: 0
+Number of DAGs: 50
+Generation method: "G(n, p)"
+
+Graph structure:
+  Number of nodes:
+    Random: (10, 100, 10)
+  Probability of edge:
+    Combination: (0.1, 0.9, 0.1)
+  Number of entry nodes:
+    Combination: [2, 3, 4, 5]
+  Number of exit nodes:
+    Fixed: 1
+
+Properties:
+  Execution time:
+    Random: (1, 50, 1)
+  Communication time:
+    Random: [1, 2, 3, 4, 5]
+  End-to-end deadline:
+    Ratio of deadline to critical path:
+      Random: (1.0, 1.5, 0.1)
+  Multi-period:
+    Period:
+      Random: (10, 100, 10)
+    Periodic type: "All"
+    Entry node period:
+      Combination: [10, 100]
+    Exit node period:
+      Fixed: 10
+    Offset:
+      Random: (1, 5, 1)
+    Total utilization:
+      Combination: (0.7, 1.5, 0.1)
+
+  Additional properties:
+    Node properties:
+      Weight:
+        Random: [1, 2, 3, 4, 5]
+    Edge properties:
+      Transfer:
+        Combination: [1, 2, 3, 4, 5] 
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    JSON: False
+    XML: False
+    DOT: False
+  Figure:
+    Draw legend: False
+    PNG: True
+    SVG: False
+    EPS: False
+    PDF: False

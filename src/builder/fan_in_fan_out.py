@@ -1,15 +1,12 @@
 
 import copy
 import random
-from logging import getLogger
 from typing import Generator, Tuple
 
 import networkx as nx
 from src.builder.dag_builder_base import DAGBuilderBase
 from src.config import Config
 from src.exceptions import MaxBuildFailError
-
-logger = getLogger(__name__)
 
 
 class FanInFanOutBuilder(DAGBuilderBase):
@@ -55,35 +52,6 @@ class FanInFanOutBuilder(DAGBuilderBase):
                     search_log["max_diff_node_i"] = node_i
 
         return search_log["max_diff_node_i"], search_log["max_diff"]
-
-    def _force_merge_to_exit_nodes(  # HACK
-        self,
-        num_exit: int,
-        G: nx.DiGraph
-    ) -> None:
-        leaves = [v for v, d in G.out_degree() if d == 0]
-        exit_nodes_i = []
-        for _ in range(num_exit):
-            exit_nodes_i.append(G.number_of_nodes())
-            G.add_node(G.number_of_nodes())
-
-        if(len(leaves) > len(exit_nodes_i)):
-            no_in_degree_i = copy.deepcopy(exit_nodes_i)
-            for leaf in leaves:
-                if(no_in_degree_i):
-                    exit_node_i = random.choice(no_in_degree_i)
-                    G.add_edge(leaf, exit_node_i)
-                    no_in_degree_i.remove(exit_node_i)
-                else:
-                    G.add_edge(leaf, random.choice(exit_nodes_i))
-        else:
-            while(exit_nodes_i):
-                for leaf in leaves:
-                    if(not exit_nodes_i):
-                        break
-                    exit_node_i = random.choice(exit_nodes_i)
-                    G.add_edge(leaf, exit_node_i)
-                    exit_nodes_i.remove(exit_node_i)
 
     def build(self) -> Generator[nx.DiGraph, None, None]:
         for _ in range(self._cfg.get_value(["NG"])):
@@ -144,6 +112,11 @@ class FanInFanOutBuilder(DAGBuilderBase):
 
             # Add exit nodes (Optional)
             if num_exit:
-                self._force_merge_to_exit_nodes(num_exit, G)
+                leaves = [v for v, d in G.out_degree() if d == 0]
+                exit_nodes_i = []
+                for _ in range(num_exit):
+                    exit_nodes_i.append(G.number_of_nodes())
+                    G.add_node(G.number_of_nodes())
+                self._add_min_edges(leaves, exit_nodes_i, G)
 
             yield G

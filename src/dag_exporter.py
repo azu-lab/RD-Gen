@@ -49,8 +49,10 @@ class DAGExporter():
     ) -> None:
         # Preprocessing
         for node_i in G.nodes():
-            G.nodes[node_i]['label'] = (f'[{node_i}]\n'
-                                        f'C: {G.nodes[node_i]["Execution_time"]}')
+            G.nodes[node_i]['label'] = (
+                f'[{node_i}]\n'
+                f'C: {G.nodes[node_i]["Execution_time"]}'
+            )
             if(period := G.nodes[node_i].get("Period")):
                 G.nodes[node_i]['shape'] = 'box'
                 G.nodes[node_i]['label'] += f'\nT: {period}'

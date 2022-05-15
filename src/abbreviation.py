@@ -1,4 +1,5 @@
 TO_ABB = {
+    'probability of edge': 'PE',
     'PNG': 'PNG',
     'SVG': 'SVG',
     'PDF': 'PDF',
@@ -57,6 +58,7 @@ TO_ABB = {
 }
 
 TO_ORI = {
+    'PE': 'probability of edge',
     'PNG': 'png',
     'SVG': 'svg',
     'PDF': 'pdf',

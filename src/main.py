@@ -47,8 +47,8 @@ def main(config_path, dest_dir):
         generation_method = cfg.get_value(["GM"])
         if generation_method == "fan-in/fan-out":
             dag_builder = DAGBuilder.create_fan_in_fan_out_builder(cfg)
-        elif generation_method == "fayer by layer":
-            dag_builder = DAGBuilder.create_layer_by_layer_builder(cfg)
+        elif generation_method == "g(n, p)":
+            dag_builder = DAGBuilder.create_g_n_p_builder(cfg)
         elif generation_method == "chain-based":
             pass  # TODO
         else:
