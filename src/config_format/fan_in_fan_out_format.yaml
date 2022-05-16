@@ -1,4 +1,10 @@
 ### Compulsory parameters
+Generation method:
+  Requirement: 'compulsory'
+  Type:
+    - 'layer by layer'
+    - 'chain-based'
+    - 'fan-in fan-out'
 Number of DAGs: 
   Requirement: 'compulsory'
   Type: 'int'

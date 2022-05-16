@@ -1,14 +1,15 @@
-import networkx as nx
-import numpy as np
-import random
 import copy
 import itertools
+import random
 from typing import List, Tuple
 
-from src.utils import choice_one_from_cfg, get_max_of_range, get_min_of_range, get_cp
-from src.random_set_exec import random_get_exec
-from src.abbreviation import ToO
+import networkx as nx
+import numpy as np
+from src.abbreviation import TO_ORI
 from src.exceptions import NoSettablePeriodError
+from src.random_set_exec import random_get_exec
+from src.utils import (choice_one_from_cfg, get_cp, get_max_of_range,
+                       get_min_of_range)
 
 
 class Chain:
@@ -23,7 +24,7 @@ class Chain:
         cp = None
         cp_len = 0
         for tail in self.tails:
-            path, path_len= get_cp(dag, self.head, tail)
+            path, path_len = get_cp(dag, self.head, tail)
             if(path_len > cp_len):
                 cp = path
                 cp_len = path_len
@@ -31,32 +32,34 @@ class Chain:
         return cp, cp_len
 
     def random_set_exec(self, cfg, G: nx.DiGraph) -> None:
-        if(ToO['UMP'] in cfg.keys()
-           and cfg[ToO['UMP']][ToO['PT']] == 'Chain'):
+        if(TO_ORI['UMP'] in cfg.keys()
+           and cfg[TO_ORI['UMP']][TO_ORI['PT']] == 'Chain'):
             upper_bound_cp_len = int(np.floor((G.nodes[self.head]['period']
-                                               * choice_one_from_cfg(cfg[ToO['UMP']][ToO['MREP']]))))
+                                               * choice_one_from_cfg(cfg[TO_ORI['UMP']][TO_ORI['MREP']]))))
 
-            ### Determine the maximum execution time of a single node on longest path
+            # Determine the maximum execution time of a single node on longest path
             max_hop = 0
             for tail in self.tails:
                 if(self.head == tail):
                     if(1 > max_hop):
                         max_hop = 1
                 else:
-                    paths = nx.all_simple_paths(G, source=self.head, target=tail)
+                    paths = nx.all_simple_paths(
+                        G, source=self.head, target=tail)
                     if((hop := max([len(p) for p in paths])) > max_hop):
                         max_hop = hop
             max_exec = int(upper_bound_cp_len / max_hop)
 
-            ### Random set (temp)
+            # Random set (temp)
             if('Fixed' in cfg['Execution time'].keys()):
                 choices = [cfg['Execution time']['Fixed']]
             elif('Random' in cfg['Execution time'].keys()):
-                choices = [v for v in cfg['Execution time']['Random'] if v <= max_exec]
+                choices = [v for v in cfg['Execution time']
+                           ['Random'] if v <= max_exec]
             for node_i in self.nodes:
                 G.nodes[node_i]['exec'] = random.choice(choices)
 
-            ### Adjustment not to exceed the upper bound
+            # Adjustment not to exceed the upper bound
             continue_flag = True
             while(continue_flag):
                 cp, cp_len = self._get_cp(G)
@@ -64,16 +67,18 @@ class Chain:
                     decrease_flag = False
                     random.shuffle(cp)
                     for node_i in cp:
-                        if(G.nodes[node_i]['exec'] > get_min_of_range(cfg[ToO['ET']])):
+                        if(G.nodes[node_i]['exec'] > get_min_of_range(cfg[TO_ORI['ET']])):
                             G.nodes[node_i]['exec'] -= 1
                             decrease_flag = True
                             break
                     if(not decrease_flag):
-                        upper_bound_period = get_max_of_range(cfg[ToO['UMP']][ToO['P']])
+                        upper_bound_period = get_max_of_range(
+                            cfg[TO_ORI['UMP']][TO_ORI['P']])
                         if(G.nodes[self.head]['period'] == upper_bound_period):
                             raise NoSettablePeriodError
                         else:
-                            G.nodes[self.head]['period'] = upper_bound_period  # HACK
+                            # HACK
+                            G.nodes[self.head]['period'] = upper_bound_period
                 else:
                     continue_flag = False
 
@@ -83,29 +88,33 @@ class Chain:
 
 
 def generate_single_chain(cfg, num_nodes: int, G: nx.DiGraph) -> Chain:
-    ### Determine chain width
+    # Determine chain width
     if('Fixed' in cfg['Chain width'].keys()):
         chain_width = cfg['Chain width']['Fixed']
     elif('Random' in cfg['Chain width'].keys()):
-        lower_bound = int(np.ceil(num_nodes / get_max_of_range(cfg[ToO['CL']])))
-        upper_bound = int(np.floor(num_nodes / get_min_of_range(cfg[ToO['CL']])))
-        choices = [v for v in cfg['Chain width']['Random'] if lower_bound <= v <= upper_bound]
+        lower_bound = int(
+            np.ceil(num_nodes / get_max_of_range(cfg[TO_ORI['CL']])))
+        upper_bound = int(
+            np.floor(num_nodes / get_min_of_range(cfg[TO_ORI['CL']])))
+        choices = [v for v in cfg['Chain width']
+                   ['Random'] if lower_bound <= v <= upper_bound]
         chain_width = random.choice(choices)
 
-    ### Determine the length of main sequence
+    # Determine the length of main sequence
     if('Fixed' in cfg['Chain length'].keys()):
         main_len = cfg['Chain length']['Fixed']
     elif('Random' in cfg['Chain length'].keys()):
         lower_bound = int(np.ceil(num_nodes / chain_width))
         upper_bound = int(np.floor(num_nodes - chain_width + 1))
-        choices = [v for v in cfg['Chain length']['Random'] if lower_bound <= v <= upper_bound]
+        choices = [v for v in cfg['Chain length']
+                   ['Random'] if lower_bound <= v <= upper_bound]
         main_len = random.choice(choices)
 
-    ### Create length list of each sequence
+    # Create length list of each sequence
     if(chain_width == 1):
         sequence_len_list = [main_len]
     else:
-        ### Determine the length of each sub sequence
+        # Determine the length of each sub sequence
         remain_num_nodes = num_nodes - main_len
         choices_sub_len = list(range(1, main_len+1))
         combos_sub_len = []
@@ -115,34 +124,36 @@ def generate_single_chain(cfg, num_nodes: int, G: nx.DiGraph) -> Chain:
 
         sequence_len_list = list(random.choice(combos_sub_len)) + [main_len]
 
-    ### Generate sequences
-    sequences_dict = {str(seq_i):[] for seq_i in range(len(sequence_len_list))}
+    # Generate sequences
+    sequences_dict = {str(seq_i): []
+                      for seq_i in range(len(sequence_len_list))}
     for seq_i, seq_len in enumerate(sequence_len_list):
         for _ in range(seq_len):
             sequences_dict[str(seq_i)].append(G.number_of_nodes())
             G.add_node(G.number_of_nodes())
             if(len(sequences_dict[str(seq_i)]) >= 2):
-                G.add_edge(sequences_dict[str(seq_i)][-2], sequences_dict[str(seq_i)][-1])
+                G.add_edge(sequences_dict[str(seq_i)]
+                           [-2], sequences_dict[str(seq_i)][-1])
 
     if(chain_width == 1):
         chain = sequences_dict[str(0)]
     else:
-        ### Merge the sub sequences into the main sequence
+        # Merge the sub sequences into the main sequence
         main_seq_i = sequence_len_list.index(max(sequence_len_list))
         main_seq = sequences_dict[str(main_seq_i)]
         chain = copy.deepcopy(main_seq)
         for seq_i, nodes in sequences_dict.items():
             if(seq_i == str(main_seq_i)):
                 continue
-            if(get_max_of_range(cfg[ToO['CL']]) - len(nodes) == 1):
+            if(get_max_of_range(cfg[TO_ORI['CL']]) - len(nodes) == 1):
                 source_i = main_seq[0]
             else:
                 source_i = random.choice(
-                        main_seq[0 : (get_max_of_range(cfg[ToO['CL']])-len(nodes)+1)])
+                    main_seq[0: (get_max_of_range(cfg[TO_ORI['CL']])-len(nodes)+1)])
             G.add_edge(source_i, nodes[0])
             chain += nodes
 
-    ### Generate chain
+    # Generate chain
     head = None
     tails = []
     for node_i in chain:
@@ -156,7 +167,7 @@ def generate_single_chain(cfg, num_nodes: int, G: nx.DiGraph) -> Chain:
 
 def vertically_link_chains(cfg, chains: List[Chain], G: nx.DiGraph) -> None:
     source_chains = random.sample(chains,
-                                  choice_one_from_cfg(cfg[ToO['VLC']][ToO['NEN']]))
+                                  choice_one_from_cfg(cfg[TO_ORI['VLC']][TO_ORI['NEN']]))
     for source_chain in source_chains:
         source_chain.level = 1
     target_chains = [c for c in chains if c.level == -1]
@@ -167,11 +178,11 @@ def vertically_link_chains(cfg, chains: List[Chain], G: nx.DiGraph) -> None:
 
         G.add_edge(source_tail,
                    target_chain.head,
-                   comm=choice_one_from_cfg(cfg[ToO['UCT']]))
+                   comm=choice_one_from_cfg(cfg[TO_ORI['UCT']]))
         target_chain.level = source_chain.level + 1
         target_chains.remove(target_chain)
-        if(ToO['MLV'] in cfg[ToO['VLC']]
-                and target_chain.level != get_max_of_range(cfg[ToO['VLC']][ToO['MLV']])):
+        if(TO_ORI['MLV'] in cfg[TO_ORI['VLC']]
+                and target_chain.level != get_max_of_range(cfg[TO_ORI['VLC']][TO_ORI['MLV']])):
             source_chains.append(target_chain)
         source_chain.unlinked_tails.remove(source_tail)
         if(not source_chain.unlinked_tails):
@@ -179,19 +190,20 @@ def vertically_link_chains(cfg, chains: List[Chain], G: nx.DiGraph) -> None:
 
 
 def merge_chains(cfg, chains: List[Chain], G: nx.DiGraph) -> None:
-    ### Determine source tails
+    # Determine source tails
     exit_choices = []
     for chain in chains:
         exit_choices += chain.unlinked_tails
     exit_nodes = random.sample(exit_choices,
-                               choice_one_from_cfg(cfg[ToO['MGC']][ToO['NEX']]))
+                               choice_one_from_cfg(cfg[TO_ORI['MGC']][TO_ORI['NEX']]))
     source_tails = list(set(exit_choices) - set(exit_nodes))
 
-    ### Determine target nodes
+    # Determine target nodes
     target_nodes = set()
-    true_keys = [k for k, v in cfg[ToO['MGC']].items() if v==True]
+    true_keys = [k for k, v in cfg[TO_ORI['MGC']].items() if v == True]
     if('Head of chain' in true_keys):
-        target_nodes |= {c.head for c in chains} - {v for v, d in G.in_degree() if d == 0}
+        target_nodes |= {c.head for c in chains} - \
+            {v for v, d in G.in_degree() if d == 0}
     if('Exit node' in true_keys):
         target_nodes |= set(exit_nodes)
     if('Middle of chain' in true_keys):
@@ -200,11 +212,12 @@ def merge_chains(cfg, chains: List[Chain], G: nx.DiGraph) -> None:
             nodes_except_head.remove(chain.head)
             target_nodes |= set(nodes_except_head) - set(chain.tails)
 
-    ### Merge
+    # Merge
     while(source_tails):
         source_tail = random.choice(source_tails)
-        target_node = random.choice(list(target_nodes - set(nx.ancestors(G, source_tail))))
+        target_node = random.choice(
+            list(target_nodes - set(nx.ancestors(G, source_tail))))
         G.add_edge(source_tail,
                    target_node,
-                   comm=choice_one_from_cfg(cfg[ToO['UCT']]))
+                   comm=choice_one_from_cfg(cfg[TO_ORI['UCT']]))
         source_tails.remove(source_tail)
