@@ -1,7 +1,7 @@
 import random
 import sys
 from abc import ABCMeta, abstractmethod
-from typing import Generator, List, Union
+from typing import Generator, List, Tuple, Union
 
 import networkx as nx
 from src.config import Config
@@ -102,3 +102,18 @@ class DAGBuilderBase(metaclass=ABCMeta):
             return True
         else:
             return False
+
+    def ensure_weakly_connected(
+        self,
+        G: nx.DiGraph
+    ) -> None:
+        if len(comps := list(nx.weakly_connected_components(G))) >= 2:
+            comps.sort(key=lambda x: len(x))
+            tgt_comp = comps.pop(-1)
+            tgt_nodes = tgt_comp - {v for v, d in G.in_degree() if d == 0}
+            exit_nodes = {v for v, d in G.out_degree() if d == 0}
+            for comp in comps:
+                comp_exits = set(comp) & exit_nodes
+                src_i = random.choice(list(comp_exits))
+                tgt_in_degree = {G.in_degree(t): t for t in tgt_nodes}
+                G.add_edge(src_i, min(tgt_in_degree.items())[1])

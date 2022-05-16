@@ -22,11 +22,8 @@ class FanInFanOutBuilder(DAGBuilderBase):
         self._max_out = self.get_bound("max", out_degree)
         in_degree = self._cfg.get_value(["GS", "ID"])
         self._max_in = self.get_bound("max", in_degree)
-        num_nodes = self._cfg.get_value(["GS", "NN"])
-        self._min_num_nodes = self.get_bound("min", num_nodes)
-        self._max_num_nodes = self.get_bound("max", num_nodes)
 
-    def _get_max_diff_node(
+    def _get_max_out_diff_node(
         self,
         G: nx.DiGraph
     ) -> Tuple[int, int]:
@@ -53,30 +50,33 @@ class FanInFanOutBuilder(DAGBuilderBase):
 
         return search_log["max_diff_node_i"], search_log["max_diff"]
 
+    def _init_dag(
+        self,
+        num_entry
+    ) -> nx.DiGraph:
+        G = nx.DiGraph()
+        for _ in range(num_entry):
+            G.add_node(G.number_of_nodes())
+
+        return G
+
     def build(self) -> Generator[nx.DiGraph, None, None]:
         for _ in range(self._cfg.get_value(["NG"])):
             num_build_fail = 0
-            G = nx.DiGraph()
 
-            # Determine number_of_nodes bound (Loop finish condition)
-            num_exit = self._cfg.get_value(["GS", "NEX"])
-            if num_exit:
-                num_exit = self.random_choice(num_exit)
-                lower = self._min_num_nodes - num_exit
-                upper = self._max_num_nodes - num_exit
-            else:
-                lower = self._min_num_nodes
-                upper = self._max_num_nodes
+            # Determine number_of_nodes (Loop finish condition)
+            num_nodes = self.random_choice(self._cfg.get_value(["GS", "NN"]))
+            if num_exit := self._cfg.get_value(["GS", "NEX"]):
+                num_nodes -= self.random_choice(num_exit)
+            num_entry = self.random_choice(self._cfg.get_value(["GS", "NEN"]))
+            num_nodes -= num_entry
 
-            while not (lower <= G.number_of_nodes() <= upper):
-                # Add entry nodes
-                num_entry = self._cfg.get_value(["GS", "NEN"])
-                for i in range(self.random_choice(num_entry)):
-                    G.add_node(G.number_of_nodes())
+            G = self._init_dag(num_entry)
 
+            while G.number_of_nodes() != num_nodes:
                 if self.get_random_bool():
                     # Fan-out
-                    max_diff_node_i, diff = self._get_max_diff_node(G)
+                    max_diff_node_i, diff = self._get_max_out_diff_node(G)
                     num_add = random.randint(1, diff)
                     add_node_i_list = [G.number_of_nodes() + i
                                        for i in range(num_add)]
@@ -100,7 +100,7 @@ class FanInFanOutBuilder(DAGBuilderBase):
                         G.add_edge(source_node_i, add_node_i)
 
                 # Check build fail
-                if G.number_of_nodes() > self._max_num_nodes:
+                if G.number_of_nodes() > num_nodes:
                     num_build_fail += 1
                     if num_build_fail == self._max_build_fail:
                         msg = ("A DAG satisfying 'Number of nodes' "
@@ -108,7 +108,7 @@ class FanInFanOutBuilder(DAGBuilderBase):
                                f"in {self._max_build_fail} tries.")
                         raise MaxBuildFailError(msg)
                     else:
-                        G = nx.DiGraph()  # reset
+                        G = self._init_dag(num_entry)  # reset
 
             # Add exit nodes (Optional)
             if num_exit:
@@ -118,5 +118,9 @@ class FanInFanOutBuilder(DAGBuilderBase):
                     exit_nodes_i.append(G.number_of_nodes())
                     G.add_node(G.number_of_nodes())
                 self._add_min_edges(leaves, exit_nodes_i, G)
+
+            # Ensure weakly connected (Optional)
+            if (self._cfg.get_value(["GS", "EWC"])):
+                self.ensure_weakly_connected(G)
 
             yield G

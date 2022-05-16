@@ -4,15 +4,16 @@ Generation method: "Fan-in/Fan-out"
 
 Graph structure:
   Number of nodes:
-    Random: (10, 100, 10)
+    Fixed: 20
   In-degree:
     Random: [1, 2, 3]
   Out-degree:
     Random: [1, 2, 3]
   Number of entry nodes:
-    Combination: [2, 3, 4, 5]
+    Combination: [1, 2, 3, 4]
   Number of exit nodes:
     Fixed: 1
+  Ensure weakly connected: True
 
 Properties:
   Execution time:

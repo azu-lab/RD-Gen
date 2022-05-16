@@ -60,4 +60,8 @@ class GNPBuilder(DAGBuilderBase):
                     G.add_node(G.number_of_nodes())
                 self._add_min_edges(leaves, exit_nodes_i, G)
 
+            # Ensure weakly connected (Optional)
+            if (self._cfg.get_value(["GS", "EWC"])):
+                self.ensure_weakly_connected(G)
+
             yield G

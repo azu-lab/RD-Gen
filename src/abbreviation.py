@@ -1,4 +1,5 @@
 TO_ABB = {
+    'ensure weakly connected': 'EWC',
     'main sequence tail': 'MST',
     'sub sequence tail': 'SST',
     'main sequence length': 'MSL',
@@ -62,6 +63,7 @@ TO_ABB = {
 }
 
 TO_ORI = {
+    'EWC': 'ensure weakly connected',
     'MST': 'main sequence tail',
     'SST': 'sub sequence tail',
     'MSL': 'main sequence length',

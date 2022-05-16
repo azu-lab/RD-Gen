@@ -11,6 +11,7 @@ Graph structure:
     Combination: [2, 3, 4, 5]
   Number of exit nodes:
     Fixed: 1
+  ensure weakly connected: True
 
 Properties:
   Execution time:
