@@ -16,12 +16,13 @@ rm -rf Random_DAG_Generator
 ```
 
 ## Quick start
-### Normal mode
-- Modify Random_DAG_Generator/config/normal/sample_normal_config.yaml
-  - Random_DAG_Generator can be executed without any changes.
-- `bash run_generator.bash --config_yaml_name sample_normal_config.yaml`
+Sample config files can be used without modification.
 
-### Chain mode
-- Modify Random_DAG_Generator/config/chain/sample_chain_config.yaml
-  - Random_DAG_Generator can be executed without any changes.
-- `bash run_generator.bash -c --config_yaml_name sample_chain_config.yaml`
+### Chain-based method
+- `bash run_generator.bash -c ./sample_config/chain_based/sample_chain_based.yaml`
+
+### Fan-in/Fan-out method
+- `bash run_generator.bash -c ./sample_config/fan_in_fan_out/sample_fan_in_fan_out.yaml`
+
+### G(n, p) method
+- `bash run_generator.bash -c ./sample_config/g_n_p/sample_g_n_p.yaml`
