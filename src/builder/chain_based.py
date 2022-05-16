@@ -1,7 +1,6 @@
 
 import copy
 import random
-from re import sub
 from typing import Dict, Generator, List, Tuple
 
 import networkx as nx
@@ -106,6 +105,9 @@ class Chain(DAGBuilderBase):
                         self._sub_tails.append(add_node_i)
 
 
+chains: List[Chain] = []
+
+
 class ChainBasedBuilder(DAGBuilderBase):
     def __init__(
         self,
@@ -116,12 +118,14 @@ class ChainBasedBuilder(DAGBuilderBase):
     def build(self) -> Generator[nx.DiGraph, None, None]:
         for _ in range(self._cfg.get_value(["NG"])):
             # Build each chain
-            chains: List[Chain] = []
+            global chains
+            chains = []
             num_chain_choices = self._cfg.get_value(["GS", "NC"])
             for _ in range(self.random_choice(num_chain_choices)):
                 chain = Chain(self._cfg)
                 chain.build()
                 chains.append(chain)
+            Chain.node_i = 0
 
             # Union chains
             chain_dags = [copy.deepcopy(c._G) for c in chains]
