@@ -136,3 +136,7 @@ tests/
 
 # DAGs
 DAGs/
+
+# old
+file_handling_helper_old.py
+config_format/
