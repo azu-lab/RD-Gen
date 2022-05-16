@@ -1,14 +1,15 @@
-import networkx as nx
-import numpy as np
-import random
 import copy
 import itertools
+import random
 from typing import List, Tuple
 
-from src.utils import choice_one_from_cfg, get_max_of_range, get_min_of_range, get_cp
-from src.random_set_exec import random_get_exec
+import networkx as nx
+import numpy as np
 from src.abbreviation import TO_ORI
 from src.exceptions import NoSettablePeriodError
+from src.random_set_exec import random_get_exec
+from src.utils import (choice_one_from_cfg, get_cp, get_max_of_range,
+                       get_min_of_range)
 
 
 class Chain:

@@ -1,8 +1,7 @@
-from re import L
 
+from src.builder.chain_based import ChainBasedBuilder
 from src.builder.fan_in_fan_out import FanInFanOutBuilder
 from src.builder.g_n_p import GNPBuilder
-from src.builder.layer_by_layer import LayerByLayerBuilder
 from src.config import Config
 
 
@@ -20,5 +19,7 @@ class DAGBuilder:
         return GNPBuilder(cfg)
 
     @staticmethod
-    def create_chain_based_builder():
-        pass  # TODO
+    def create_chain_based_builder(
+        cfg: Config
+    ) -> ChainBasedBuilder:
+        return ChainBasedBuilder(cfg)

@@ -1,4 +1,8 @@
 TO_ABB = {
+    'main sequence tail': 'MST',
+    'sub sequence tail': 'SST',
+    'main sequence length': 'MSL',
+    'number of sub sequence': 'NSS',
     'probability of edge': 'PE',
     'PNG': 'PNG',
     'SVG': 'SVG',
@@ -50,7 +54,7 @@ TO_ABB = {
     'chain length': 'CL',
     'chain width': 'CW',
     'vertically link chains': 'VLC',
-    'max level of vertical links': 'MLV',
+    'maximum vertical links': 'MVL',
     'merge chains': 'MGC',
     'middle of chain': 'MDC',
     'exit node': 'EXN',
@@ -58,6 +62,10 @@ TO_ABB = {
 }
 
 TO_ORI = {
+    'MST': 'main sequence tail',
+    'SST': 'sub sequence tail',
+    'MSL': 'main sequence length',
+    'NSS': 'number of sub sequence',
     'PE': 'probability of edge',
     'PNG': 'png',
     'SVG': 'svg',
@@ -109,7 +117,7 @@ TO_ORI = {
     'CL': 'chain length',
     'CW': 'chain width',
     'VLC': 'vertically link chains',
-    'MLV': 'max level of vertical links',
+    'MVL': 'maximum vertical links',
     'MGC': 'merge chains',
     'MDC': 'middle of chain',
     'EXN': 'exit node',

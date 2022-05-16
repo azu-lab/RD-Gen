@@ -50,7 +50,7 @@ def main(config_path, dest_dir):
         elif generation_method == "g(n, p)":
             dag_builder = DAGBuilder.create_g_n_p_builder(cfg)
         elif generation_method == "chain-based":
-            pass  # TODO
+            dag_builder = DAGBuilder.create_chain_based_builder(cfg)
         else:
             raise NotImplementedError
         dag_raw_iter = dag_builder.build()
