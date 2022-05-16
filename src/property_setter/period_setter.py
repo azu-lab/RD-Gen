@@ -41,7 +41,9 @@ class PeriodSetter(PropertySetterBase):
         elif self._type == "entry":
             entry_set_flag = True
         elif self._type == "chain":
-            pass  # TODO
+            self._random_set(list(G.nodes()),
+                             self._choices,
+                             G)
 
         if self._entry_choices:
             entry_set_flag = True
