@@ -48,7 +48,7 @@ TO_ABB = {
     'period': 'P',
     'entry node period': 'ENP',
     'exit node period': 'EXP',
-    'max ratio of execution time to period': 'MREP',
+    'maximum utilization': 'MU',
     'descendants have larger period': 'DLP',
     # chain
     'number of chains': 'NC',
@@ -112,7 +112,7 @@ TO_ORI = {
     'P': 'period',
     'ENP': 'entry node period',
     'EXP': 'exit node period',
-    'MREP': 'max ratio of execution time to period',
+    'MU': 'maximum utilization',
     'DLP': 'descendants have larger period',
     # chain
     'NC': 'number of chains',

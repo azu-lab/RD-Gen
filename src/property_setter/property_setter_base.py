@@ -1,5 +1,5 @@
 import random
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod
 from typing import List, Union
 
 import networkx as nx

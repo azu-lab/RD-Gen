@@ -36,6 +36,8 @@ Properties:
       Random: [50, 100]
     Total utilization:
       Combination: (5.0, 6.5, 0.1)
+    Maximum utilization:
+      Fixed: 2.7
 
 Output formats:
   Naming of combination directory: "Abbreviation"

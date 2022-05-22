@@ -1,4 +1,5 @@
 import random
+import sys
 from typing import List, Optional, Union
 
 import networkx as nx
@@ -20,6 +21,7 @@ class EPUSetter(PropertySetterBase):
         else:
             self._period_setter = None
         self._U_choices = cfg.get_value(["PP", "MR", "TU"])
+        self._U_upper = cfg.get_value(["PP", "MR", "MU"])
         self._chain_flag = cfg.get_value(["PP", "MR", "PT"]) == "chain"
 
     def _UUniFast_based_set(
@@ -30,7 +32,8 @@ class EPUSetter(PropertySetterBase):
         total_U = self.choice_one(self._U_choices)
         utilization_group = self._fast_grouping(
             total_U,
-            G.number_of_nodes()
+            G.number_of_nodes(),
+            self._U_upper
         )
         for node_i, utilization in zip(G.nodes(), utilization_group):
             G.nodes[node_i]["Utilization"] = utilization
@@ -51,16 +54,33 @@ class EPUSetter(PropertySetterBase):
 
     def _fast_grouping(
         self,
-        sum: int,
-        num_group: int
+        sum_value: int,
+        num_group: int,
+        upper_bound: float = None
     ) -> List[int]:
-        grouping = [0]*num_group
-        sum = sum
-        for i in range(1, num_group):
-            next_sum = sum * (random.uniform(0, 1)**(1/(num_group-i)))
-            grouping[i-1] = sum - next_sum
-            sum = next_sum
-        grouping[num_group-1] = sum
+        if upper_bound:
+            while True:
+                print('loop')
+                grouping = [0]*num_group
+                sum = sum_value
+                for i in range(1, num_group):
+                    next_sum = - sys.maxsize
+                    while(sum - next_sum >= upper_bound):
+                        next_sum = sum * (random.uniform(0, 1)
+                                          ** (1/(num_group-i)))
+                    grouping[i-1] = sum - next_sum
+                    sum = next_sum
+                if sum < upper_bound:
+                    grouping[num_group-1] = sum
+                    break
+        else:
+            grouping = [0]*num_group
+            sum = sum_value
+            for i in range(1, num_group):
+                next_sum = sum * (random.uniform(0, 1)**(1/(num_group-i)))
+                grouping[i-1] = sum - next_sum
+                sum = next_sum
+                grouping[num_group-1] = sum
 
         return grouping
 
