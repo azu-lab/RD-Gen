@@ -15,12 +15,12 @@ class EPUSetter(PropertySetterBase):
         cfg: Config
     ) -> None:
         self._E_choices = cfg.get_value(["PP", "ET"])
-        if base_param := cfg.get_param(["PP", "MP"]):
+        if base_param := cfg.get_param(["PP", "MR"]):
             self._period_setter = PeriodSetter(base_param)
         else:
             self._period_setter = None
-        self._U_choices = cfg.get_value(["PP", "MP", "TU"])
-        self._chain_flag = cfg.get_value(["PP", "MP", "PT"]) == "chain"
+        self._U_choices = cfg.get_value(["PP", "MR", "TU"])
+        self._chain_flag = cfg.get_value(["PP", "MR", "PT"]) == "chain"
 
     def _UUniFast_based_set(
         self,

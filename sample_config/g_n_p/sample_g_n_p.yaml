@@ -1,8 +1,8 @@
 Seed: 0
 Number of DAGs: 50
-Generation method: "G(n, p)"
 
 Graph structure:
+  Generation method: "G(n, p)"
   Number of nodes:
     Random: (10, 100, 10)
   Probability of edge:
@@ -21,7 +21,7 @@ Properties:
   End-to-end deadline:
     Ratio of deadline to critical path:
       Random: (1.0, 1.5, 0.1)
-  Multi-period:
+  Multi-rate:
     Period:
       Random: (10, 100, 10)
     Periodic type: "All"

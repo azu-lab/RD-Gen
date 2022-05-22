@@ -16,6 +16,6 @@ class ConfigLoader():
         return Config(self._cfg_raw)
 
     def _validate(self) -> None:
-        if self._cfg_raw["Generation method"]:
+        if self._cfg_raw["Graph structure"]["Generation method"]:
             pass  # TODO
             # config_scheme = Schema()

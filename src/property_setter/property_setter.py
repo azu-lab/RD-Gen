@@ -20,7 +20,7 @@ class PropertySetter():
             self._setters.append(
                 RandomPropertySetter("Communication_time", choices, "edge")
             )
-        if choices := cfg.get_value(["PP", "MP", "OS"]):
+        if choices := cfg.get_value(["PP", "MR", "OS"]):
             self._setters.append(
                 RandomPropertySetter("Offset", choices, "node")
             )

@@ -72,7 +72,7 @@ class DAGExporter():
                           'Circle node:  Event-driven node\l',
                           '[i]:  Task index\l',
                           'C:  Worst-case execution time (WCET)\l']
-            if(self._cfg.get_value(["PP", "MP"])):
+            if(self._cfg.get_value(["PP", "MR"])):
                 legend_str.insert(1, 'Square node:  Timer-driven node\l')
                 legend_str.append('T:  Period\l')
             if(self._cfg.get_value(["PP", "EED"])):

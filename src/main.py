@@ -45,7 +45,7 @@ def main(config_path, dest_dir):
             yaml.dump(log, f)
 
         # Generate DAG iterator
-        generation_method = cfg.get_value(["GM"])
+        generation_method = cfg.get_value(["GS", "GM"])
         if generation_method == "fan-in/fan-out":
             dag_builder = DAGBuilder.create_fan_in_fan_out_builder(cfg)
         elif generation_method == "g(n, p)":
