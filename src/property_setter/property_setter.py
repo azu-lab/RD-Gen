@@ -2,6 +2,7 @@ from typing import List
 
 import networkx as nx
 from src.config import Config
+from src.property_setter.CCR_setter import CCRSetter
 from src.property_setter.end_to_end_deadline_setter import E2EDeadlineSetter
 from src.property_setter.EPU_setter import EPUSetter
 from src.property_setter.property_setter_base import PropertySetterBase
@@ -15,11 +16,24 @@ class PropertySetter():
     ) -> None:
         self._setters: List[PropertySetterBase] = []
 
+        # execution time & period & utilization
+        self._setters.append(EPUSetter(cfg))
+
+        # CCR
+        if cfg.get_param(["PP", "CCR"]):
+            self._setters.append(CCRSetter(cfg))
+        else:
+            # Random set communication time
+            if choices := cfg.get_value(["PP", "CT"]):
+                self._setters.append(
+                    RandomPropertySetter("Communication_time", choices, "edge")
+                )
+
+        # End-to-end deadline
+        if param := cfg.get_param(["PP", "EED"]):
+            self._setters.append(E2EDeadlineSetter(param))
+
         # Random properties
-        if choices := cfg.get_value(["PP", "CT"]):
-            self._setters.append(
-                RandomPropertySetter("Communication_time", choices, "edge")
-            )
         if choices := cfg.get_value(["PP", "MR", "OS"]):
             self._setters.append(
                 RandomPropertySetter("Offset", choices, "node")
@@ -40,13 +54,6 @@ class PropertySetter():
                         child.value,
                         "edge")
                 )
-
-        # execution time & period & utilization
-        self._setters.append(EPUSetter(cfg))
-
-        # End-to-end deadline
-        if param := cfg.get_param(["PP", "EED"]):
-            self._setters.append(E2EDeadlineSetter(param))
 
     def set(
         self,

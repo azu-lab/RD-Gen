@@ -1,7 +1,3 @@
-import random
-import sys
-from typing import List, Optional, Union
-
 import networkx as nx
 import numpy as np
 import src.builder.chain_based as cb
@@ -51,38 +47,6 @@ class EPUSetter(PropertySetterBase):
                 exec = 1
             G.nodes[node_i]["Execution_time"] = exec
             del G.nodes[node_i]["Utilization"]  # Not output
-
-    def _fast_grouping(
-        self,
-        sum_value: int,
-        num_group: int,
-        upper_bound: float = None
-    ) -> List[int]:
-        if upper_bound:
-            while True:
-                print('loop')
-                grouping = [0]*num_group
-                sum = sum_value
-                for i in range(1, num_group):
-                    next_sum = - sys.maxsize
-                    while(sum - next_sum >= upper_bound):
-                        next_sum = sum * (random.uniform(0, 1)
-                                          ** (1/(num_group-i)))
-                    grouping[i-1] = sum - next_sum
-                    sum = next_sum
-                if sum < upper_bound:
-                    grouping[num_group-1] = sum
-                    break
-        else:
-            grouping = [0]*num_group
-            sum = sum_value
-            for i in range(1, num_group):
-                next_sum = sum * (random.uniform(0, 1)**(1/(num_group-i)))
-                grouping[i-1] = sum - next_sum
-                sum = next_sum
-                grouping[num_group-1] = sum
-
-        return grouping
 
     def set(
         self,

@@ -1,4 +1,5 @@
 TO_ABB = {
+    'ccr': 'CCR',
     'ensure weakly connected': 'EWC',
     'main sequence tail': 'MST',
     'sub sequence tail': 'SST',
@@ -63,6 +64,7 @@ TO_ABB = {
 }
 
 TO_ORI = {
+    'CCR': 'ccr',
     'EWC': 'ensure weakly connected',
     'MST': 'main sequence tail',
     'SST': 'sub sequence tail',

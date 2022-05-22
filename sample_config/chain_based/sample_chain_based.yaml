@@ -28,6 +28,8 @@ Properties:
       Random: (1.0, 1.5, 0.1)
   Communication time:
     Random: [2, 3, 4, 5]
+  CCR:
+    Combination: (0.3, 3.0, 0.1)
   Multi-rate:
     Periodic type: 'Chain'
     Period:
