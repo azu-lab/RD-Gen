@@ -67,10 +67,11 @@ class FanInFanOutBuilder(DAGBuilderBase):
             # Determine number_of_nodes (Loop finish condition)
             num_nodes = self.random_choice(self._cfg.get_value(["GS", "NN"]))
             if num_exit := self._cfg.get_value(["GS", "NEX"]):
-                num_nodes -= self.random_choice(num_exit)
-            num_entry = self.random_choice(self._cfg.get_value(["GS", "NEN"]))
-            num_nodes -= num_entry
+                num_exit = self.random_choice(num_exit)
+                num_nodes -= num_exit
 
+            # Initialize dag
+            num_entry = self.random_choice(self._cfg.get_value(["GS", "NEN"]))
             G = self._init_dag(num_entry)
 
             while G.number_of_nodes() != num_nodes:

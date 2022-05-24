@@ -40,9 +40,9 @@ def main(config_path, dest_dir):
 
     for dir_name, log, cfg in combo_iter:
         combo_dest_dir = dest_dir + f'/{dir_name}'
-        # os.mkdir(combo_dest_dir)
-        # with open(f'{combo_dest_dir}/combination_log.yaml', 'w') as f:
-        #     yaml.dump(log, f)
+        os.mkdir(combo_dest_dir)
+        with open(f'{combo_dest_dir}/combination_log.yaml', 'w') as f:
+            yaml.dump(log, f)
 
         # Generate DAG iterator
         generation_method = cfg.get_value(["GS", "GM"])
