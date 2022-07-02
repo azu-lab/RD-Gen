@@ -84,25 +84,26 @@ class Chain(DAGBuilderBase):
             if i == main_len-1:
                 self._main_tail.append(add_node_i)
 
-        # Build sub sequence
-        sub_sequences: List[Dict] = []
-        num_sub_sequences = self._cfg.get_value(["GS", "NSS"])
-        for _ in range(self.random_choice(num_sub_sequences)):
-            sub_seq = {"src_i": self.random_choice(list(self._G.nodes())[:-1])}
-            sub_seq["len"] = random.randint(
-                1, self._get_sub_seq_len_upper(sub_seq["src_i"]))
-            sub_sequences.append(sub_seq)
+        # Build sub sequence (Optional)
+        if num_sub_sequences := self._cfg.get_value(["GS", "NSS"]):
+            sub_sequences: List[Dict] = []
+            for _ in range(self.random_choice(num_sub_sequences)):
+                sub_seq = {"src_i": self.random_choice(
+                    list(self._G.nodes())[:-1])}
+                sub_seq["len"] = random.randint(
+                    1, self._get_sub_seq_len_upper(sub_seq["src_i"]))
+                sub_sequences.append(sub_seq)
 
-        for sub_seq in sub_sequences:
-            for i in range(sub_seq["len"]):
-                if i == 0:
-                    add_node_i = self._add_node()
-                    self._G.add_edge(sub_seq["src_i"], add_node_i)
-                else:
-                    add_node_i = self._add_node()
-                    self._G.add_edge(add_node_i-1, add_node_i)
-                    if i == sub_seq["len"]-1:
-                        self._sub_tails.append(add_node_i)
+            for sub_seq in sub_sequences:
+                for i in range(sub_seq["len"]):
+                    if i == 0:
+                        add_node_i = self._add_node()
+                        self._G.add_edge(sub_seq["src_i"], add_node_i)
+                    else:
+                        add_node_i = self._add_node()
+                        self._G.add_edge(add_node_i-1, add_node_i)
+                        if i == sub_seq["len"]-1:
+                            self._sub_tails.append(add_node_i)
 
 
 chains: List[Chain] = []
@@ -155,9 +156,12 @@ class ChainBasedBuilder(DAGBuilderBase):
             # Merge chains
             if self._cfg.get_param(["GS", "MGC"]):
                 # Initialize variables
+                src_tails = [v for v, d in G.out_degree() if d == 0]
                 num_exit = self.random_choice(
                     self._cfg.get_value(["GS", "MGC", "NEX"]))
-                src_tails = [v for v, d in G.out_degree() if d == 0]
+                while num_exit > len(src_tails):  # HACK
+                    num_exit = self.random_choice(
+                        self._cfg.get_value(["GS", "MGC", "NEX"]))
                 random.shuffle(src_tails)
                 exit_nodes = {src_tails.pop(0) for _ in range(num_exit)}
 

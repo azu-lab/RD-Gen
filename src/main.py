@@ -5,7 +5,6 @@ from logging import getLogger
 
 import yaml
 
-from src.builder.chain_based import ChainBasedBuilder
 from src.builder.dag_builder_factory import DAGBuilder
 from src.combo_generator import ComboGenerator
 from src.config_loader import ConfigLoader

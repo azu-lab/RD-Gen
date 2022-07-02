@@ -4,6 +4,7 @@ from abc import ABCMeta, abstractmethod
 from typing import List, Union
 
 import networkx as nx
+from src.exceptions import MaxBuildFailError
 
 
 class PropertySetterBase(metaclass=ABCMeta):
@@ -30,8 +31,10 @@ class PropertySetterBase(metaclass=ABCMeta):
         upper_bound: float = None
     ) -> List[float]:
         if upper_bound:  # HACK
+            if sum_value / num_group >= upper_bound:  # HACK
+                raise MaxBuildFailError
+
             while True:
-                print('loop')
                 grouping = [0.0]*num_group
                 sum = sum_value
                 for i in range(1, num_group):

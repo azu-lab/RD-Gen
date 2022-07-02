@@ -1,25 +1,25 @@
 Seed: 0
-Number of DAGs: 10
+Number of DAGs: 30
 
 Graph structure:
-  Generation method: Fan-in/Fan-out
+  Generation method: G(n, p)
   Number of nodes:
-    Combination: (10, 1000, 10)
-  In-degree:
-    Random: [1, 2, 3]
-  Out-degree:
-    Random: [1, 2, 3]
+    Fixed: 10
+  Probability of edge:
+    Random: (0.1, 0.9, 0.1)
   Number of entry nodes:
-    Random: [1, 2, 3, 4, 5]
+    Random: [1, 2, 3, 4]
   Number of exit nodes:
-    Fixed: 1
+    Random: [1]
   Ensure weakly connected: True
 
 Properties:
-  Execution time:
-    Random: (1, 30, 1)
-  CCR:
-    Combination: [0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0]
+  Multi-rate:
+    Period:
+      Random: (10, 100, 1)
+    Periodic type: "All"
+    Total utilization:
+      Combination: (0.05, 1.0, 0.05)
 
 Output formats:
   Naming of combination directory: "Abbreviation"
