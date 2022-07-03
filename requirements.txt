@@ -3,6 +3,7 @@ networkx
 pydot
 PyYAML
 numpy
+schema
 ps2epsi
 
 ###### Requirements with Version Specifiers ######`
