@@ -1,0 +1,23 @@
+name: pytest
+
+on:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Install test packages
+        run: |
+          sudo apt install -y python3-pytest-mock
+        shell: bash
+
+      # - name: Install dependent packages
+      #   run: python3 -m pip install -r requirements.txt
+
+      - name: Run pytest
+        run: |
+          python3 -m pytest
