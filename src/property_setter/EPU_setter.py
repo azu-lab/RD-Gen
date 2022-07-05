@@ -44,7 +44,7 @@ class EPUSetter(PropertySetterBase):
                 G.nodes[node_i]["Period"]
             ))
             if exec == 0:
-                exec = 1
+                exec = 1  # FIXME
             G.nodes[node_i]["Execution_time"] = exec
             del G.nodes[node_i]["Utilization"]  # Not output
 
