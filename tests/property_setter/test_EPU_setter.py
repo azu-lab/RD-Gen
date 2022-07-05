@@ -7,7 +7,7 @@ from src.property_setter.EPU_setter import EPUSetter
 @pytest.fixture
 def G() -> nx.DiGraph:
     G = nx.DiGraph()
-    G.add_nodes_from([i for i in range(10)])
+    G.add_nodes_from([1, 3, 2, 5, 8, 11, 13, 43, 32, 0])
 
     return G
 

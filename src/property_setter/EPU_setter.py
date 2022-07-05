@@ -40,24 +40,30 @@ class EPUSetter(PropertySetterBase):
             # HACK: Ensure upper_U
             while True:
                 sum_U = total_U
-                for i in range(1, n):
+                for i, node_i in enumerate(G.nodes):
+                    if i == n-1:
+                        break
+
                     next_sum_U = -sys.maxsize
                     while((sum_U - next_sum_U) >= upper_U):
                         next_sum_U = sum_U * (random.uniform(0, 1)
                                               ** (1/(n-i)))
-                    G.nodes[i-1]["Utilization"] = sum_U - next_sum_U
+                    G.nodes[node_i]["Utilization"] = sum_U - next_sum_U
                     sum_U = next_sum_U
 
                 if sum_U < upper_U:
-                    G.nodes[n-1]["Utilization"] = sum_U
+                    G.nodes[list(G.nodes())[-1]]["Utilization"] = sum_U
                     break
         else:
             sum_U = total_U
-            for i in range(1, n):
+            for i, node_i in enumerate(G.nodes):
+                if i == n-1:
+                    break
+
                 next_sum_U = sum_U * (random.uniform(0, 1)**(1/(n-i)))
-                G.nodes[i-1]["Utilization"] = sum_U - next_sum_U
+                G.nodes[node_i]["Utilization"] = sum_U - next_sum_U
                 sum_U = next_sum_U
-            G.nodes[n-1]["Utilization"] = sum_U
+            G.nodes[list(G.nodes())[-1]]["Utilization"] = sum_U
 
     def _UUniFast_based_set(
         self,
@@ -65,13 +71,7 @@ class EPUSetter(PropertySetterBase):
     ) -> None:
         # Set utilization
         total_U = self.choice_one(self._U_choices)
-        utilization_group = self._fast_grouping(
-            total_U,
-            G.number_of_nodes(),
-            self._U_upper
-        )
-        for node_i, utilization in zip(G.nodes(), utilization_group):
-            G.nodes[node_i]["Utilization"] = utilization
+        self._UUniFast(G, total_U, self._U_upper)
 
         # Set period
         self._period_setter.set(G)
@@ -114,7 +114,7 @@ class EPUSetter(PropertySetterBase):
 
                     # Set `Execution_time`
                     chain_nodes = list(chain._G.nodes())
-                    exec_grouping = self._fast_grouping(
+                    exec_grouping = self._grouping_int(
                         temp_dag.nodes[temp_node_i]["Execution_time"],
                         len(chain_nodes)
                     )

@@ -25,7 +25,8 @@ class CCRSetter(PropertySetterBase):
         sum_comm = ccr * sum_exec
 
         # Set communication time
-        comm_grouping = self._fast_grouping(sum_comm, G.number_of_edges())
+        comm_grouping = self._grouping_int(int(sum_comm),
+                                           G.number_of_edges())
         for edge, comm in zip(G.edges(), comm_grouping):
             int_comm = int(np.floor(comm))
             if int_comm == 0:

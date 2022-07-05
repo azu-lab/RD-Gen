@@ -9,7 +9,7 @@ from src.builder.dag_builder_factory import DAGBuilder
 from src.combo_generator import ComboGenerator
 from src.config_loader import ConfigLoader
 from src.dag_exporter import DAGExporter
-from src.exceptions import MaxBuildFailError
+from src.exceptions import InvalidArgumentError, MaxBuildFailError
 from src.property_setter.property_setter import PropertySetter
 
 logger = getLogger(__name__)
@@ -62,7 +62,7 @@ def main(config_path, dest_dir):
             for i, dag_raw in enumerate(dag_raw_iter):
                 property_setter.set(dag_raw)
                 dag_exporter.export(combo_dest_dir, f"dag_{i}", dag_raw)
-        except MaxBuildFailError as e:
+        except (MaxBuildFailError, InvalidArgumentError) as e:
             logger.warning(e.message)
 
 
