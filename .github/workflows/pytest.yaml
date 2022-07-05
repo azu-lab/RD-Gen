@@ -15,8 +15,8 @@ jobs:
           sudo apt install -y python3-pytest-mock
         shell: bash
 
-      # - name: Install dependent packages
-      #   run: python3 -m pip install -r requirements.txt
+      - name: Install dependent packages
+        run: python3 -m pip install networkx
 
       - name: Run pytest
         run: |
