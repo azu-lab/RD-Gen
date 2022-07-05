@@ -16,7 +16,8 @@ jobs:
         shell: bash
 
       - name: Install dependent packages
-        run: python3 -m pip install networkx
+        run: | 
+          python3 -m pip install networkx numpy
 
       - name: Run pytest
         run: |
