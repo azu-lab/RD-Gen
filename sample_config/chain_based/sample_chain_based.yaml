@@ -1,13 +1,13 @@
 Seed: 0
 Number of DAGs: 50
-Generation method: "Chain-based"
 
 Graph structure:
+  Generation method: "Chain-based"
   Number of chains:
     Combination: [2, 3, 4]
   Main sequence length:
     Random: (2, 7, 1)
-  Number of sub sequence:
+  Number of sub sequences:
     Random: [1, 2, 3]
   Vertically link chains:
     Number of entry nodes:
@@ -28,7 +28,9 @@ Properties:
       Random: (1.0, 1.5, 0.1)
   Communication time:
     Random: [2, 3, 4, 5]
-  Multi-period:
+  CCR:
+    Combination: (0.3, 3.0, 0.1)
+  Multi-rate:
     Periodic type: 'Chain'
     Period:
       Random: [10, 20, 30, 40, 50, 60]
@@ -36,6 +38,8 @@ Properties:
       Random: [50, 100]
     Total utilization:
       Combination: (5.0, 6.5, 0.1)
+    Maximum utilization:
+      Fixed: 2.7
 
 Output formats:
   Naming of combination directory: "Abbreviation"

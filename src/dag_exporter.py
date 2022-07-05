@@ -60,11 +60,10 @@ class DAGExporter():
                 G.nodes[node_i]['style'] = 'bold'
                 G.nodes[node_i]['label'] += f'\nD: {deadline}'
 
-        if self._cfg.get_value(["PP", "CT"]):
-            for start_i, end_i in G.edges():
-                G.edges[start_i, end_i]['label'] = \
-                    f' {G.edges[start_i, end_i]["Communication_time"]}'
-                G.edges[start_i, end_i]['fontsize'] = 10
+        for src_i, tgt_i in G.edges():
+            if comm := G.edges[src_i, tgt_i].get("Communication_time"):
+                G.edges[src_i, tgt_i]['label'] = f' {comm}'
+                G.edges[src_i, tgt_i]['fontsize'] = 10
 
         # Add legend
         if self._cfg.get_value(["OF", "FIG", "DL"]):
@@ -72,7 +71,7 @@ class DAGExporter():
                           'Circle node:  Event-driven node\l',
                           '[i]:  Task index\l',
                           'C:  Worst-case execution time (WCET)\l']
-            if(self._cfg.get_value(["PP", "MP"])):
+            if(self._cfg.get_value(["PP", "MR"])):
                 legend_str.insert(1, 'Square node:  Timer-driven node\l')
                 legend_str.append('T:  Period\l')
             if(self._cfg.get_value(["PP", "EED"])):

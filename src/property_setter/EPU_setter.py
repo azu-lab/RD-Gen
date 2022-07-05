@@ -1,10 +1,11 @@
 import random
-from typing import List, Optional, Union
+import sys
 
 import networkx as nx
 import numpy as np
 import src.builder.chain_based as cb
 from src.config import Config
+from src.exceptions import InvalidArgumentError
 from src.property_setter.period_setter import PeriodSetter
 from src.property_setter.property_setter_base import PropertySetterBase
 
@@ -15,12 +16,54 @@ class EPUSetter(PropertySetterBase):
         cfg: Config
     ) -> None:
         self._E_choices = cfg.get_value(["PP", "ET"])
-        if base_param := cfg.get_param(["PP", "MP"]):
+        if base_param := cfg.get_param(["PP", "MR"]):
             self._period_setter = PeriodSetter(base_param)
         else:
             self._period_setter = None
-        self._U_choices = cfg.get_value(["PP", "MP", "TU"])
-        self._chain_flag = cfg.get_value(["PP", "MP", "PT"]) == "chain"
+        self._U_choices = cfg.get_value(["PP", "MR", "TU"])
+        self._U_upper = cfg.get_value(["PP", "MR", "MU"])
+        self._chain_flag = cfg.get_value(["PP", "MR", "PT"]) == "chain"
+
+    @staticmethod
+    def _UUniFast(
+        G: nx.DiGraph,
+        total_U: float,
+        upper_U: float = None
+    ) -> None:
+        n = G.number_of_nodes()
+
+        if upper_U:
+            # validate
+            if (total_U / n) >= upper_U:
+                raise InvalidArgumentError('(total_U/n) >= upper_U')
+
+            # HACK: Ensure upper_U
+            while True:
+                sum_U = total_U
+                for i, node_i in enumerate(G.nodes):
+                    if i == n-1:
+                        break
+
+                    next_sum_U = -sys.maxsize
+                    while((sum_U - next_sum_U) >= upper_U):
+                        next_sum_U = sum_U * (random.uniform(0, 1)
+                                              ** (1/(n-i)))
+                    G.nodes[node_i]["Utilization"] = sum_U - next_sum_U
+                    sum_U = next_sum_U
+
+                if sum_U < upper_U:
+                    G.nodes[list(G.nodes())[-1]]["Utilization"] = sum_U
+                    break
+        else:
+            sum_U = total_U
+            for i, node_i in enumerate(G.nodes):
+                if i == n-1:
+                    break
+
+                next_sum_U = sum_U * (random.uniform(0, 1)**(1/(n-i)))
+                G.nodes[node_i]["Utilization"] = sum_U - next_sum_U
+                sum_U = next_sum_U
+            G.nodes[list(G.nodes())[-1]]["Utilization"] = sum_U
 
     def _UUniFast_based_set(
         self,
@@ -28,12 +71,7 @@ class EPUSetter(PropertySetterBase):
     ) -> None:
         # Set utilization
         total_U = self.choice_one(self._U_choices)
-        utilization_group = self._fast_grouping(
-            total_U,
-            G.number_of_nodes()
-        )
-        for node_i, utilization in zip(G.nodes(), utilization_group):
-            G.nodes[node_i]["Utilization"] = utilization
+        self._UUniFast(G, total_U, self._U_upper)
 
         # Set period
         self._period_setter.set(G)
@@ -45,24 +83,9 @@ class EPUSetter(PropertySetterBase):
                 G.nodes[node_i]["Period"]
             ))
             if exec == 0:
-                exec = 1
+                exec = 1  # FIXME
             G.nodes[node_i]["Execution_time"] = exec
             del G.nodes[node_i]["Utilization"]  # Not output
-
-    def _fast_grouping(
-        self,
-        sum: int,
-        num_group: int
-    ) -> List[int]:
-        grouping = [0]*num_group
-        sum = sum
-        for i in range(1, num_group):
-            next_sum = sum * (random.uniform(0, 1)**(1/(num_group-i)))
-            grouping[i-1] = sum - next_sum
-            sum = next_sum
-        grouping[num_group-1] = sum
-
-        return grouping
 
     def set(
         self,
@@ -91,7 +114,7 @@ class EPUSetter(PropertySetterBase):
 
                     # Set `Execution_time`
                     chain_nodes = list(chain._G.nodes())
-                    exec_grouping = self._fast_grouping(
+                    exec_grouping = self._grouping_int(
                         temp_dag.nodes[temp_node_i]["Execution_time"],
                         len(chain_nodes)
                     )
