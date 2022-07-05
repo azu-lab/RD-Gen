@@ -1,7 +1,11 @@
+import random
+import sys
+
 import networkx as nx
 import numpy as np
 import src.builder.chain_based as cb
 from src.config import Config
+from src.exceptions import InvalidArgumentError
 from src.property_setter.period_setter import PeriodSetter
 from src.property_setter.property_setter_base import PropertySetterBase
 
@@ -19,6 +23,41 @@ class EPUSetter(PropertySetterBase):
         self._U_choices = cfg.get_value(["PP", "MR", "TU"])
         self._U_upper = cfg.get_value(["PP", "MR", "MU"])
         self._chain_flag = cfg.get_value(["PP", "MR", "PT"]) == "chain"
+
+    @staticmethod
+    def _UUniFast(
+        G: nx.DiGraph,
+        total_U: float,
+        upper_U: float = None
+    ) -> None:
+        n = G.number_of_nodes()
+
+        if upper_U:
+            # validate
+            if (total_U / n) >= upper_U:
+                raise InvalidArgumentError('(total_U/n) >= upper_U')
+
+            # HACK: Ensure upper_U
+            while True:
+                sum_U = total_U
+                for i in range(1, n):
+                    next_sum_U = -sys.maxsize
+                    while((sum_U - next_sum_U) >= upper_U):
+                        next_sum_U = sum_U * (random.uniform(0, 1)
+                                              ** (1/(n-i)))
+                    G.nodes[i-1]["Utilization"] = sum_U - next_sum_U
+                    sum_U = next_sum_U
+
+                if sum_U < upper_U:
+                    G.nodes[n-1]["Utilization"] = sum_U
+                    break
+        else:
+            sum_U = total_U
+            for i in range(1, n):
+                next_sum_U = sum_U * (random.uniform(0, 1)**(1/(n-i)))
+                G.nodes[i-1]["Utilization"] = sum_U - next_sum_U
+                sum_U = next_sum_U
+            G.nodes[n-1]["Utilization"] = sum_U
 
     def _UUniFast_based_set(
         self,
