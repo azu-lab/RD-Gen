@@ -58,12 +58,12 @@ def main(config_path, dest_dir):
         # Set properties & Output
         property_setter = PropertySetter(cfg)
         dag_exporter = DAGExporter(cfg)
-        try:
-            for i, dag_raw in enumerate(dag_raw_iter):
+        for i, dag_raw in enumerate(dag_raw_iter):
+            try:
                 property_setter.set(dag_raw)
                 dag_exporter.export(combo_dest_dir, f"dag_{i}", dag_raw)
-        except (MaxBuildFailError, InvalidArgumentError) as e:
-            logger.warning(e.message)
+            except (MaxBuildFailError, InvalidArgumentError) as e:
+                logger.warning(e.message)
 
 
 if __name__ == "__main__":
