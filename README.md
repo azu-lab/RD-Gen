@@ -26,3 +26,7 @@ Sample config files can be used without modification.
 
 ### G(n, p) method
 - `bash run_generator.bash -c ./sample_config/g_n_p/sample_g_n_p.yaml`
+
+## Parameters in config file
+![image](https://user-images.githubusercontent.com/55824710/205211293-b8d1232f-ca91-4b91-9f4d-52a009ccb703.png)
+![image](https://user-images.githubusercontent.com/55824710/205211338-284b2550-ca2d-488b-a0f1-b34bcb2fd77d.png)
