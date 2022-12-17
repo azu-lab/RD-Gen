@@ -70,8 +70,10 @@ class EPUSetter(PropertySetterBase):
         G: nx.DiGraph
     ) -> None:
         # Set utilization
-        total_U = self.choice_one(self._U_choices)
-        self._UUniFast(G, total_U, self._U_upper)
+        # total_U = self.choice_one(self._U_choices)
+        # self._UUniFast(G, total_U, self._U_upper)
+        for node_i in G.nodes:
+            G.nodes[node_i]["Utilization"] = random.uniform(0.6, self._U_upper)
 
         # Set period
         self._period_setter.set(G)

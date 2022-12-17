@@ -1,7 +1,8 @@
 
 import copy
 import random
-from typing import Dict, Generator, List, Tuple
+from typing import Dict, Generator, List
+from tqdm import tqdm
 
 import networkx as nx
 from src.builder.dag_builder_base import DAGBuilderBase
@@ -117,7 +118,7 @@ class ChainBasedBuilder(DAGBuilderBase):
         super().__init__(cfg)
 
     def build(self) -> Generator[nx.DiGraph, None, None]:
-        for _ in range(self._cfg.get_value(["NG"])):
+        for _ in tqdm(range(self._cfg.get_value(["NG"]))):
             # Build each chain
             global chains
             chains = []
@@ -137,21 +138,31 @@ class ChainBasedBuilder(DAGBuilderBase):
                 # Initialize variables
                 num_entry = self.random_choice(
                     self._cfg.get_value(["GS", "VLC", "NEN"]))
-                tgt_chains = copy.deepcopy(chains)
-                random.shuffle(tgt_chains)
-                src_chains = [tgt_chains.pop(0) for _ in range(num_entry)]
+                tgt_chain_choice = copy.deepcopy(chains)
+                random.shuffle(tgt_chain_choice)
+                src_chains = [tgt_chain_choice.pop(
+                    0) for _ in range(num_entry)]
 
-                while tgt_chains:
-                    # Determine source tail & target chain
-                    src_chain = random.choice(
-                        [c for c in src_chains if c.has_tail()])
+                while src_chain_choice := [c for c in src_chains if c.has_tail()]:
+                    # Determine source tail
+                    src_chain = random.choice(src_chain_choice)
                     src_tail_i = src_chain.random_choice_src_tail()
-                    random.shuffle(tgt_chains)
-                    tgt_chain = tgt_chains.pop(0)
+
+                    # Determine target chain
+                    random.shuffle(tgt_chain_choice)
+                    num_tgt_chains = random.randint(1, 3)
+                    tgt_chains: List[Chain] = []
+                    for chain in tgt_chain_choice:
+                        if chain._head > src_tail_i:
+                            tgt_chains.append(chain)
+                            if len(tgt_chains) == num_tgt_chains:
+                                break
 
                     # Add edge
-                    G.add_edge(src_tail_i, tgt_chain._head)
-                    src_chains.append(tgt_chain)
+                    if tgt_chains:
+                        for tgt_chain in tgt_chains:
+                            G.add_edge(src_tail_i, tgt_chain._head)
+                            src_chains.append(tgt_chain)
 
             # Merge chains
             if self._cfg.get_param(["GS", "MGC"]):

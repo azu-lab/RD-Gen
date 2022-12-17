@@ -1,7 +1,7 @@
 
-import copy
 import random
 from typing import Generator, Tuple
+from tqdm import tqdm
 
 import networkx as nx
 from src.builder.dag_builder_base import DAGBuilderBase
@@ -61,7 +61,7 @@ class FanInFanOutBuilder(DAGBuilderBase):
         return G
 
     def build(self) -> Generator[nx.DiGraph, None, None]:
-        for _ in range(self._cfg.get_value(["NG"])):
+        for _ in tqdm(range(self._cfg.get_value(["NG"]))):
             num_build_fail = 0
 
             # Determine number_of_nodes (Loop finish condition)
