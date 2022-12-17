@@ -135,5 +135,5 @@ dmypy.json
 DAGs/
 
 # old
-file_handling_helper_old.py
+src_old/
 config_format/
