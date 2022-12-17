@@ -1,3 +1,5 @@
+import re
+
 from schema import Optional, Or, Regex, Schema
 
 from ..common import Util
