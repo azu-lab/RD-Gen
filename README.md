@@ -8,13 +8,6 @@ cd Random_DAG_Generator
 ./setup.bash
 ```
 
-## Uninstall flow
-```
-./uninstall.bash  # if you want to remove installed packages.
-cd ../
-rm -rf Random_DAG_Generator
-```
-
 ## Quick start
 Sample config files can be used without modification.
 
