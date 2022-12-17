@@ -2,6 +2,7 @@ import argparse
 import os
 import random
 from logging import getLogger
+from tqdm import tqdm
 
 import yaml
 
@@ -37,7 +38,7 @@ def main(config_path, dest_dir):
     combo_generator = ComboGenerator(combo_cfg)
     combo_iter = combo_generator.generate()
 
-    for dir_name, log, cfg in combo_iter:
+    for dir_name, log, cfg in tqdm(combo_iter, total=combo_generator.get_num_combos()):
         combo_dest_dir = dest_dir + f'/{dir_name}'
         os.mkdir(combo_dest_dir)
         with open(f'{combo_dest_dir}/combination_log.yaml', 'w') as f:
@@ -58,12 +59,13 @@ def main(config_path, dest_dir):
         # Set properties & Output
         property_setter = PropertySetter(cfg)
         dag_exporter = DAGExporter(cfg)
-        try:
-            for i, dag_raw in enumerate(dag_raw_iter):
+        for i, dag_raw in enumerate(dag_raw_iter):
+            try:
                 property_setter.set(dag_raw)
                 dag_exporter.export(combo_dest_dir, f"dag_{i}", dag_raw)
-        except (MaxBuildFailError, InvalidArgumentError) as e:
-            logger.warning(e.message)
+            except (MaxBuildFailError, InvalidArgumentError) as e:
+                # logger.warning(e.message)
+                pass
 
 
 if __name__ == "__main__":

@@ -75,6 +75,9 @@ class ComboGenerator():
 
         return cfg
 
+    def get_num_combos(self) -> int:
+        return len(list(itertools.product(*self._combo_values)))
+
     def generate(
         self
     ) -> Tuple[Generator, Generator, Generator]:
