@@ -21,4 +21,4 @@ Sample config files can be used without modification.
 - `bash run_generator.bash -c ./sample_config/g_n_p/sample_g_n_p.yaml`
 
 ## Documents
-https://azu-lab.github.io/RD-Gen/
+[See wiki](https://github.com/azu-lab/RD-Gen/wiki)
