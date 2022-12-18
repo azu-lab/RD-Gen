@@ -392,22 +392,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#src.dag_builder.DAGBuilderFactory" class="md-nav__link">
-    DAGBuilderFactory
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#src.dag_builder.dag_builder_base" class="md-nav__link">
-    dag_builder_base
-  </a>
-  
-    <nav class="md-nav" aria-label="dag_builder_base">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#src.dag_builder.dag_builder_base.DAGBuilderBase" class="md-nav__link">
+  <a href="#src.dag_builder.DAGBuilderBase" class="md-nav__link">
     DAGBuilderBase
   </a>
   
@@ -425,25 +410,20 @@
     </nav>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#src.dag_builder.dag_builder_factory" class="md-nav__link">
-    dag_builder_factory
-  </a>
-  
-    <nav class="md-nav" aria-label="dag_builder_factory">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#src.dag_builder.dag_builder_factory.DAGBuilderFactory" class="md-nav__link">
+  <a href="#src.dag_builder.DAGBuilderFactory" class="md-nav__link">
     DAGBuilderFactory
   </a>
   
+    <nav class="md-nav" aria-label="DAGBuilderFactory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#src.dag_builder.dag_builder_factory.DAGBuilderFactory.create_instance" class="md-nav__link">
+    create_instance()
+  </a>
+  
 </li>
         
       </ul>
@@ -452,15 +432,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#src.dag_builder.fan_in_fan_out" class="md-nav__link">
-    fan_in_fan_out
-  </a>
-  
-    <nav class="md-nav" aria-label="fan_in_fan_out">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#src.dag_builder.fan_in_fan_out.FanInFanOut" class="md-nav__link">
+  <a href="#src.dag_builder.FanInFanOut" class="md-nav__link">
     FanInFanOut
   </a>
   
@@ -478,11 +450,6 @@
   <a href="#src.dag_builder.fan_in_fan_out.FanInFanOut.validate_config" class="md-nav__link">
     validate_config()
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -557,105 +524,11 @@
 
 
 
-<h2 id="src.dag_builder.DAGBuilderFactory" class="doc doc-heading">
-        <code>DAGBuilderFactory</code>
-
-
-<a href="#src.dag_builder.DAGBuilderFactory" class="headerlink" title="Permanent link">#</a></h2>
-
-
-  <div class="doc doc-contents ">
-
-  
-      <p>DAG builder factory class.</p>
-
-
-        <details class="quote">
-          <summary>Source code in <code>src/dag_builder/dag_builder_factory.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DAGBuilderFactory</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;DAG builder factory class.&quot;&quot;&quot;</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">create_instance</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DAGBuilderBase</span><span class="p">:</span>
-        <span class="n">generation_method</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">generation_method</span>
-        <span class="k">if</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;fan-in/fan-out&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">FanInFanOut</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;g(n, p)&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">GNP</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;chain-based&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">ChainBased</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</code></pre></div></td></tr></table></div>
-        </details>
-
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-  </div>
-
-</div>
-
-
-
-<div class="doc doc-object doc-module">
-
-
-
-<h2 id="src.dag_builder.dag_builder_base" class="doc doc-heading">
-          <code>dag_builder_base</code>
-
-
-<a href="#src.dag_builder.dag_builder_base" class="headerlink" title="Permanent link">#</a></h2>
-
-  <div class="doc doc-contents ">
-
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h3 id="src.dag_builder.dag_builder_base.DAGBuilderBase" class="doc doc-heading">
+<h2 id="src.dag_builder.DAGBuilderBase" class="doc doc-heading">
         <code>DAGBuilderBase</code>
 
 
-<a href="#src.dag_builder.dag_builder_base.DAGBuilderBase" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.DAGBuilderBase" class="headerlink" title="Permanent link">#</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -864,10 +737,10 @@
 
 
 
-<h4 id="src.dag_builder.dag_builder_base.DAGBuilderBase.__init__" class="doc doc-heading">
+<h3 id="src.dag_builder.dag_builder_base.DAGBuilderBase.__init__" class="doc doc-heading">
 <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">max_try</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span></code>
 
-<a href="#src.dag_builder.dag_builder_base.DAGBuilderBase.__init__" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#src.dag_builder.dag_builder_base.DAGBuilderBase.__init__" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -951,47 +824,15 @@
 
 </div>
 
-
-
-
-  </div>
-
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-module">
-
-
-
-<h2 id="src.dag_builder.dag_builder_factory" class="doc doc-heading">
-          <code>dag_builder_factory</code>
-
-
-<a href="#src.dag_builder.dag_builder_factory" class="headerlink" title="Permanent link">#</a></h2>
-
-  <div class="doc doc-contents ">
-
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
 <div class="doc doc-object doc-class">
 
 
 
-<h3 id="src.dag_builder.dag_builder_factory.DAGBuilderFactory" class="doc doc-heading">
+<h2 id="src.dag_builder.DAGBuilderFactory" class="doc doc-heading">
         <code>DAGBuilderFactory</code>
 
 
-<a href="#src.dag_builder.dag_builder_factory.DAGBuilderFactory" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.DAGBuilderFactory" class="headerlink" title="Permanent link">#</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -1015,11 +856,57 @@
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DAGBuilderFactory</span><span class="p">:</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">DAGBuilderFactory</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;DAG builder factory class.&quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_instance</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DAGBuilderBase</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create DAG builder instance.</span>
+
+<span class="sd">        Currently supported generation methods:</span>
+<span class="sd">        - Fan-in/fan-out method (see https://hal.archives-ouvertes.fr/hal-00471255/file/ggen.pdf)</span>
+<span class="sd">        - G(n, p) method (see https://hal.archives-ouvertes.fr/hal-00471255/file/ggen.pdf)</span>
+<span class="sd">        - Chain-based method</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        config : Config</span>
+<span class="sd">            Config.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        DAGBuilderBase</span>
+<span class="sd">            DAG builder.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NotImplementedError</span>
+<span class="sd">            Not implement.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">generation_method</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">generation_method</span>
         <span class="k">if</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;fan-in/fan-out&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">FanInFanOut</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
@@ -1044,60 +931,185 @@
 
 
 
-
-
-  </div>
-
-  </div>
-
-</div>
+<div class="doc doc-object doc-function">
 
 
 
+<h3 id="src.dag_builder.dag_builder_factory.DAGBuilderFactory.create_instance" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">create_instance</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
 
-  </div>
+<a href="#src.dag_builder.dag_builder_factory.DAGBuilderFactory.create_instance" class="headerlink" title="Permanent link">#</a></h3>
 
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-module">
-
-
-
-<h2 id="src.dag_builder.fan_in_fan_out" class="doc doc-heading">
-          <code>fan_in_fan_out</code>
-
-
-<a href="#src.dag_builder.fan_in_fan_out" class="headerlink" title="Permanent link">#</a></h2>
 
   <div class="doc doc-contents ">
-
   
+      <p>Create DAG builder instance.</p>
+<p>Currently supported generation methods:
+- Fan-in/fan-out method (see https://hal.archives-ouvertes.fr/hal-00471255/file/ggen.pdf)
+- G(n, p) method (see https://hal.archives-ouvertes.fr/hal-00471255/file/ggen.pdf)
+- Chain-based method</p>
 
-  <div class="doc doc-children">
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>config</code></td>
+          <td>
+                <code><a class="autorefs autorefs-internal" title="src.config.Config" href="../config/#src.config.Config">Config</a></code>
+          </td>
+          <td><p>Config.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><a class="autorefs autorefs-internal" title="src.dag_builder.dag_builder_base.DAGBuilderBase" href="#src.dag_builder.DAGBuilderBase">DAGBuilderBase</a></code>
+          </td>
+          <td><p>DAG builder.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Raises:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>NotImplementedError</code>
+          </td>
+          <td><p>Not implement.</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+      <details class="quote">
+        <summary>Source code in <code>src/dag_builder/dag_builder_factory.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">create_instance</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DAGBuilderBase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Create DAG builder instance.</span>
+
+<span class="sd">    Currently supported generation methods:</span>
+<span class="sd">    - Fan-in/fan-out method (see https://hal.archives-ouvertes.fr/hal-00471255/file/ggen.pdf)</span>
+<span class="sd">    - G(n, p) method (see https://hal.archives-ouvertes.fr/hal-00471255/file/ggen.pdf)</span>
+<span class="sd">    - Chain-based method</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : Config</span>
+<span class="sd">        Config.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    DAGBuilderBase</span>
+<span class="sd">        DAG builder.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    NotImplementedError</span>
+<span class="sd">        Not implement.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">generation_method</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">generation_method</span>
+    <span class="k">if</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;fan-in/fan-out&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">FanInFanOut</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;g(n, p)&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">GNP</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;chain-based&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ChainBased</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
 
 
 
+  </div>
 
+  </div>
 
-
-
+</div>
 
 <div class="doc doc-object doc-class">
 
 
 
-<h3 id="src.dag_builder.fan_in_fan_out.FanInFanOut" class="doc doc-heading">
+<h2 id="src.dag_builder.FanInFanOut" class="doc doc-heading">
         <code>FanInFanOut</code>
 
 
-<a href="#src.dag_builder.fan_in_fan_out.FanInFanOut" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.FanInFanOut" class="headerlink" title="Permanent link">#</a></h2>
 
 
   <div class="doc doc-contents ">
       <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="src.dag_builder.dag_builder_base.DAGBuilderBase" href="#src.dag_builder.dag_builder_base.DAGBuilderBase">DAGBuilderBase</a></code></p>
+        Bases: <code><a class="autorefs autorefs-internal" title="src.dag_builder.dag_builder_base.DAGBuilderBase" href="#src.dag_builder.DAGBuilderBase">DAGBuilderBase</a></code></p>
 
   
       <p>Fan-in/fan-out class.</p>
@@ -1407,10 +1419,10 @@
 
 
 
-<h4 id="src.dag_builder.fan_in_fan_out.FanInFanOut.build" class="doc doc-heading">
+<h3 id="src.dag_builder.fan_in_fan_out.FanInFanOut.build" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">build</span><span class="p">()</span></code>
 
-<a href="#src.dag_builder.fan_in_fan_out.FanInFanOut.build" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#src.dag_builder.fan_in_fan_out.FanInFanOut.build" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -1623,10 +1635,10 @@
 
 
 
-<h4 id="src.dag_builder.fan_in_fan_out.FanInFanOut.validate_config" class="doc doc-heading">
+<h3 id="src.dag_builder.fan_in_fan_out.FanInFanOut.validate_config" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
 
-<a href="#src.dag_builder.fan_in_fan_out.FanInFanOut.validate_config" class="headerlink" title="Permanent link">#</a></h4>
+<a href="#src.dag_builder.fan_in_fan_out.FanInFanOut.validate_config" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -1733,13 +1745,6 @@
 </div>
 
 
-
-
-  </div>
-
-  </div>
-
-</div>
 
 
   </div>
