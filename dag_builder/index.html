@@ -8,14 +8,14 @@
       
       
       
-        <link rel="canonical" href="https://github.com.io/azu-lab/RD-Gen/config/">
+        <link rel="canonical" href="https://github.com.io/azu-lab/RD-Gen/dag_builder/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
     
     
       
-        <title>config - RD-Gen API document</title>
+        <title>dag_builder - RD-Gen API document</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#src.config" class="md-skip">
+        <a href="#src.dag_builder" class="md-skip">
           Skip to content
         </a>
       
@@ -115,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              config
+              dag_builder
             
           </span>
         </div>
@@ -203,12 +203,10 @@
         
   
   
-    
-  
 
 
   <li class="md-tabs__item">
-    <a href="./" class="md-tabs__link md-tabs__link--active">
+    <a href="../config/" class="md-tabs__link">
       config
     </a>
   </li>
@@ -229,10 +227,12 @@
         
   
   
+    
+  
 
 
   <li class="md-tabs__item">
-    <a href="../dag_builder/" class="md-tabs__link">
+    <a href="./" class="md-tabs__link md-tabs__link--active">
       dag_builder
     </a>
   </li>
@@ -311,102 +311,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          config
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
         config
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#src.config" class="md-nav__link">
-    src.config
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#src.config.ComboGenerator" class="md-nav__link">
-    ComboGenerator
-  </a>
-  
-    <nav class="md-nav" aria-label="ComboGenerator">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#src.config.combo_generator.ComboGenerator.get_combo_iter" class="md-nav__link">
-    get_combo_iter()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#src.config.combo_generator.ComboGenerator.get_num_combos" class="md-nav__link">
-    get_num_combos()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#src.config.Config" class="md-nav__link">
-    Config
-  </a>
-  
-    <nav class="md-nav" aria-label="Config">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#src.config.Config--notes" class="md-nav__link">
-    Notes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#src.config.config.Config.optimize" class="md-nav__link">
-    optimize()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -432,11 +341,48 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../dag_builder/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          dag_builder
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         dag_builder
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#src.dag_builder" class="md-nav__link">
+    src.dag_builder
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -455,18 +401,18 @@
                 
                   
 
-  <a href="https://github.com/azu-lab/RD-Gen/edit/master/config.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/azu-lab/RD-Gen/edit/master/dag_builder.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
 
 
-  <h1>config</h1>
+  <h1>dag_builder</h1>
 
 <div class="doc doc-object doc-module">
 
 
-<a id="src.config"></a>
+<a id="src.dag_builder"></a>
   <div class="doc doc-contents first">
 
   
@@ -479,186 +425,6 @@
 
 
 
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="src.config.ComboGenerator" class="doc doc-heading">
-        <code>ComboGenerator</code>
-
-
-<a href="#src.config.ComboGenerator" class="headerlink" title="Permanent link">#</a></h2>
-
-
-  <div class="doc doc-contents ">
-
-  
-      <p>ComboGenerator class.</p>
-
-
-
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h3 id="src.config.combo_generator.ComboGenerator.get_combo_iter" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_combo_iter</span><span class="p">()</span></code>
-
-<a href="#src.config.combo_generator.ComboGenerator.get_combo_iter" class="headerlink" title="Permanent link">#</a></h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Get iterator for combinations.</p>
-
-  <p><strong>Yields:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="typing.Generator">Generator</span></code>
-          </td>
-          <td><p>(combo_dir_name, combo_log, combo_config)
-- combo_dir_name:
-Directory name where the generated DAG set is stored.
-- combo_log:
-Dictionary containing parameter names and chosen values
-for which 'Combination' is specified.
-- combo_config:
-Configuration in which the chosen value is stored
-for the parameter specified as 'Combination'.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-
-<h3 id="src.config.combo_generator.ComboGenerator.get_num_combos" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">get_num_combos</span><span class="p">()</span></code>
-
-<a href="#src.config.combo_generator.ComboGenerator.get_num_combos" class="headerlink" title="Permanent link">#</a></h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Get number of combinations.</p>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>int</code>
-          </td>
-          <td><p>Number of combinations.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  </div>
-
-</div>
-
-
-
-  </div>
-
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="src.config.Config" class="doc doc-heading">
-        <code>Config</code>
-
-
-<a href="#src.config.Config" class="headerlink" title="Permanent link">#</a></h2>
-
-
-  <div class="doc doc-contents ">
-
-  
-      <p>Config class</p>
-<p>This class provides the value of the config entered by the property.
-The property names of this class correspond to all parameter names at any level.
-To obtain the value of 'Additional properties',
-it is necessary to call a function, not a property.</p>
-<h4 id="src.config.Config--notes">Notes<a class="headerlink" href="#src.config.Config--notes" title="Permanent link">#</a></h4>
-<p>If the structure of the configuration file changes, this class must be reprogrammed.</p>
-
-
-
-  
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-
-<h3 id="src.config.config.Config.optimize" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">optimize</span><span class="p">()</span></code>
-
-<a href="#src.config.config.Config.optimize" class="headerlink" title="Permanent link">#</a></h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Remove 'Random' and 'Fixed'</p>
-
-  </div>
-
-</div>
-
-
-
-  </div>
-
-  </div>
-
-</div>
 
 
 
@@ -693,7 +459,7 @@ it is necessary to call a function, not a property.</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: HOME" rel="prev">
+        <a href="../common/" class="md-footer__link md-footer__link--prev" aria-label="Previous: common" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -702,26 +468,11 @@ it is necessary to call a function, not a property.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              HOME
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../common/" class="md-footer__link md-footer__link--next" aria-label="Next: common" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
               common
             </div>
           </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
         </a>
+      
       
     </nav>
   
