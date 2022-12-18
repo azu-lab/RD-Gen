@@ -5,7 +5,7 @@ edit_uri: edit/master/
 docs_dir: docs
 
 theme:
-  name: material
+  name: mkdocs
   features:
     - navigation.expand
     - navigation.indexes
