@@ -52,7 +52,7 @@ runs:
       shell: bash
 
     - name: Set git config
-      uses: autowarefoundation/autoware-github-actions/set-git-config@v1
+      uses: ./.github/workflows/set-git-config@v1
       with:
         token: ${{ inputs.token }}
 
