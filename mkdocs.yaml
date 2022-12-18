@@ -5,10 +5,11 @@ edit_uri: edit/master/
 docs_dir: docs
 
 theme:
-  name: mkdocs
+  name: material
   features:
     - navigation.expand
     - navigation.indexes
+    - toc.integrate
     - navigation.instant
     - navigation.sections
     - navigation.tabs
@@ -16,21 +17,13 @@ theme:
     - navigation.top
   language: en
   palette:
-    - scheme: default
-      primary: white
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to dark mode
     - scheme: slate
       primary: grey
-      toggle:
-        icon: material/weather-night
-        name: Switch to light mode
 
 extra:
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Oxygen
+    code: Oxygen Mono
   version:
     provider: mike
 

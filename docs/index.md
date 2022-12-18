@@ -1,9 +1,6 @@
 # RD-Gen
 
-## API for user
+## Packages
 
 - [config](config.md)
-
-## API for developer
-
 - [common](common.md)
