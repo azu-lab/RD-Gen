@@ -66,7 +66,7 @@ class TestFanInFanOut:
             return 0
 
     @pytest.mark.parametrize("number_of_nodes", list(range(1, 10)))
-    def test_build__number_of_nodes_lower_10(self, number_of_nodes):
+    def test_build_number_of_nodes_lower_10(self, number_of_nodes):
         in_degree = random.randint(1, 5)
         out_degree = random.randint(1, 5)
         number_of_entry_nodes = random.randint(1, 5)
