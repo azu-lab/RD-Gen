@@ -3,8 +3,7 @@ name: deploy-docs
 on:
   push:
     branches:
-      - main
-      - galactic
+      - master
     paths:
       - mkdocs.yaml
       - "**/*.md"
