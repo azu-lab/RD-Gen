@@ -62,6 +62,7 @@ class ComboGenerator:
                 combo_log[k] = v
                 setattr(combo_config, Util.convert_to_property(k), {"Fixed": v})
             combo_config.optimize()
+            combo_config.set_random_seed()
 
             yield (combo_dir_name, combo_log, combo_config)
 

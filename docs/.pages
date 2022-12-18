@@ -1,6 +1,6 @@
 nav:
-  - HOME: index.md
-  - API for user:
-      - config: config.md
-  - API for developer:
-      - common: common.md
+    - HOME: index.md
+    - config: config.md
+    - common: common.md
+    - dag_builder: dag_builder.md
+    - exceptions: exceptions.md

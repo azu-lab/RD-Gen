@@ -6,6 +6,8 @@ from ..common import Util
 
 
 class ConfigValidator:
+    """Config validator class."""
+
     base_schema = Schema(
         {
             Regex("Seed", flags=re.I): int,
@@ -219,6 +221,12 @@ class ConfigValidator:
         self._config_raw = config_raw
 
     def validate(self) -> None:
+        """Validate config.
+
+        Check the entered configurations according to the schema.
+        For detail, see https://www.andrewvillazon.com/validate-yaml-python-schema/.
+
+        """
         self.base_schema.validate(self._config_raw)
         gm = self._config_raw["Graph structure"]["Generation method"]
         if Util.ambiguous_equals(gm, "fan-in/fan-out"):
