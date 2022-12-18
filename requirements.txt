@@ -1,9 +1,9 @@
 ###### Requirements without Version Specifiers ######`
 networkx
-pydot
-PyYAML
 numpy
 schema
+PyYAML
+pydot
 ps2epsi
 
 ###### Requirements with Version Specifiers ######`
