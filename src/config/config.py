@@ -1,3 +1,4 @@
+import random
 from typing import List, Optional
 
 from ..common import Util
@@ -40,6 +41,7 @@ class Config:
     """
 
     def __init__(self, config_raw: dict) -> None:
+        self._seed = config_raw["Seed"]
         self._number_of_dags = config_raw["Number of DAGs"]
         self._graph_structure = config_raw["Graph structure"]
         self._properties = config_raw["Properties"]
@@ -68,6 +70,9 @@ class Config:
     # def set_additional_property(self, property_name: str, value) -> None:
     #     self._additional_properties.set_value(property_name, value)
 
+    def set_random_seed(self) -> None:
+        random.seed(self.seed)
+
     def optimize(self) -> None:
         """Remove 'Random' and 'Fixed'"""
         self._remove_random_fixed(self._graph_structure)
@@ -88,6 +93,10 @@ class Config:
                 break
             else:
                 Config._remove_random_fixed(v)
+
+    @property
+    def seed(self) -> int:
+        return self._seed
 
     @property
     def number_of_dags(self) -> int:
