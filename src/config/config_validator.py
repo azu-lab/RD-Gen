@@ -33,6 +33,11 @@ class ConfigValidator:
                     {Regex("Random", flags=re.I): Or([int], str)},
                     {Regex("Combination", flags=re.I): Or([int], str)},
                 ),
+                Optional(Regex("CCR", flags=re.I)): Or(
+                    {Regex("Fixed", flags=re.I): float},
+                    {Regex("Random", flags=re.I): Or([float], str)},
+                    {Regex("Combination", flags=re.I): Or([float], str)},
+                ),
                 Optional(Regex("End-to-end deadline", flags=re.I)): {
                     Regex("Ratio of deadline to critical path", flags=re.I): Or(
                         {Regex("Fixed", flags=re.I): float},
@@ -73,11 +78,6 @@ class ConfigValidator:
                         {Regex("Combination", flags=re.I): Or([float], str)},
                     ),
                     Optional(Regex("Maximum utilization", flags=re.I)): Or(
-                        {Regex("Fixed", flags=re.I): float},
-                        {Regex("Random", flags=re.I): Or([float], str)},
-                        {Regex("Combination", flags=re.I): Or([float], str)},
-                    ),
-                    Optional(Regex("CCR", flags=re.I)): Or(
                         {Regex("Fixed", flags=re.I): float},
                         {Regex("Random", flags=re.I): Or([float], str)},
                         {Regex("Combination", flags=re.I): Or([float], str)},
