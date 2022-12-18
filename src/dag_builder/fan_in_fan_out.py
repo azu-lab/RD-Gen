@@ -116,14 +116,11 @@ class FanInFanOut(DAGBuilderBase):
 
             # Add exit nodes (Optional)
             if num_exit:
-                original_exits = Util.get_exit_nodes(G)
-                new_exits = [G.number_of_nodes() + i for i in range(num_exit)]
-                G.add_nodes_from(new_exits)
-                self._add_minimum_edges(original_exits, new_exits, G)
+                self._force_create_exit_nodes(G, num_exit)
 
             # Ensure weakly connected (Optional)
             if self._config.ensure_weakly_connected:
-                self._ensure_weakly_connected(G)
+                self._ensure_weakly_connected(G, True, bool(num_exit))
 
             yield G
 
