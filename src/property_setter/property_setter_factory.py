@@ -1,4 +1,5 @@
 from ..config import Config
+from .additional_setter import AdditionalSetter
 from .property_setter_base import PropertySetterBase
 from .random_setter import RandomSetter
 
@@ -26,4 +27,4 @@ class PropertySetterFactory:
 
     @staticmethod
     def create_additional_setter(config: Config) -> PropertySetterBase:
-        pass
+        return AdditionalSetter(config)
