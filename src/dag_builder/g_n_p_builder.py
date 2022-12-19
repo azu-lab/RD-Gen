@@ -12,7 +12,7 @@ from .dag_builder_base import DAGBuilderBase
 logger = getLogger(__name__)
 
 
-class GNP(DAGBuilderBase):
+class GNPBuilder(DAGBuilderBase):
     """G(n, p) class."""
 
     def __init__(self, config: Config) -> None:

@@ -157,7 +157,7 @@ class ChainBasedDAG(nx.DiGraph):
             self.add_edge(src_i, tgt_i)
 
 
-class ChainBased(DAGBuilderBase):
+class ChainBasedBuilder(DAGBuilderBase):
     """Chain-based class."""
 
     def __init__(self, config: Config) -> None:

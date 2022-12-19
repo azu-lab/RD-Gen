@@ -6,7 +6,7 @@ import pytest
 
 from src.common import Util
 from src.config.config import Config
-from src.dag_builder.chain_based import Chain, ChainBasedDAG
+from src.dag_builder.chain_based_builder import Chain, ChainBasedDAG
 from src.dag_builder.dag_builder_factory import DAGBuilderFactory
 from src.exceptions import BuildFailedError
 
@@ -133,7 +133,7 @@ class TestChainBasedDAG:
         assert len(Util.get_exit_nodes(chain_based_dag)) == number_of_exit_nodes
 
 
-class TestChainBased:
+class TestChainBasedBuilder:
     @pytest.mark.parametrize("number_of_chains", list(range(1, 50)))
     def test_build(self, number_of_chains):
         main_sequence_length = random.randint(2, 10)
