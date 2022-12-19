@@ -1,5 +1,6 @@
 from ..config import Config
 from .additional_setter import AdditionalSetter
+from .deadline_setter import DeadlineSetter
 from .property_setter_base import PropertySetterBase
 from .random_setter import RandomSetter
 
@@ -17,7 +18,7 @@ class PropertySetterFactory:
 
     @staticmethod
     def create_deadline_setter(config: Config) -> PropertySetterBase:
-        pass
+        return DeadlineSetter(config)
 
     @staticmethod
     def create_random_setter(

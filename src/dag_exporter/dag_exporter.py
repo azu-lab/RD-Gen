@@ -83,17 +83,17 @@ class DAGExporter:
         # Preprocessing
         for node_i in dag.nodes():
             dag.nodes[node_i]["label"] = (
-                f"[{node_i}]\n" f'C: {dag.nodes[node_i]["Execution time"]}'
+                f"[{node_i}]\n" f'C: {dag.nodes[node_i]["execution_time"]}'
             )
-            if period := dag.nodes[node_i].get("Period"):
+            if period := dag.nodes[node_i].get("period"):
                 dag.nodes[node_i]["shape"] = "box"
                 dag.nodes[node_i]["label"] += f"\nT: {period}"
-            if deadline := dag.nodes[node_i].get("End-to-end deadline"):
+            if deadline := dag.nodes[node_i].get("end_to_end_deadline"):
                 dag.nodes[node_i]["style"] = "bold"
                 dag.nodes[node_i]["label"] += f"\nD: {deadline}"
 
         for src_i, tgt_i in dag.edges():
-            if comm := dag.edges[src_i, tgt_i].get("Communication time"):
+            if comm := dag.edges[src_i, tgt_i].get("communication_time"):
                 dag.edges[src_i, tgt_i]["label"] = f" {comm}"
                 dag.edges[src_i, tgt_i]["fontsize"] = 10
 
