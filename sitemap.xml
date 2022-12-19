@@ -21,7 +21,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://github.com.io/azu-lab/RD-Gen/dag_exporter/</loc>
+         <lastmod>2022-12-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://github.com.io/azu-lab/RD-Gen/exceptions/</loc>
+         <lastmod>2022-12-19</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://github.com.io/azu-lab/RD-Gen/property_setter/</loc>
          <lastmod>2022-12-19</lastmod>
          <changefreq>daily</changefreq>
     </url>

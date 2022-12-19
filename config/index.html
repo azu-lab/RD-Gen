@@ -244,6 +244,30 @@
 
 
   <li class="md-tabs__item">
+    <a href="../property_setter/" class="md-tabs__link">
+      property_setter
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../dag_exporter/" class="md-tabs__link">
+      dag_exporter
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
     <a href="../exceptions/" class="md-tabs__link">
       exceptions
     </a>
@@ -410,6 +434,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#src.config.config.Config.update_param_value" class="md-nav__link">
+    update_param_value()
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -468,6 +499,36 @@
     <li class="md-nav__item">
       <a href="../dag_builder/" class="md-nav__link">
         dag_builder
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../property_setter/" class="md-nav__link">
+        property_setter
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dag_exporter/" class="md-nav__link">
+        dag_exporter
       </a>
     </li>
   
@@ -545,7 +606,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src\config\combo_generator.py</code></summary>
+          <summary>Source code in <code>src/config/combo_generator.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 13</span>
 <span class="normal"> 14</span>
 <span class="normal"> 15</span>
@@ -735,7 +796,7 @@
             <span class="n">combo_config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_combo_params</span><span class="p">,</span> <span class="n">combo</span><span class="p">):</span>
                 <span class="n">combo_log</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="n">combo_config</span><span class="p">,</span> <span class="n">Util</span><span class="o">.</span><span class="n">convert_to_property</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;Fixed&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">})</span>
+                <span class="n">combo_config</span><span class="o">.</span><span class="n">update_param_value</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Fixed&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">})</span>
             <span class="n">combo_config</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
             <span class="n">combo_config</span><span class="o">.</span><span class="n">set_random_seed</span><span class="p">()</span>
 
@@ -881,7 +942,7 @@ for the parameter specified as 'Combination'.</p></td>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\config\combo_generator.py</code></summary>
+        <summary>Source code in <code>src/config/combo_generator.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
@@ -932,7 +993,7 @@ for the parameter specified as 'Combination'.</p></td>
         <span class="n">combo_config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_combo_params</span><span class="p">,</span> <span class="n">combo</span><span class="p">):</span>
             <span class="n">combo_log</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">combo_config</span><span class="p">,</span> <span class="n">Util</span><span class="o">.</span><span class="n">convert_to_property</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;Fixed&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">})</span>
+            <span class="n">combo_config</span><span class="o">.</span><span class="n">update_param_value</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Fixed&quot;</span><span class="p">:</span> <span class="n">v</span><span class="p">})</span>
         <span class="n">combo_config</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
         <span class="n">combo_config</span><span class="o">.</span><span class="n">set_random_seed</span><span class="p">()</span>
 
@@ -976,7 +1037,7 @@ for the parameter specified as 'Combination'.</p></td>
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\config\combo_generator.py</code></summary>
+        <summary>Source code in <code>src/config/combo_generator.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
@@ -1038,16 +1099,36 @@ for the parameter specified as 'Combination'.</p></td>
   
       <p>Config class</p>
 <p>This class provides the value of the config entered by the property.
-The property names of this class correspond to all parameter names at any level.
-To obtain the value of 'Additional properties',
-it is necessary to call a function, not a property.</p>
+The property names of this class correspond to all parameter names at any level.</p>
 <h4 id="src.config.Config--notes">Notes<a class="headerlink" href="#src.config.Config--notes" title="Permanent link">#</a></h4>
 <p>If the structure of the configuration file changes, this class must be reprogrammed.</p>
 
 
         <details class="quote">
-          <summary>Source code in <code>src\config\config.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 29</span>
+          <summary>Source code in <code>src/config/config.py</code></summary>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
 <span class="normal"> 30</span>
 <span class="normal"> 31</span>
 <span class="normal"> 32</span>
@@ -1377,28 +1458,11 @@ it is necessary to call a function, not a property.</p>
 <span class="normal">356</span>
 <span class="normal">357</span>
 <span class="normal">358</span>
-<span class="normal">359</span>
-<span class="normal">360</span>
-<span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span>
-<span class="normal">364</span>
-<span class="normal">365</span>
-<span class="normal">366</span>
-<span class="normal">367</span>
-<span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+<span class="normal">359</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Config class</span>
 
 <span class="sd">    This class provides the value of the config entered by the property.</span>
 <span class="sd">    The property names of this class correspond to all parameter names at any level.</span>
-<span class="sd">    To obtain the value of &#39;Additional properties&#39;,</span>
-<span class="sd">    it is necessary to call a function, not a property.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -1407,46 +1471,39 @@ it is necessary to call a function, not a property.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_raw</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Seed&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_number_of_dags</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Number of DAGs&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Graph structure&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Properties&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_additional_properties</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AdditionalProperties</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Properties&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Additional properties&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_additional_properties</span> <span class="o">=</span> <span class="n">AdditionalProperties</span><span class="p">(</span>
-                <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Properties&quot;</span><span class="p">][</span><span class="s2">&quot;Additional properties&quot;</span><span class="p">]</span>
-            <span class="p">)</span>
-            <span class="k">del</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Properties&quot;</span><span class="p">][</span><span class="s2">&quot;Additional properties&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_additional_properties</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Output formats&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Seed&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_dags</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Number of DAGs&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Graph structure&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Properties&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span> <span class="o">=</span> <span class="n">config_raw</span><span class="p">[</span><span class="s2">&quot;Output formats&quot;</span><span class="p">]</span>
 
-    <span class="c1"># def is_additional(self, param_name: str) -&gt; bool:</span>
-    <span class="c1">#     if self._additional_properties is None:</span>
-    <span class="c1">#         return False</span>
-    <span class="c1">#     additional_property_names = self._additional_properties.get_property_names()</span>
-    <span class="c1">#     if param_name in additional_property_names:</span>
-    <span class="c1">#         return True</span>
-    <span class="c1">#     else:</span>
-    <span class="c1">#         return False</span>
+    <span class="k">def</span> <span class="nf">update_param_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update parameter value.</span>
 
-    <span class="c1"># def get_additional_property(self, property_name: str):</span>
-    <span class="c1">#     return self._additional_properties.get_value(property_name)</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        param_name : str</span>
+<span class="sd">            Parameter name.</span>
+<span class="sd">        value : Any</span>
+<span class="sd">            Value to be set.</span>
 
-    <span class="c1"># def set_additional_property(self, property_name: str, value) -&gt; None:</span>
-    <span class="c1">#     self._additional_properties.set_value(property_name, value)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">property_name</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">convert_to_property</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name</span><span class="p">):</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Additional properties</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_properties</span> <span class="ow">and</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_properties</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">node_properties</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_properties</span> <span class="ow">and</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_properties</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">edge_properties</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">set_random_seed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Remove &#39;Random&#39; and &#39;Fixed&#39;&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_random_fixed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_random_fixed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_properties</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_additional_properties</span> <span class="o">=</span> <span class="n">AdditionalProperties</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Additional properties&quot;</span><span class="p">]</span>
-            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_random_fixed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_random_fixed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_remove_random_fixed</span><span class="p">(</span><span class="n">param_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1460,284 +1517,300 @@ it is necessary to call a function, not a property.</p>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">Config</span><span class="o">.</span><span class="n">_remove_random_fixed</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">seed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seed</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">number_of_dags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_number_of_dags</span>
-
     <span class="c1"># ----- Graph Structure -----</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">generation_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Generation method&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Generation method&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">number_of_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of nodes&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of nodes&quot;</span><span class="p">)</span>
 
     <span class="nd">@number_of_nodes</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">number_of_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ensure_weakly_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Ensure weakly connected&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Ensure weakly connected&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">out_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Out-degree&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Out-degree&quot;</span><span class="p">)</span>
 
     <span class="nd">@out_degree</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">out_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Out-degree&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Out-degree&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">in_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;In-degree&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;In-degree&quot;</span><span class="p">)</span>
 
     <span class="nd">@in_degree</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">in_degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;In-degree&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;In-degree&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">probability_of_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Probability of edge&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Probability of edge&quot;</span><span class="p">)</span>
 
     <span class="nd">@probability_of_edge</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">probability_of_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Probability of edge&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Probability of edge&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">number_of_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of chains&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of chains&quot;</span><span class="p">)</span>
 
     <span class="nd">@number_of_chains</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">number_of_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of chains&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of chains&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">main_sequence_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Main sequence length&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Main sequence length&quot;</span><span class="p">)</span>
 
     <span class="nd">@main_sequence_length</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">main_sequence_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Main sequence length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Main sequence length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">number_of_sub_sequences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of sub sequences&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of sub sequences&quot;</span><span class="p">)</span>
 
     <span class="nd">@number_of_sub_sequences</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">number_of_sub_sequences</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of sub sequences&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of sub sequences&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">vertically_link_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">main_sequence_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Main sequence tail&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Main sequence tail&quot;</span><span class="p">)</span>
 
     <span class="nd">@main_sequence_tail</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">main_sequence_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">][</span><span class="s2">&quot;Main sequence tail&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">][</span><span class="s2">&quot;Main sequence tail&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sub_sequence_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Sub sequence tail&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Sub sequence tail&quot;</span><span class="p">)</span>
 
     <span class="nd">@sub_sequence_tail</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">sub_sequence_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">][</span><span class="s2">&quot;Sub sequence tail&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">][</span><span class="s2">&quot;Sub sequence tail&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">number_of_entry_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;chain-based&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of entry nodes&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of entry nodes&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of entry nodes&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of entry nodes&quot;</span><span class="p">)</span>
 
     <span class="nd">@number_of_entry_nodes</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">number_of_entry_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;chain-based&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">][</span><span class="s2">&quot;Number of entry nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Vertically link chains&quot;</span><span class="p">][</span><span class="s2">&quot;Number of entry nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of entry nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of entry nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">merge_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">middle_of_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Middle of chain&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Middle of chain&quot;</span><span class="p">)</span>
 
     <span class="nd">@middle_of_chain</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">middle_of_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">][</span><span class="s2">&quot;Middle of chain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">][</span><span class="s2">&quot;Middle of chain&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exit_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Exit node&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Exit node&quot;</span><span class="p">)</span>
 
     <span class="nd">@exit_node</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">exit_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">][</span><span class="s2">&quot;Exit node&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">][</span><span class="s2">&quot;Exit node&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">number_of_exit_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;chain-based&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of exit nodes&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of exit nodes&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of exit nodes&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Number of exit nodes&quot;</span><span class="p">)</span>
 
     <span class="nd">@number_of_exit_nodes</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">number_of_exit_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;chain-based&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">][</span><span class="s2">&quot;Number of exit nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Merge chains&quot;</span><span class="p">][</span><span class="s2">&quot;Number of exit nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of exit nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">[</span><span class="s2">&quot;Number of exit nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="c1"># ----- Properties -----</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">execution_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Execution time&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Execution time&quot;</span><span class="p">)</span>
 
     <span class="nd">@execution_time</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">execution_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Execution time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Execution time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">communication_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Communication time&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Communication time&quot;</span><span class="p">)</span>
 
     <span class="nd">@communication_time</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">communication_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Communication time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Communication time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ccr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CCR&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CCR&quot;</span><span class="p">)</span>
 
     <span class="nd">@ccr</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">ccr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;CCR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;CCR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">end_to_end_deadline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;End-to-end deadline&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;End-to-end deadline&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ratio_of_deadline_to_critical_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;End-to-end deadline&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Ratio of deadline to critical path&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;End-to-end deadline&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Ratio of deadline to critical path&quot;</span><span class="p">)</span>
 
     <span class="nd">@ratio_of_deadline_to_critical_path</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">ratio_of_deadline_to_critical_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;End-to-end deadline&quot;</span><span class="p">][</span><span class="s2">&quot;Ratio of deadline to critical path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;End-to-end deadline&quot;</span><span class="p">][</span><span class="s2">&quot;Ratio of deadline to critical path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">multi_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">periodic_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Periodic type&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Periodic type&quot;</span><span class="p">)</span>
 
     <span class="nd">@periodic_type</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">periodic_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Periodic type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Periodic type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">period</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Period&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Period&quot;</span><span class="p">)</span>
 
     <span class="nd">@period</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Period&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Period&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">entry_node_period</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Entry node period&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Entry node period&quot;</span><span class="p">)</span>
 
     <span class="nd">@entry_node_period</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">entry_node_period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Entry node period&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Entry node period&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exit_node_period</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Exit node period&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Exit node period&quot;</span><span class="p">)</span>
 
     <span class="nd">@exit_node_period</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">exit_node_period</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Exit node period&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Exit node period&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Offset&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Offset&quot;</span><span class="p">)</span>
 
     <span class="nd">@offset</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">total_utilization</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Total utilization&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Total utilization&quot;</span><span class="p">)</span>
 
     <span class="nd">@total_utilization</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">total_utilization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Total utilization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Total utilization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">maximum_utilization</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Maximum utilization&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Maximum utilization&quot;</span><span class="p">)</span>
 
     <span class="nd">@maximum_utilization</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">maximum_utilization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Maximum utilization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s2">&quot;Multi-rate&quot;</span><span class="p">][</span><span class="s2">&quot;Maximum utilization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">additional_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Additional properties&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">node_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+        <span class="n">additional_properties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_properties</span>
+        <span class="k">if</span> <span class="n">additional_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">additional_properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Node properties&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">edge_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+        <span class="n">additional_properties</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_properties</span>
+        <span class="k">if</span> <span class="n">additional_properties</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">additional_properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Edge properties&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># ----- Output formats -----</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">naming_of_combination_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Naming of combination directory&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Naming of combination directory&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="p">[</span><span class="s2">&quot;DAG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;YAML&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="p">[</span><span class="s2">&quot;DAG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;YAML&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="p">[</span><span class="s2">&quot;DAG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;JSON&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="p">[</span><span class="s2">&quot;DAG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;JSON&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">xml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="p">[</span><span class="s2">&quot;DAG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;XML&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="p">[</span><span class="s2">&quot;DAG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;XML&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="p">[</span><span class="s2">&quot;DAG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DOT&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="p">[</span><span class="s2">&quot;DAG&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DOT&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">figure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Figure&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">draw_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Draw legend&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Draw legend&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">png</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PNG&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PNG&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">svg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SVG&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SVG&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">eps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;EPS&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;EPS&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PDF&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_formats</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PDF&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
         </details>
 
@@ -1768,22 +1841,107 @@ it is necessary to call a function, not a property.</p>
       <p>Remove 'Random' and 'Fixed'</p>
 
       <details class="quote">
-        <summary>Source code in <code>src\config\config.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <summary>Source code in <code>src/config/config.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Remove &#39;Random&#39; and &#39;Fixed&#39;&quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_remove_random_fixed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph_structure</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_remove_random_fixed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">)</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_properties</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_additional_properties</span> <span class="o">=</span> <span class="n">AdditionalProperties</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="s2">&quot;Additional properties&quot;</span><span class="p">]</span>
-        <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_remove_random_fixed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_structure</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_remove_random_fixed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="src.config.config.Config.update_param_value" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">update_param_value</span><span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></code>
+
+<a href="#src.config.config.Config.update_param_value" class="headerlink" title="Permanent link">#</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Update parameter value.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>param_name</code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td><p>Parameter name.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>value</code></td>
+          <td>
+                <code><span title="typing.Any">Any</span></code>
+          </td>
+          <td><p>Value to be set.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+      <details class="quote">
+        <summary>Source code in <code>src/config/config.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_param_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Update parameter value.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    param_name : str</span>
+<span class="sd">        Parameter name.</span>
+<span class="sd">    value : Any</span>
+<span class="sd">        Value to be set.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">property_name</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">convert_to_property</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name</span><span class="p">):</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">property_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Additional properties</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_properties</span> <span class="ow">and</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_properties</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">node_properties</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_properties</span> <span class="ow">and</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_properties</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edge_properties</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1816,7 +1974,7 @@ it is necessary to call a function, not a property.</p>
 
 
         <details class="quote">
-          <summary>Source code in <code>src\config\config_validator.py</code></summary>
+          <summary>Source code in <code>src/config/config_validator.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  8</span>
 <span class="normal">  9</span>
 <span class="normal"> 10</span>
@@ -2122,7 +2280,7 @@ it is necessary to call a function, not a property.</p>
                         <span class="p">{</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Random&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">):</span> <span class="n">Or</span><span class="p">([</span><span class="nb">float</span><span class="p">],</span> <span class="nb">str</span><span class="p">)},</span>
                         <span class="p">{</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Combination&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">):</span> <span class="n">Or</span><span class="p">([</span><span class="nb">float</span><span class="p">],</span> <span class="nb">str</span><span class="p">)},</span>
                     <span class="p">),</span>
-                    <span class="n">Optional</span><span class="p">(</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Maximum utilization&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)):</span> <span class="n">Or</span><span class="p">(</span>
+                    <span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Maximum utilization&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">):</span> <span class="n">Or</span><span class="p">(</span>
                         <span class="p">{</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Fixed&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">):</span> <span class="nb">float</span><span class="p">},</span>
                         <span class="p">{</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Random&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">):</span> <span class="n">Or</span><span class="p">([</span><span class="nb">float</span><span class="p">],</span> <span class="nb">str</span><span class="p">)},</span>
                         <span class="p">{</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Combination&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">):</span> <span class="n">Or</span><span class="p">([</span><span class="nb">float</span><span class="p">],</span> <span class="nb">str</span><span class="p">)},</span>
@@ -2157,7 +2315,7 @@ it is necessary to call a function, not a property.</p>
                     <span class="n">Optional</span><span class="p">(</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;XML&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)):</span> <span class="nb">bool</span><span class="p">,</span>
                     <span class="n">Optional</span><span class="p">(</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;DOT&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)):</span> <span class="nb">bool</span><span class="p">,</span>
                 <span class="p">},</span>
-                <span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Figure&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">):</span> <span class="p">{</span>
+                <span class="n">Optional</span><span class="p">(</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Figure&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)):</span> <span class="p">{</span>
                     <span class="n">Optional</span><span class="p">(</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;Draw legend&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)):</span> <span class="nb">bool</span><span class="p">,</span>
                     <span class="n">Optional</span><span class="p">(</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;PNG&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)):</span> <span class="nb">bool</span><span class="p">,</span>
                     <span class="n">Optional</span><span class="p">(</span><span class="n">Regex</span><span class="p">(</span><span class="s2">&quot;SVG&quot;</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)):</span> <span class="nb">bool</span><span class="p">,</span>
@@ -2312,7 +2470,7 @@ it is necessary to call a function, not a property.</p>
 For detail, see https://www.andrewvillazon.com/validate-yaml-python-schema/.</p>
 
       <details class="quote">
-        <summary>Source code in <code>src\config\config_validator.py</code></summary>
+        <summary>Source code in <code>src/config/config_validator.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">223</span>
 <span class="normal">224</span>
 <span class="normal">225</span>

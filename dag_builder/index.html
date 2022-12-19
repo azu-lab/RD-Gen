@@ -244,6 +244,30 @@
 
 
   <li class="md-tabs__item">
+    <a href="../property_setter/" class="md-tabs__link">
+      property_setter
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../dag_exporter/" class="md-tabs__link">
+      dag_exporter
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
     <a href="../exceptions/" class="md-tabs__link">
       exceptions
     </a>
@@ -400,14 +424,14 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#src.dag_builder.chain_based.Chain.__init__" class="md-nav__link">
+  <a href="#src.dag_builder.chain_based_builder.Chain.__init__" class="md-nav__link">
     __init__()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#src.dag_builder.chain_based.Chain.build_chain" class="md-nav__link">
+  <a href="#src.dag_builder.chain_based_builder.Chain.build_chain" class="md-nav__link">
     build_chain()
   </a>
   
@@ -419,23 +443,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#src.dag_builder.ChainBased" class="md-nav__link">
-    ChainBased
+  <a href="#src.dag_builder.ChainBasedBuilder" class="md-nav__link">
+    ChainBasedBuilder
   </a>
   
-    <nav class="md-nav" aria-label="ChainBased">
+    <nav class="md-nav" aria-label="ChainBasedBuilder">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#src.dag_builder.chain_based.ChainBased.build" class="md-nav__link">
+  <a href="#src.dag_builder.chain_based_builder.ChainBasedBuilder.build" class="md-nav__link">
     build()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#src.dag_builder.chain_based.ChainBased.validate_config" class="md-nav__link">
-    validate_config()
   </a>
   
 </li>
@@ -454,14 +471,14 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#src.dag_builder.chain_based.ChainBasedDAG.merge_chains" class="md-nav__link">
+  <a href="#src.dag_builder.chain_based_builder.ChainBasedDAG.merge_chains" class="md-nav__link">
     merge_chains()
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#src.dag_builder.chain_based.ChainBasedDAG.vertically_link_chains" class="md-nav__link">
+  <a href="#src.dag_builder.chain_based_builder.ChainBasedDAG.vertically_link_chains" class="md-nav__link">
     vertically_link_chains()
   </a>
   
@@ -513,23 +530,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#src.dag_builder.FanInFanOut" class="md-nav__link">
-    FanInFanOut
+  <a href="#src.dag_builder.FanInFanOutBuilder" class="md-nav__link">
+    FanInFanOutBuilder
   </a>
   
-    <nav class="md-nav" aria-label="FanInFanOut">
+    <nav class="md-nav" aria-label="FanInFanOutBuilder">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#src.dag_builder.fan_in_fan_out.FanInFanOut.build" class="md-nav__link">
+  <a href="#src.dag_builder.fan_in_fan_out_builder.FanInFanOutBuilder.build" class="md-nav__link">
     build()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#src.dag_builder.fan_in_fan_out.FanInFanOut.validate_config" class="md-nav__link">
-    validate_config()
   </a>
   
 </li>
@@ -540,23 +550,16 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#src.dag_builder.GNP" class="md-nav__link">
-    GNP
+  <a href="#src.dag_builder.GNPBuilder" class="md-nav__link">
+    GNPBuilder
   </a>
   
-    <nav class="md-nav" aria-label="GNP">
+    <nav class="md-nav" aria-label="GNPBuilder">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#src.dag_builder.g_n_p.GNP.build" class="md-nav__link">
+  <a href="#src.dag_builder.g_n_p_builder.GNPBuilder.build" class="md-nav__link">
     build()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#src.dag_builder.g_n_p.GNP.validate_config" class="md-nav__link">
-    validate_config()
   </a>
   
 </li>
@@ -570,6 +573,36 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../property_setter/" class="md-nav__link">
+        property_setter
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dag_exporter/" class="md-nav__link">
+        dag_exporter
+      </a>
     </li>
   
 
@@ -648,7 +681,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src\dag_builder\chain_based.py</code></summary>
+          <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
@@ -795,10 +828,10 @@
 
 
 
-<h3 id="src.dag_builder.chain_based.Chain.__init__" class="doc doc-heading">
+<h3 id="src.dag_builder.chain_based_builder.Chain.__init__" class="doc doc-heading">
 <code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="n">start_idx</span><span class="p">)</span></code>
 
-<a href="#src.dag_builder.chain_based.Chain.__init__" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.chain_based_builder.Chain.__init__" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -830,7 +863,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\dag_builder\chain_based.py</code></summary>
+        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
@@ -866,10 +899,10 @@
 
 
 
-<h3 id="src.dag_builder.chain_based.Chain.build_chain" class="doc doc-heading">
+<h3 id="src.dag_builder.chain_based_builder.Chain.build_chain" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">build_chain</span><span class="p">(</span><span class="n">main_sequence_length</span><span class="p">,</span> <span class="n">number_of_sub_sequence</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
-<a href="#src.dag_builder.chain_based.Chain.build_chain" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.chain_based_builder.Chain.build_chain" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -912,7 +945,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\dag_builder\chain_based.py</code></summary>
+        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
@@ -1004,11 +1037,11 @@
 
 
 
-<h2 id="src.dag_builder.ChainBased" class="doc doc-heading">
-        <code>ChainBased</code>
+<h2 id="src.dag_builder.ChainBasedBuilder" class="doc doc-heading">
+        <code>ChainBasedBuilder</code>
 
 
-<a href="#src.dag_builder.ChainBased" class="headerlink" title="Permanent link">#</a></h2>
+<a href="#src.dag_builder.ChainBasedBuilder" class="headerlink" title="Permanent link">#</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -1020,7 +1053,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src\dag_builder\chain_based.py</code></summary>
+          <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">160</span>
 <span class="normal">161</span>
 <span class="normal">162</span>
@@ -1135,13 +1168,13 @@
 <span class="normal">271</span>
 <span class="normal">272</span>
 <span class="normal">273</span>
-<span class="normal">274</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChainBased</span><span class="p">(</span><span class="n">DAGBuilderBase</span><span class="p">):</span>
+<span class="normal">274</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChainBasedBuilder</span><span class="p">(</span><span class="n">DAGBuilderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Chain-based class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate config.</span>
 
 <span class="sd">        Parameters</span>
@@ -1269,10 +1302,10 @@
 
 
 
-<h3 id="src.dag_builder.chain_based.ChainBased.build" class="doc doc-heading">
+<h3 id="src.dag_builder.chain_based_builder.ChainBasedBuilder.build" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">build</span><span class="p">()</span></code>
 
-<a href="#src.dag_builder.chain_based.ChainBased.build" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.chain_based_builder.ChainBasedBuilder.build" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -1316,7 +1349,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\dag_builder\chain_based.py</code></summary>
+        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span>
@@ -1440,167 +1473,6 @@
 
 </div>
 
-<div class="doc doc-object doc-function">
-
-
-
-<h3 id="src.dag_builder.chain_based.ChainBased.validate_config" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
-
-<a href="#src.dag_builder.chain_based.ChainBased.validate_config" class="headerlink" title="Permanent link">#</a></h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Validate config.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>config</code></td>
-          <td>
-                <code><a class="autorefs autorefs-internal" title="src.config.Config" href="../config/#src.config.Config">Config</a></code>
-          </td>
-          <td><p>Inputted config.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Raises:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><a class="autorefs autorefs-internal" title="src.exceptions.InfeasibleConfigError" href="../exceptions/#src.exceptions.InfeasibleConfigError">InfeasibleConfigError</a></code>
-          </td>
-          <td><p>An infeasible parameter was entered.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-      <details class="quote">
-        <summary>Source code in <code>src\dag_builder\chain_based.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate config.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    config : Config</span>
-<span class="sd">        Inputted config.</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    InfeasibleConfigError</span>
-<span class="sd">        An infeasible parameter was entered.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">main_sequence_length</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">main_sequence_length</span>
-    <span class="n">number_of_sub_sequences</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_sub_sequences</span>
-    <span class="k">if</span> <span class="n">main_sequence_length</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">number_of_sub_sequences</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
-            <span class="s2">&quot;Since the length of &#39;Main sequence length&#39; is 1, &quot;</span>
-            <span class="s2">&quot;the sub-sequence cannot be built.&quot;</span>
-        <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">vertically_link_chains</span><span class="p">:</span>
-        <span class="n">main_sequence_tail</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">main_sequence_tail</span>
-        <span class="n">sub_sequence_tail</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">sub_sequence_tail</span>
-        <span class="k">if</span> <span class="n">main_sequence_tail</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">sub_sequence_tail</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
-                <span class="s2">&quot;Either &#39;Main sequence tail&#39; or &#39;Sub sequence tail&#39; must be set to True.&quot;</span>
-            <span class="p">)</span>
-
-        <span class="n">number_of_chains</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_chains</span>
-        <span class="n">number_of_entry_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_entry_nodes</span>
-        <span class="k">if</span> <span class="n">number_of_chains</span> <span class="o">&lt;</span> <span class="n">number_of_entry_nodes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span><span class="s2">&quot;&#39;Number of chains&#39; &lt; &#39;Number of entry nodes.&#39;&quot;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">merge_chains</span><span class="p">:</span>
-        <span class="n">middle_of_chain</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">middle_of_chain</span>
-        <span class="n">exit_node</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">exit_node</span>
-        <span class="k">if</span> <span class="n">middle_of_chain</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">exit_node</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
-                <span class="s2">&quot;Either &#39;Middle of chain&#39; or &#39;Exit node&#39; must be set to True.&quot;</span>
-            <span class="p">)</span>
-
-        <span class="n">number_of_chains</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_chains</span>
-        <span class="n">number_of_exit_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_exit_nodes</span>
-        <span class="k">if</span> <span class="n">number_of_chains</span> <span class="o">*</span> <span class="n">number_of_sub_sequences</span> <span class="o">&lt;</span> <span class="n">number_of_exit_nodes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
-                <span class="s2">&quot;&#39;Number of chains&#39; * &#39;Number of sub sequence&#39; &lt; &#39;Number of exit nodes.&#39;&quot;</span>
-            <span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-      </details>
-  </div>
-
-</div>
-
 
 
   </div>
@@ -1629,7 +1501,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src\dag_builder\chain_based.py</code></summary>
+          <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 78</span>
 <span class="normal"> 79</span>
 <span class="normal"> 80</span>
@@ -1808,10 +1680,10 @@
 
 
 
-<h3 id="src.dag_builder.chain_based.ChainBasedDAG.merge_chains" class="doc doc-heading">
+<h3 id="src.dag_builder.chain_based_builder.ChainBasedDAG.merge_chains" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">merge_chains</span><span class="p">(</span><span class="n">number_of_exit_nodes</span><span class="p">,</span> <span class="n">merge_middle</span><span class="p">,</span> <span class="n">merge_exit</span><span class="p">)</span></code>
 
-<a href="#src.dag_builder.chain_based.ChainBasedDAG.merge_chains" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.chain_based_builder.ChainBasedDAG.merge_chains" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -1881,7 +1753,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\dag_builder\chain_based.py</code></summary>
+        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">121</span>
 <span class="normal">122</span>
 <span class="normal">123</span>
@@ -1965,10 +1837,10 @@
 
 
 
-<h3 id="src.dag_builder.chain_based.ChainBasedDAG.vertically_link_chains" class="doc doc-heading">
+<h3 id="src.dag_builder.chain_based_builder.ChainBasedDAG.vertically_link_chains" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">vertically_link_chains</span><span class="p">(</span><span class="n">number_of_entry_nodes</span><span class="p">,</span> <span class="n">link_main_tail</span><span class="p">,</span> <span class="n">link_sub_tail</span><span class="p">)</span></code>
 
-<a href="#src.dag_builder.chain_based.ChainBasedDAG.vertically_link_chains" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.chain_based_builder.ChainBasedDAG.vertically_link_chains" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -2020,7 +1892,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\dag_builder\chain_based.py</code></summary>
+        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
 <span class="normal"> 89</span>
 <span class="normal"> 90</span>
@@ -2116,7 +1988,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src\dag_builder\dag_builder_base.py</code></summary>
+          <summary>Source code in <code>src/dag_builder/dag_builder_base.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 11</span>
 <span class="normal"> 12</span>
 <span class="normal"> 13</span>
@@ -2273,7 +2145,7 @@
 <span class="sd">            Maximum number of build attempts for a single DAG, by default 100</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_try</span> <span class="o">=</span> <span class="n">max_try</span>
 
@@ -2282,7 +2154,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@staticmethod</span>
@@ -2466,7 +2338,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\dag_builder\dag_builder_base.py</code></summary>
+        <summary>Source code in <code>src/dag_builder/dag_builder_base.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
@@ -2491,7 +2363,7 @@
 <span class="sd">        Maximum number of build attempts for a single DAG, by default 100</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_max_try</span> <span class="o">=</span> <span class="n">max_try</span>
 </code></pre></div></td></tr></table></div>
@@ -2526,7 +2398,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src\dag_builder\dag_builder_factory.py</code></summary>
+          <summary>Source code in <code>src/dag_builder/dag_builder_factory.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
@@ -2593,11 +2465,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">generation_method</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">generation_method</span>
         <span class="k">if</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;fan-in/fan-out&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">FanInFanOut</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">FanInFanOutBuilder</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;g(n, p)&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">GNP</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">GNPBuilder</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;chain-based&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">ChainBased</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ChainBasedBuilder</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
@@ -2698,7 +2570,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\dag_builder\dag_builder_factory.py</code></summary>
+        <summary>Source code in <code>src/dag_builder/dag_builder_factory.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
@@ -2759,11 +2631,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">generation_method</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">generation_method</span>
     <span class="k">if</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;fan-in/fan-out&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">FanInFanOut</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">FanInFanOutBuilder</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;g(n, p)&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">GNP</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">GNPBuilder</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">Util</span><span class="o">.</span><span class="n">ambiguous_equals</span><span class="p">(</span><span class="n">generation_method</span><span class="p">,</span> <span class="s2">&quot;chain-based&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ChainBased</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ChainBasedBuilder</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </code></pre></div></td></tr></table></div>
@@ -2784,11 +2656,11 @@
 
 
 
-<h2 id="src.dag_builder.FanInFanOut" class="doc doc-heading">
-        <code>FanInFanOut</code>
+<h2 id="src.dag_builder.FanInFanOutBuilder" class="doc doc-heading">
+        <code>FanInFanOutBuilder</code>
 
 
-<a href="#src.dag_builder.FanInFanOut" class="headerlink" title="Permanent link">#</a></h2>
+<a href="#src.dag_builder.FanInFanOutBuilder" class="headerlink" title="Permanent link">#</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -2800,7 +2672,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src\dag_builder\fan_in_fan_out.py</code></summary>
+          <summary>Source code in <code>src/dag_builder/fan_in_fan_out_builder.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 12</span>
 <span class="normal"> 13</span>
 <span class="normal"> 14</span>
@@ -2939,7 +2811,7 @@
 <span class="normal">147</span>
 <span class="normal">148</span>
 <span class="normal">149</span>
-<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">FanInFanOut</span><span class="p">(</span><span class="n">DAGBuilderBase</span><span class="p">):</span>
+<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">FanInFanOutBuilder</span><span class="p">(</span><span class="n">DAGBuilderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fan-in/fan-out class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -2955,7 +2827,7 @@
             <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">in_degree</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate config.</span>
 
 <span class="sd">        Parameters</span>
@@ -3097,10 +2969,10 @@
 
 
 
-<h3 id="src.dag_builder.fan_in_fan_out.FanInFanOut.build" class="doc doc-heading">
+<h3 id="src.dag_builder.fan_in_fan_out_builder.FanInFanOutBuilder.build" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">build</span><span class="p">()</span></code>
 
-<a href="#src.dag_builder.fan_in_fan_out.FanInFanOut.build" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.fan_in_fan_out_builder.FanInFanOutBuilder.build" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -3145,7 +3017,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\dag_builder\fan_in_fan_out.py</code></summary>
+        <summary>Source code in <code>src/dag_builder/fan_in_fan_out_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 50</span>
 <span class="normal"> 51</span>
 <span class="normal"> 52</span>
@@ -3303,111 +3175,6 @@
 
 </div>
 
-<div class="doc doc-object doc-function">
-
-
-
-<h3 id="src.dag_builder.fan_in_fan_out.FanInFanOut.validate_config" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
-
-<a href="#src.dag_builder.fan_in_fan_out.FanInFanOut.validate_config" class="headerlink" title="Permanent link">#</a></h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Validate config.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>config</code></td>
-          <td>
-                <code><a class="autorefs autorefs-internal" title="src.config.Config" href="../config/#src.config.Config">Config</a></code>
-          </td>
-          <td><p>Inputted config.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Raises:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><a class="autorefs autorefs-internal" title="src.exceptions.InfeasibleConfigError" href="../exceptions/#src.exceptions.InfeasibleConfigError">InfeasibleConfigError</a></code>
-          </td>
-          <td><p>An infeasible parameter was entered.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-      <details class="quote">
-        <summary>Source code in <code>src\dag_builder\fan_in_fan_out.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate config.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    config : Config</span>
-<span class="sd">        Inputted config.</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    InfeasibleConfigError</span>
-<span class="sd">        An infeasible parameter was entered.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">number_of_entry_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_entry_nodes</span>
-    <span class="n">number_of_exit_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_exit_nodes</span> <span class="ow">or</span> <span class="mi">0</span>
-    <span class="n">number_of_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_nodes</span>
-    <span class="k">if</span> <span class="n">number_of_entry_nodes</span> <span class="o">+</span> <span class="n">number_of_exit_nodes</span> <span class="o">&gt;</span> <span class="n">number_of_nodes</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
-            <span class="s2">&quot;&#39;Number of entry nodes&#39; + &#39;Number of exit nodes&#39; &gt; &#39;Number of nodes&#39;&quot;</span>
-        <span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-      </details>
-  </div>
-
-</div>
-
 
 
   </div>
@@ -3420,11 +3187,11 @@
 
 
 
-<h2 id="src.dag_builder.GNP" class="doc doc-heading">
-        <code>GNP</code>
+<h2 id="src.dag_builder.GNPBuilder" class="doc doc-heading">
+        <code>GNPBuilder</code>
 
 
-<a href="#src.dag_builder.GNP" class="headerlink" title="Permanent link">#</a></h2>
+<a href="#src.dag_builder.GNPBuilder" class="headerlink" title="Permanent link">#</a></h2>
 
 
   <div class="doc doc-contents ">
@@ -3436,7 +3203,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src\dag_builder\g_n_p.py</code></summary>
+          <summary>Source code in <code>src/dag_builder/g_n_p_builder.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 15</span>
 <span class="normal"> 16</span>
 <span class="normal"> 17</span>
@@ -3529,13 +3296,13 @@
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
-<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GNP</span><span class="p">(</span><span class="n">DAGBuilderBase</span><span class="p">):</span>
+<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">GNPBuilder</span><span class="p">(</span><span class="n">DAGBuilderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;G(n, p) class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validate config.</span>
 
 <span class="sd">        Parameters</span>
@@ -3641,10 +3408,10 @@
 
 
 
-<h3 id="src.dag_builder.g_n_p.GNP.build" class="doc doc-heading">
+<h3 id="src.dag_builder.g_n_p_builder.GNPBuilder.build" class="doc doc-heading">
 <code class="highlight language-python"><span class="n">build</span><span class="p">()</span></code>
 
-<a href="#src.dag_builder.g_n_p.GNP.build" class="headerlink" title="Permanent link">#</a></h3>
+<a href="#src.dag_builder.g_n_p_builder.GNPBuilder.build" class="headerlink" title="Permanent link">#</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -3689,7 +3456,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src\dag_builder\g_n_p.py</code></summary>
+        <summary>Source code in <code>src/dag_builder/g_n_p_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 46</span>
 <span class="normal"> 47</span>
 <span class="normal"> 48</span>
@@ -3819,117 +3586,6 @@
 
 </div>
 
-<div class="doc doc-object doc-function">
-
-
-
-<h3 id="src.dag_builder.g_n_p.GNP.validate_config" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></code>
-
-<a href="#src.dag_builder.g_n_p.GNP.validate_config" class="headerlink" title="Permanent link">#</a></h3>
-
-
-  <div class="doc doc-contents ">
-  
-      <p>Validate config.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>config</code></td>
-          <td>
-                <code><a class="autorefs autorefs-internal" title="src.config.Config" href="../config/#src.config.Config">Config</a></code>
-          </td>
-          <td><p>Inputted config.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Raises:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><a class="autorefs autorefs-internal" title="src.exceptions.InfeasibleConfigError" href="../exceptions/#src.exceptions.InfeasibleConfigError">InfeasibleConfigError</a></code>
-          </td>
-          <td><p>An infeasible parameter was entered.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-      <details class="quote">
-        <summary>Source code in <code>src\dag_builder\g_n_p.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate config.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    config : Config</span>
-<span class="sd">        Inputted config.</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    InfeasibleConfigError</span>
-<span class="sd">        An infeasible parameter was entered.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">number_of_entry_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_entry_nodes</span> <span class="ow">or</span> <span class="mi">0</span>
-    <span class="n">number_of_exit_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_exit_nodes</span> <span class="ow">or</span> <span class="mi">0</span>
-    <span class="n">number_of_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_nodes</span>
-    <span class="k">if</span> <span class="n">number_of_entry_nodes</span> <span class="o">+</span> <span class="n">number_of_exit_nodes</span> <span class="o">&gt;</span> <span class="n">number_of_nodes</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
-            <span class="s2">&quot;&#39;Number of entry nodes&#39; + &#39;Number of exit nodes&#39; &gt; &#39;Number of nodes&#39;&quot;</span>
-        <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">probability_of_edge</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;&#39;Probability of edge&#39; &gt; 1.0&quot;</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-      </details>
-  </div>
-
-</div>
-
 
 
   </div>
@@ -3987,13 +3643,13 @@
       
       
         
-        <a href="../exceptions/" class="md-footer__link md-footer__link--next" aria-label="Next: exceptions" rel="next">
+        <a href="../property_setter/" class="md-footer__link md-footer__link--next" aria-label="Next: property_setter" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              exceptions
+              property_setter
             </div>
           </div>
           <div class="md-footer__button md-icon">
