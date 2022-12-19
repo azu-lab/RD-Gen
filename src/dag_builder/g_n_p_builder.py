@@ -18,7 +18,7 @@ class GNPBuilder(DAGBuilderBase):
     def __init__(self, config: Config) -> None:
         super().__init__(config)
 
-    def validate_config(self, config: Config):
+    def _validate_config(self, config: Config):
         """Validate config.
 
         Parameters

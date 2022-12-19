@@ -25,7 +25,7 @@ class FanInFanOutBuilder(DAGBuilderBase):
             else self._config.in_degree
         )
 
-    def validate_config(self, config: Config):
+    def _validate_config(self, config: Config):
         """Validate config.
 
         Parameters

@@ -22,7 +22,7 @@ class DAGBuilderBase(metaclass=ABCMeta):
             Maximum number of build attempts for a single DAG, by default 100
 
         """
-        self.validate_config(config)
+        self._validate_config(config)
         self._config = config
         self._max_try = max_try
 
@@ -31,7 +31,7 @@ class DAGBuilderBase(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def validate_config(self, config: Config):
+    def _validate_config(self, config: Config):
         raise NotImplementedError
 
     @staticmethod
