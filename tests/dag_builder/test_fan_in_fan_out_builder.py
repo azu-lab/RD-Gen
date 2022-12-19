@@ -30,7 +30,7 @@ def get_config(
     return Config(config_raw)
 
 
-class TestFanInFanOut:
+class TestFanInFanOutBuilder:
     def test_validate_config(self):
         config_raw = get_config(1, 1, 1, 2)
         with pytest.raises(InfeasibleConfigError) as e:

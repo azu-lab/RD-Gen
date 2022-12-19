@@ -9,7 +9,7 @@ from ..exceptions import BuildFailedError, InfeasibleConfigError
 from .dag_builder_base import DAGBuilderBase
 
 
-class FanInFanOut(DAGBuilderBase):
+class FanInFanOutBuilder(DAGBuilderBase):
     """Fan-in/fan-out class."""
 
     def __init__(self, config: Config) -> None:
@@ -25,7 +25,7 @@ class FanInFanOut(DAGBuilderBase):
             else self._config.in_degree
         )
 
-    def validate_config(self, config: Config):
+    def _validate_config(self, config: Config):
         """Validate config.
 
         Parameters

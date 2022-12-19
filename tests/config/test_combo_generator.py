@@ -105,7 +105,7 @@ class TestComboGenerator:
                 {"Number of nodes": 2, "Ratio of deadline to critical path": 4},
             ]
 
-    def test_get_combo_iter_config(self):
+    def test_get_combo_iter_config_normal(self):
         config_raw = get_config_raw_base()
         combo_iter = ComboGenerator(config_raw).get_combo_iter()
         configs = set()
@@ -116,3 +116,19 @@ class TestComboGenerator:
             configs.add(config)
 
         assert len(configs) == 4
+
+    def test_get_combo_iter_config_additional(self):
+        config_raw = get_config_raw_base()
+        config_raw["Properties"]["Additional properties"] = {
+            "Node properties": {"New node": {"Combination": [1, 2, 3]}},
+            "Edge properties": {"New edge": {"Combination": [4, 5]}},
+        }
+        combo_iter = ComboGenerator(config_raw).get_combo_iter()
+        configs = set()
+        for _, _, config in combo_iter:
+            assert isinstance(config, Config)
+            assert config.additional_properties["Node properties"]["New node"] in [1, 2, 3]
+            assert config.additional_properties["Edge properties"]["New edge"] in [4, 5]
+            configs.add(config)
+
+        assert len(configs) == 24

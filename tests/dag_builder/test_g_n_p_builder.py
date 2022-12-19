@@ -27,7 +27,7 @@ def get_config_raw(number_of_nodes: int, probability_of_edge: float) -> dict:
     return config_raw
 
 
-class TestGNP:
+class TestGNPBuilder:
     def test_validate_config(self):
         config_raw = get_config_raw(1, 1.0)
         config_raw["Graph structure"]["Number of entry nodes"] = 5

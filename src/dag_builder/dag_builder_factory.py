@@ -1,9 +1,9 @@
 from ..common import Util
 from ..config import Config
-from .chain_based import ChainBased
+from .chain_based_builder import ChainBasedBuilder
 from .dag_builder_base import DAGBuilderBase
-from .fan_in_fan_out import FanInFanOut
-from .g_n_p import GNP
+from .fan_in_fan_out_builder import FanInFanOutBuilder
+from .g_n_p_builder import GNPBuilder
 
 
 class DAGBuilderFactory:
@@ -36,10 +36,10 @@ class DAGBuilderFactory:
         """
         generation_method = config.generation_method
         if Util.ambiguous_equals(generation_method, "fan-in/fan-out"):
-            return FanInFanOut(config)
+            return FanInFanOutBuilder(config)
         elif Util.ambiguous_equals(generation_method, "g(n, p)"):
-            return GNP(config)
+            return GNPBuilder(config)
         elif Util.ambiguous_equals(generation_method, "chain-based"):
-            return ChainBased(config)
+            return ChainBasedBuilder(config)
         else:
             raise NotImplementedError

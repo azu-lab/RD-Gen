@@ -12,13 +12,13 @@ from .dag_builder_base import DAGBuilderBase
 logger = getLogger(__name__)
 
 
-class GNP(DAGBuilderBase):
+class GNPBuilder(DAGBuilderBase):
     """G(n, p) class."""
 
     def __init__(self, config: Config) -> None:
         super().__init__(config)
 
-    def validate_config(self, config: Config):
+    def _validate_config(self, config: Config):
         """Validate config.
 
         Parameters
