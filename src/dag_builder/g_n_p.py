@@ -60,20 +60,18 @@ class GNP(DAGBuilderBase):
 
         """
         for _ in range(self._config.number_of_dags):
-            num_build_fail = 0
+            for try_i in range(1, self._max_try + 1):
+                # Determine number_of_nodes
+                num_nodes = Util.random_choice(self._config.number_of_nodes)
+                num_entry = self._config.number_of_entry_nodes
+                if num_entry:
+                    num_entry = Util.random_choice(num_entry)
+                    num_nodes -= num_entry
+                num_exit = self._config.number_of_exit_nodes
+                if num_exit:
+                    num_exit = Util.random_choice(num_exit)
+                    num_nodes -= num_exit
 
-            # Determine number_of_nodes
-            num_nodes = Util.random_choice(self._config.number_of_nodes)
-            num_entry = self._config.number_of_entry_nodes
-            if num_entry:
-                num_entry = Util.random_choice(num_entry)
-                num_nodes -= num_entry
-            num_exit = self._config.number_of_exit_nodes
-            if num_exit:
-                num_exit = Util.random_choice(num_exit)
-                num_nodes -= num_exit
-
-            while True:
                 # Initialize DAG
                 G = nx.DiGraph()
                 for i in range(num_nodes):
@@ -100,10 +98,10 @@ class GNP(DAGBuilderBase):
                         self._ensure_weakly_connected(G, bool(num_entry), bool(num_exit))
                         break
                     except BuildFailedError:
-                        num_build_fail += 1
-                        if num_build_fail == self._max_try:
+                        if try_i == self._max_try:
                             raise BuildFailedError(
                                 f"A DAG could not be built in {self._max_try} tries."
                             )
+                        continue
 
             yield G
