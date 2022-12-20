@@ -137,3 +137,29 @@ class TestComboGenerator:
             configs.add(config)
 
         assert len(configs) == 24
+
+    def test_get_combo_iter_no_combo(self):
+        config_raw = {
+            "Seed": 0,
+            "Number of DAGs": 1,
+            "Graph structure": {
+                "Generation method": "G(n, p)",
+                "Number of nodes": {"Fixed": [1, 2]},
+            },
+            "Properties": {
+                "Execution time": {"Random": "(1, 3, 1)"},
+            },
+            "Output formats": {
+                "Naming of combination directory": "Abbreviation",
+                "DAG": {"YAML": True},
+            },
+        }
+        combo_iter = ComboGenerator(config_raw).get_combo_iter()
+        configs = set()
+        for combo_dir_name, log, config in combo_iter:
+            assert combo_dir_name == "DAGs"
+            assert isinstance(log, dict)
+            assert isinstance(config, Config)
+            configs.add(config)
+
+        assert len(configs) == 1

@@ -40,7 +40,7 @@ class GNPBuilder(DAGBuilderBase):
                 "'Number of entry nodes' + 'Number of exit nodes' > 'Number of nodes'"
             )
 
-        if config.probability_of_edge > 1.0:
+        if Util.get_option_max(config.probability_of_edge) > 1.0:  # type: ignore
             logger.warning("'Probability of edge' > 1.0")
 
     def build(self) -> Generator[nx.DiGraph, None, None]:
