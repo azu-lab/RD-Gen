@@ -215,18 +215,6 @@
         
   
   
-
-
-  <li class="md-tabs__item">
-    <a href="../common/" class="md-tabs__link">
-      common
-    </a>
-  </li>
-
-      
-        
-  
-  
     
   
 
@@ -258,6 +246,18 @@
   <li class="md-tabs__item">
     <a href="../dag_exporter/" class="md-tabs__link">
       dag_exporter
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../common/" class="md-tabs__link">
+      common
     </a>
   </li>
 
@@ -351,21 +351,6 @@
     <li class="md-nav__item">
       <a href="../config/" class="md-nav__link">
         config
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../common/" class="md-nav__link">
-        common
       </a>
     </li>
   
@@ -615,6 +600,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../exceptions/" class="md-nav__link">
         exceptions
       </a>
@@ -681,7 +681,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
+          <summary>Source code in <code>src\dag_builder\chain_based_builder.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
@@ -863,7 +863,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
+        <summary>Source code in <code>src\dag_builder\chain_based_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
@@ -945,7 +945,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
+        <summary>Source code in <code>src\dag_builder\chain_based_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
@@ -1053,22 +1053,8 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
+          <summary>Source code in <code>src\dag_builder\chain_based_builder.py</code></summary>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">174</span>
 <span class="normal">175</span>
 <span class="normal">176</span>
 <span class="normal">177</span>
@@ -1168,7 +1154,22 @@
 <span class="normal">271</span>
 <span class="normal">272</span>
 <span class="normal">273</span>
-<span class="normal">274</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChainBasedBuilder</span><span class="p">(</span><span class="n">DAGBuilderBase</span><span class="p">):</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChainBasedBuilder</span><span class="p">(</span><span class="n">DAGBuilderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Chain-based class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1188,7 +1189,7 @@
 <span class="sd">            An infeasible parameter was entered.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">main_sequence_length</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">main_sequence_length</span>
+        <span class="n">main_sequence_length</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_max</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">main_sequence_length</span><span class="p">)</span>
         <span class="n">number_of_sub_sequences</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_sub_sequences</span>
         <span class="k">if</span> <span class="n">main_sequence_length</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">number_of_sub_sequences</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
@@ -1204,9 +1205,9 @@
                     <span class="s2">&quot;Either &#39;Main sequence tail&#39; or &#39;Sub sequence tail&#39; must be set to True.&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">number_of_chains</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_chains</span>
-            <span class="n">number_of_entry_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_entry_nodes</span>
-            <span class="k">if</span> <span class="n">number_of_chains</span> <span class="o">&lt;</span> <span class="n">number_of_entry_nodes</span><span class="p">:</span>
+            <span class="n">number_of_chains</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_max</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_chains</span><span class="p">)</span>
+            <span class="n">number_of_entry_nodes</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_min</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_entry_nodes</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">number_of_entry_nodes</span> <span class="ow">and</span> <span class="n">number_of_chains</span> <span class="o">&lt;</span> <span class="n">number_of_entry_nodes</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
                 <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span><span class="s2">&quot;&#39;Number of chains&#39; &lt; &#39;Number of entry nodes.&#39;&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">merge_chains</span><span class="p">:</span>
@@ -1217,9 +1218,10 @@
                     <span class="s2">&quot;Either &#39;Middle of chain&#39; or &#39;Exit node&#39; must be set to True.&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">number_of_chains</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_chains</span>
-            <span class="n">number_of_exit_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_exit_nodes</span>
-            <span class="k">if</span> <span class="n">number_of_chains</span> <span class="o">*</span> <span class="n">number_of_sub_sequences</span> <span class="o">&lt;</span> <span class="n">number_of_exit_nodes</span><span class="p">:</span>
+            <span class="n">number_of_chains</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_max</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_chains</span><span class="p">)</span>
+            <span class="n">number_of_exit_nodes</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_min</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_exit_nodes</span><span class="p">)</span>
+            <span class="n">number_of_sub_sequences</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_min</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_sub_sequences</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">number_of_chains</span> <span class="o">*</span> <span class="p">(</span><span class="n">number_of_sub_sequences</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">number_of_exit_nodes</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
                     <span class="s2">&quot;&#39;Number of chains&#39; * &#39;Number of sub sequence&#39; &lt; &#39;Number of exit nodes.&#39;&quot;</span>
                 <span class="p">)</span>
@@ -1349,23 +1351,8 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
+        <summary>Source code in <code>src\dag_builder\chain_based_builder.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">231</span>
 <span class="normal">232</span>
 <span class="normal">233</span>
 <span class="normal">234</span>
@@ -1408,7 +1395,22 @@
 <span class="normal">271</span>
 <span class="normal">272</span>
 <span class="normal">273</span>
-<span class="normal">274</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Build DAG using chain-based method.</span>
 
 <span class="sd">    Yields</span>
@@ -1501,7 +1503,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
+          <summary>Source code in <code>src\dag_builder\chain_based_builder.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 78</span>
 <span class="normal"> 79</span>
 <span class="normal"> 80</span>
@@ -1581,15 +1583,33 @@
 <span class="normal">154</span>
 <span class="normal">155</span>
 <span class="normal">156</span>
-<span class="normal">157</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChainBasedDAG</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">):</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ChainBasedDAG</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Chain-based DAG class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Chain</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_chains</span> <span class="o">=</span> <span class="n">chains</span>
-        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chains</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chains</span> <span class="o">=</span> <span class="n">chains</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chain_heads</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">head</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">vertically_link_chains</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">number_of_entry_nodes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">link_main_tail</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">link_sub_tail</span><span class="p">:</span> <span class="nb">bool</span>
@@ -1607,7 +1627,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Determine source option</span>
-        <span class="n">src_chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_chains</span><span class="p">,</span> <span class="n">number_of_entry_nodes</span><span class="p">))</span>
+        <span class="n">src_chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">,</span> <span class="n">number_of_entry_nodes</span><span class="p">))</span>
         <span class="n">src_option</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">src_chains</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">link_main_tail</span><span class="p">:</span>
@@ -1616,7 +1636,7 @@
                 <span class="n">src_option</span> <span class="o">+=</span> <span class="n">chain</span><span class="o">.</span><span class="n">sub_sequence_tails</span>
 
         <span class="c1"># Determine targets</span>
-        <span class="n">tgt_chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_chains</span><span class="p">)</span> <span class="o">-</span> <span class="n">src_chains</span>
+        <span class="n">tgt_chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">)</span> <span class="o">-</span> <span class="n">src_chains</span>
         <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">head</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">tgt_chains</span><span class="p">]</span>
 
         <span class="c1"># Add edges</span>
@@ -1654,13 +1674,23 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">merge_middle</span><span class="p">:</span>
             <span class="n">tgt_option</span> <span class="o">=</span> <span class="n">selected_exits</span>
 
+        <span class="k">def</span> <span class="nf">anc</span><span class="p">(</span><span class="n">dag</span><span class="p">,</span> <span class="n">src_i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">dag</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">dag</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">ancestors</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">src_i</span><span class="p">)</span>
+
         <span class="c1"># Add edges</span>
+        <span class="n">copy_dag</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>  <span class="c1"># Use a copy because of a bug in nx.ancestor function.</span>
+        <span class="n">copy_dag</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+        <span class="n">copy_dag</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">src_i</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">:</span>
-            <span class="n">_tgt_option</span> <span class="o">=</span> <span class="n">tgt_option</span> <span class="o">-</span> <span class="n">nx</span><span class="o">.</span><span class="n">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_i</span><span class="p">)</span>
+            <span class="n">_tgt_option</span> <span class="o">=</span> <span class="n">tgt_option</span> <span class="o">-</span> <span class="n">nx</span><span class="o">.</span><span class="n">ancestors</span><span class="p">(</span><span class="n">copy_dag</span><span class="p">,</span> <span class="n">src_i</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_tgt_option</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">BuildFailedError</span><span class="p">(</span><span class="s2">&quot;No merging is possible.&quot;</span><span class="p">)</span>
             <span class="n">tgt_i</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_min_in_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tgt_option</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">src_i</span><span class="p">,</span> <span class="n">tgt_i</span><span class="p">)</span>
+            <span class="n">copy_dag</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">src_i</span><span class="p">,</span> <span class="n">tgt_i</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
         </details>
 
@@ -1753,12 +1783,8 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
+        <summary>Source code in <code>src\dag_builder\chain_based_builder.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
@@ -1790,7 +1816,21 @@
 <span class="normal">154</span>
 <span class="normal">155</span>
 <span class="normal">156</span>
-<span class="normal">157</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">merge_chains</span><span class="p">(</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">merge_chains</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">number_of_exit_nodes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">merge_middle</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">merge_exit</span><span class="p">:</span> <span class="nb">bool</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Merge chains.</span>
@@ -1820,13 +1860,23 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">merge_middle</span><span class="p">:</span>
         <span class="n">tgt_option</span> <span class="o">=</span> <span class="n">selected_exits</span>
 
+    <span class="k">def</span> <span class="nf">anc</span><span class="p">(</span><span class="n">dag</span><span class="p">,</span> <span class="n">src_i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">dag</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">dag</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">ancestors</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">src_i</span><span class="p">)</span>
+
     <span class="c1"># Add edges</span>
+    <span class="n">copy_dag</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>  <span class="c1"># Use a copy because of a bug in nx.ancestor function.</span>
+    <span class="n">copy_dag</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+    <span class="n">copy_dag</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">src_i</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">:</span>
-        <span class="n">_tgt_option</span> <span class="o">=</span> <span class="n">tgt_option</span> <span class="o">-</span> <span class="n">nx</span><span class="o">.</span><span class="n">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_i</span><span class="p">)</span>
+        <span class="n">_tgt_option</span> <span class="o">=</span> <span class="n">tgt_option</span> <span class="o">-</span> <span class="n">nx</span><span class="o">.</span><span class="n">ancestors</span><span class="p">(</span><span class="n">copy_dag</span><span class="p">,</span> <span class="n">src_i</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_tgt_option</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">BuildFailedError</span><span class="p">(</span><span class="s2">&quot;No merging is possible.&quot;</span><span class="p">)</span>
         <span class="n">tgt_i</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_min_in_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_tgt_option</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">src_i</span><span class="p">,</span> <span class="n">tgt_i</span><span class="p">)</span>
+        <span class="n">copy_dag</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">src_i</span><span class="p">,</span> <span class="n">tgt_i</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1892,12 +1942,8 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src/dag_builder/chain_based_builder.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
+        <summary>Source code in <code>src\dag_builder\chain_based_builder.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 92</span>
 <span class="normal"> 93</span>
 <span class="normal"> 94</span>
 <span class="normal"> 95</span>
@@ -1924,7 +1970,11 @@
 <span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
-<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">vertically_link_chains</span><span class="p">(</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">vertically_link_chains</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">number_of_entry_nodes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">link_main_tail</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">link_sub_tail</span><span class="p">:</span> <span class="nb">bool</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Vertically link chains.</span>
@@ -1940,7 +1990,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Determine source option</span>
-    <span class="n">src_chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_chains</span><span class="p">,</span> <span class="n">number_of_entry_nodes</span><span class="p">))</span>
+    <span class="n">src_chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">,</span> <span class="n">number_of_entry_nodes</span><span class="p">))</span>
     <span class="n">src_option</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">src_chains</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">link_main_tail</span><span class="p">:</span>
@@ -1949,7 +1999,7 @@
             <span class="n">src_option</span> <span class="o">+=</span> <span class="n">chain</span><span class="o">.</span><span class="n">sub_sequence_tails</span>
 
     <span class="c1"># Determine targets</span>
-    <span class="n">tgt_chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_chains</span><span class="p">)</span> <span class="o">-</span> <span class="n">src_chains</span>
+    <span class="n">tgt_chains</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">)</span> <span class="o">-</span> <span class="n">src_chains</span>
     <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">head</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">tgt_chains</span><span class="p">]</span>
 
     <span class="c1"># Add edges</span>
@@ -1988,7 +2038,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src/dag_builder/dag_builder_base.py</code></summary>
+          <summary>Source code in <code>src\dag_builder\dag_builder_base.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 11</span>
 <span class="normal"> 12</span>
 <span class="normal"> 13</span>
@@ -2338,7 +2388,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src/dag_builder/dag_builder_base.py</code></summary>
+        <summary>Source code in <code>src\dag_builder\dag_builder_base.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
@@ -2398,7 +2448,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src/dag_builder/dag_builder_factory.py</code></summary>
+          <summary>Source code in <code>src\dag_builder\dag_builder_factory.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
@@ -2570,7 +2620,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src/dag_builder/dag_builder_factory.py</code></summary>
+        <summary>Source code in <code>src\dag_builder\dag_builder_factory.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
@@ -2672,7 +2722,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src/dag_builder/fan_in_fan_out_builder.py</code></summary>
+          <summary>Source code in <code>src\dag_builder\fan_in_fan_out_builder.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 12</span>
 <span class="normal"> 13</span>
 <span class="normal"> 14</span>
@@ -2841,10 +2891,10 @@
 <span class="sd">            An infeasible parameter was entered.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">number_of_entry_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_entry_nodes</span>
-        <span class="n">number_of_exit_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_exit_nodes</span> <span class="ow">or</span> <span class="mi">0</span>
-        <span class="n">number_of_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_nodes</span>
-        <span class="k">if</span> <span class="n">number_of_entry_nodes</span> <span class="o">+</span> <span class="n">number_of_exit_nodes</span> <span class="o">&gt;</span> <span class="n">number_of_nodes</span><span class="p">:</span>
+        <span class="n">number_of_entry_nodes</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_min</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_entry_nodes</span><span class="p">)</span>
+        <span class="n">number_of_exit_nodes</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_min</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_exit_nodes</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">1</span>
+        <span class="n">number_of_nodes</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_max</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_of_entry_nodes</span> <span class="o">+</span> <span class="n">number_of_exit_nodes</span> <span class="o">&gt;</span> <span class="n">number_of_nodes</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
             <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
                 <span class="s2">&quot;&#39;Number of entry nodes&#39; + &#39;Number of exit nodes&#39; &gt; &#39;Number of nodes&#39;&quot;</span>
             <span class="p">)</span>
@@ -3017,7 +3067,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src/dag_builder/fan_in_fan_out_builder.py</code></summary>
+        <summary>Source code in <code>src\dag_builder\fan_in_fan_out_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 50</span>
 <span class="normal"> 51</span>
 <span class="normal"> 52</span>
@@ -3203,7 +3253,7 @@
 
 
         <details class="quote">
-          <summary>Source code in <code>src/dag_builder/g_n_p_builder.py</code></summary>
+          <summary>Source code in <code>src\dag_builder\g_n_p_builder.py</code></summary>
           <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 15</span>
 <span class="normal"> 16</span>
 <span class="normal"> 17</span>
@@ -3316,10 +3366,10 @@
 <span class="sd">            An infeasible parameter was entered.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">number_of_entry_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_entry_nodes</span> <span class="ow">or</span> <span class="mi">0</span>
-        <span class="n">number_of_exit_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_exit_nodes</span> <span class="ow">or</span> <span class="mi">0</span>
-        <span class="n">number_of_nodes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">number_of_nodes</span>
-        <span class="k">if</span> <span class="n">number_of_entry_nodes</span> <span class="o">+</span> <span class="n">number_of_exit_nodes</span> <span class="o">&gt;</span> <span class="n">number_of_nodes</span><span class="p">:</span>
+        <span class="n">number_of_entry_nodes</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_min</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_entry_nodes</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">1</span>
+        <span class="n">number_of_exit_nodes</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_min</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_exit_nodes</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">1</span>
+        <span class="n">number_of_nodes</span> <span class="o">=</span> <span class="n">Util</span><span class="o">.</span><span class="n">get_option_max</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">number_of_entry_nodes</span> <span class="o">+</span> <span class="n">number_of_exit_nodes</span> <span class="o">&gt;</span> <span class="n">number_of_nodes</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
             <span class="k">raise</span> <span class="n">InfeasibleConfigError</span><span class="p">(</span>
                 <span class="s2">&quot;&#39;Number of entry nodes&#39; + &#39;Number of exit nodes&#39; &gt; &#39;Number of nodes&#39;&quot;</span>
             <span class="p">)</span>
@@ -3456,7 +3506,7 @@
   </table>
 
       <details class="quote">
-        <summary>Source code in <code>src/dag_builder/g_n_p_builder.py</code></summary>
+        <summary>Source code in <code>src\dag_builder\g_n_p_builder.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 46</span>
 <span class="normal"> 47</span>
 <span class="normal"> 48</span>
@@ -3627,7 +3677,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../common/" class="md-footer__link md-footer__link--prev" aria-label="Previous: common" rel="prev">
+        <a href="../config/" class="md-footer__link md-footer__link--prev" aria-label="Previous: config" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -3636,7 +3686,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              common
+              config
             </div>
           </div>
         </a>
