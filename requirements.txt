@@ -1,10 +1,9 @@
 ###### Requirements without Version Specifiers ######`
-networkx
-numpy
-schema
-PyYAML
-pydot
-ps2epsi
+ghostscript
 
 ###### Requirements with Version Specifiers ######`
-# TODO
+networkx>=2.6.3
+numpy>=1.22.0
+schema>=0.7.5
+PyYAML>=5.3.1
+pydot>=1.4.2
