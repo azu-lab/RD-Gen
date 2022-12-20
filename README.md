@@ -8,7 +8,7 @@
 </p>
 
 ## About
-**RD-Gen** (A random DAG generator considering multi-rate applications for reproducible scheduling evaluation) is a tool for researchers targeting DAGs.
+**RD-Gen** (random DAG generator considering multi-rate applications for reproducible scheduling evaluation) is a tool for researchers targeting DAGs.
 RD-Gen makes the following contributions:
 - RD-Gen **extends existing random DAG construction methods**, Fan-in/Fan-out [1] and G(n, p) [2] methods, to meet researchers’ requirements.
 - RD-Gen proposes a new **Chain-based method** to flexibly construct state-of-the-art chain-based multi-rate DAGs.
