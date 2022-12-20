@@ -27,7 +27,8 @@ Sample config files can be used without modification.
 - `python3 run_generator.py -c ./sample_config/g_n_p/sample_g_n_p.yaml`
 
 ## Documents
-[See wiki](https://github.com/azu-lab/RD-Gen/wiki).
+- [wiki](https://github.com/azu-lab/RD-Gen/wiki).
+- [API list](https://azu-lab.github.io/RD-Gen/)
 
 ## References
 - [1] R. P. Dick, D. L. Rhodes, and W. Wolf. TGFF: task graphs for free. In Proc. of Workshop on CODES/CASHE, 1998.
