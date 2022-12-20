@@ -130,10 +130,3 @@ dmypy.json
 
 # vscode setting
 .vscode/
-
-# DAGs
-DAGs/
-
-# old
-src_old/
-config_format/
