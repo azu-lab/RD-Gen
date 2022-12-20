@@ -23,18 +23,8 @@ Properties:
   End-to-end deadline:
     Ratio of deadline to critical path:
       Random: (1.0, 1.5, 0.1)
-  # Multi-rate:
-  #   Period:
-  #     Random: (10, 100, 10)
-  #   Periodic type: "All"
-  #   Entry node period:
-  #     Combination: [10, 100]
-  #   Exit node period:
-  #     Fixed: 10
-  #   Offset:
-  #     Random: (1, 5, 1)
-  #   Total utilization:
-  #     Combination: (0.7, 1.5, 0.1)
+  CCR:
+    Random: (0.5, 3.0, 0.1)
 
   Additional properties:
     Node properties:
