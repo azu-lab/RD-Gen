@@ -14,6 +14,8 @@ TO_ABB = {
     "ratio of deadline to critical path": "RDC",
     "offset": "OS",
     "period": "P",
+    "entry node period": "ENP",
+    "exit node period": "EXP",
     "total utilization": "TU",
     "maximum utilization": "MU",
 }

@@ -91,7 +91,7 @@ class UtilizationSetter(PropertySetterBase):
         )
 
         for timer_i, utilization in zip(timer_driven_nodes, utilizations):
-            selected_period = Util.random_choice(self._config.period)
+            selected_period = self._choice_period(dag, timer_i)
             dag.nodes[timer_i]["period"] = selected_period
             exec = int(utilization * selected_period)
             if exec == 0:
@@ -108,7 +108,7 @@ class UtilizationSetter(PropertySetterBase):
         )
 
         for chain in chain_based_dag.chains:
-            selected_period = Util.random_choice(self._config.period)
+            selected_period = self._choice_period(chain_based_dag, chain.head)
             chain_based_dag.nodes[chain.head]["period"] = selected_period
             utilization = utilizations[timer_driven_nodes.index(chain.head)]
             sum_exec = int(utilization * selected_period)
@@ -135,7 +135,7 @@ class UtilizationSetter(PropertySetterBase):
         """
         max_u = self._config.maximum_utilization or 1.0
         for node_i in self._get_timer_driven_nodes(dag):
-            selected_period = Util.random_choice(self._config.period)
+            selected_period = self._choice_period(dag, node_i)
             dag.nodes[node_i]["period"] = selected_period
             min_u = 1 / selected_period  # Ensure 'Execution time' is at least 1.
             if min_u > max_u:
@@ -162,7 +162,7 @@ class UtilizationSetter(PropertySetterBase):
         """
         max_u = self._config.maximum_utilization or 1.0
         for chain in chain_based_dag.chains:
-            selected_period = Util.random_choice(self._config.period)
+            selected_period = self._choice_period(chain_based_dag, chain.head)
             chain_based_dag.nodes[chain.head]["period"] = selected_period
             min_u = (
                 chain.number_of_nodes() / selected_period
@@ -281,6 +281,13 @@ class UtilizationSetter(PropertySetterBase):
                 utilizations = [total_u / n for _ in range(n)]
 
         return utilizations
+
+    def _choice_period(self, dag: nx.DiGraph, node_i: int) -> int:
+        if self._config.entry_node_period and node_i in Util.get_entry_nodes(dag):
+            return Util.random_choice(self._config.entry_node_period)
+        if self._config.exit_node_period and node_i in Util.get_exit_nodes(dag):
+            return Util.random_choice(self._config.exit_node_period)
+        return Util.random_choice(self._config.period)
 
     def _get_timer_driven_nodes(self, dag: nx.DiGraph) -> List[int]:
         """Get indices of timer-driven nodes according to 'Periodic type'.
