@@ -2,16 +2,29 @@ from ..config import Config
 from .additional_setter import AdditionalSetter
 from .ccr_setter import CCRSetter
 from .deadline_setter import DeadlineSetter
-from .property_setter_base import PropertySetterBase
 from .random_setter import RandomSetter
+from .utilization_setter import UtilizationSetter
 
 
 class PropertySetterFactory:
     """Property setter factory class."""
 
     @staticmethod
-    def create_utilization_setter(config: Config) -> PropertySetterBase:
-        pass
+    def create_utilization_setter(config: Config) -> UtilizationSetter:
+        """Create utilization setter.
+
+        Parameters
+        ----------
+        config : Config
+            Config.
+
+        Returns
+        -------
+        UtilizationSetter
+            Utilization setter.
+
+        """
+        return UtilizationSetter(config)
 
     @staticmethod
     def create_ccr_setter(config: Config) -> CCRSetter:

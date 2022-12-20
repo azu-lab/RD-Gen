@@ -14,7 +14,7 @@ class Util:
 
     @staticmethod
     def convert_to_property(param_name: str) -> str:
-        return param_name.lower().replace(" ", "_")
+        return param_name.lower().replace(" ", "_").replace("-", "_")
 
     @staticmethod
     def random_choice(target: Union[Any, list]):

@@ -80,10 +80,14 @@ class ChainBasedDAG(nx.DiGraph):
 
     def __init__(self, chains: List[Chain]) -> None:
         super().__init__()
-        self._chains = chains
-        for chain in self._chains:
+        self.chains = chains
+        for chain in self.chains:
             self.add_nodes_from(chain.nodes)
             self.add_edges_from(chain.edges)
+
+    @property
+    def chain_heads(self) -> List[int]:
+        return [chain.head for chain in self.chains]
 
     def vertically_link_chains(
         self, number_of_entry_nodes: int, link_main_tail: bool, link_sub_tail: bool
@@ -101,7 +105,7 @@ class ChainBasedDAG(nx.DiGraph):
 
         """
         # Determine source option
-        src_chains = set(random.sample(self._chains, number_of_entry_nodes))
+        src_chains = set(random.sample(self.chains, number_of_entry_nodes))
         src_option = []
         for chain in src_chains:
             if link_main_tail:
@@ -110,7 +114,7 @@ class ChainBasedDAG(nx.DiGraph):
                 src_option += chain.sub_sequence_tails
 
         # Determine targets
-        tgt_chains = set(self._chains) - src_chains
+        tgt_chains = set(self.chains) - src_chains
         targets = [chain.head for chain in tgt_chains]
 
         # Add edges

@@ -114,7 +114,7 @@ class ConfigValidator:
                     Optional(Regex("XML", flags=re.I)): bool,
                     Optional(Regex("DOT", flags=re.I)): bool,
                 },
-                Regex("Figure", flags=re.I): {
+                Optional(Regex("Figure", flags=re.I)): {
                     Optional(Regex("Draw legend", flags=re.I)): bool,
                     Optional(Regex("PNG", flags=re.I)): bool,
                     Optional(Regex("SVG", flags=re.I)): bool,
