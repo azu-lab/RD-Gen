@@ -1,9 +1,10 @@
 # RD-Gen
 <p align="center">
-  <img src=https://user-images.githubusercontent.com/55824710/208725642-ba6c96cd-0fce-4985-a14d-25080d43ac54.png width="320px">
+  <img src="https://user-images.githubusercontent.com/55824710/208725642-ba6c96cd-0fce-4985-a14d-25080d43ac54.png" width="320px">
 </p>
 <p align="center">
-  ![pytest passing](https://img.shields.io/badge/pytest-passing-green.svg)
+  <img src="https://img.shields.io/badge/-Python-F9DC3E.svg?logo=python&style=flat">
+  <img src="https://img.shields.io/badge/-Github-black.svg?logo=github&style=flat"><img src="https://img.shields.io/badge/-pytest passing-gleen.svg">
 </p>
 
 ## About
