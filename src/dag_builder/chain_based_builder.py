@@ -181,7 +181,7 @@ class ChainBasedBuilder(DAGBuilderBase):
             An infeasible parameter was entered.
 
         """
-        main_sequence_length = config.main_sequence_length
+        main_sequence_length = Util.get_option_max(config.main_sequence_length)
         number_of_sub_sequences = config.number_of_sub_sequences
         if main_sequence_length == 1 and number_of_sub_sequences:
             raise InfeasibleConfigError(
@@ -197,9 +197,9 @@ class ChainBasedBuilder(DAGBuilderBase):
                     "Either 'Main sequence tail' or 'Sub sequence tail' must be set to True."
                 )
 
-            number_of_chains = config.number_of_chains
-            number_of_entry_nodes = config.number_of_entry_nodes
-            if number_of_chains < number_of_entry_nodes:
+            number_of_chains = Util.get_option_max(config.number_of_chains)
+            number_of_entry_nodes = Util.get_option_min(config.number_of_entry_nodes)
+            if number_of_entry_nodes and number_of_chains < number_of_entry_nodes:  # type: ignore
                 raise InfeasibleConfigError("'Number of chains' < 'Number of entry nodes.'")
 
         if config.merge_chains:
@@ -210,9 +210,10 @@ class ChainBasedBuilder(DAGBuilderBase):
                     "Either 'Middle of chain' or 'Exit node' must be set to True."
                 )
 
-            number_of_chains = config.number_of_chains
-            number_of_exit_nodes = config.number_of_exit_nodes
-            if number_of_chains * number_of_sub_sequences < number_of_exit_nodes:
+            number_of_chains = Util.get_option_max(config.number_of_chains)
+            number_of_exit_nodes = Util.get_option_min(config.number_of_exit_nodes)
+            number_of_sub_sequences = Util.get_option_min(config.number_of_sub_sequences) or 0
+            if number_of_chains * (number_of_sub_sequences + 1) < number_of_exit_nodes:
                 raise InfeasibleConfigError(
                     "'Number of chains' * 'Number of sub sequence' < 'Number of exit nodes.'"
                 )
