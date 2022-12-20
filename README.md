@@ -1,4 +1,4 @@
-# Random_DAG_Generator
+# RD-Gen
 
 ## About
 A random DAG generator considering multi-rate applications for reproducible scheduling evaluation (**RD-Gen**) is a tool for researchers targeting DAGs.
@@ -27,7 +27,7 @@ Sample config files can be used without modification.
 - `python3 run_generator.py -c ./sample_config/g_n_p/sample_g_n_p.yaml`
 
 ## Documents
-- [wiki](https://github.com/azu-lab/RD-Gen/wiki).
+- [wiki](https://github.com/azu-lab/RD-Gen/wiki)
 - [API list](https://azu-lab.github.io/RD-Gen/)
 
 ## References
