@@ -1,6 +1,6 @@
 # RD-Gen
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/55824710/208725642-ba6c96cd-0fce-4985-a14d-25080d43ac54.png" width="350px">
+  <img src="https://user-images.githubusercontent.com/55824710/208731888-be3e320a-4148-46cc-983c-f8ee6fe27b9d.png" width="350px">
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/-Python-F9DC3E.svg?logo=python&style=flat">
