@@ -35,7 +35,7 @@ Sample config files can be used without modification.
 
 ## Documents
 - [wiki](https://github.com/azu-lab/RD-Gen/wiki)
-- [API list](https://azu-lab.github.io/RD-Gen/)
+- [API list (for developer)](https://azu-lab.github.io/RD-Gen/)
 
 ## References
 - [1] R. P. Dick, D. L. Rhodes, and W. Wolf. TGFF: task graphs for free. In Proc. of Workshop on CODES/CASHE, 1998.
