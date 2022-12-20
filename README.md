@@ -25,13 +25,13 @@ $ ./setup.bash
 Sample config files can be used without modification.
 
 ### Chain-based method
-- `python3 run_generator.py -c ./sample_config/chain_based/sample_chain_based.yaml`
+`$ python3 run_generator.py -c ./sample_config/chain_based/sample_chain_based.yaml`
 
 ### Fan-in/Fan-out method
-- `python3 run_generator.py -c ./sample_config/fan_in_fan_out/sample_fan_in_fan_out.yaml`
+`$ python3 run_generator.py -c ./sample_config/fan_in_fan_out/sample_fan_in_fan_out.yaml`
 
 ### G(n, p) method
-- `python3 run_generator.py -c ./sample_config/g_n_p/sample_g_n_p.yaml`
+`$ python3 run_generator.py -c ./sample_config/g_n_p/sample_g_n_p.yaml`
 
 ## Documents
 - [wiki](https://github.com/azu-lab/RD-Gen/wiki)
