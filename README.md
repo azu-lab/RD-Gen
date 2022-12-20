@@ -1,4 +1,10 @@
 # RD-Gen
+<p align="center">
+  <img src=https://user-images.githubusercontent.com/55824710/208725642-ba6c96cd-0fce-4985-a14d-25080d43ac54.png width="320px">
+</p>
+<p align="center">
+  ![pytest passing](https://img.shields.io/badge/pytest-passing-green.svg)
+</p>
 
 ## About
 A random DAG generator considering multi-rate applications for reproducible scheduling evaluation (**RD-Gen**) is a tool for researchers targeting DAGs.
