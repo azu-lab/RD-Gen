@@ -134,7 +134,7 @@ class TestChainBasedDAG:
 
 
 class TestChainBasedBuilder:
-    @pytest.mark.parametrize("number_of_chains", list(range(1, 50)))
+    @pytest.mark.parametrize("number_of_chains", list(range(1, 20)))
     def test_build(self, number_of_chains):
         main_sequence_length = random.randint(2, 10)
         number_of_sub_sequence = random.randint(2, 10)

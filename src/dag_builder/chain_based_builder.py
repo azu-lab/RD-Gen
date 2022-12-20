@@ -152,13 +152,23 @@ class ChainBasedDAG(nx.DiGraph):
         if not merge_middle:
             tgt_option = selected_exits
 
+        def anc(dag, src_i: int) -> set:
+            tmp = nx.DiGraph()
+            tmp.add_nodes_from(dag.nodes)
+            tmp.add_edges_from(dag.edges)
+            return nx.ancestors(tmp, src_i)
+
         # Add edges
+        copy_dag = nx.DiGraph()  # Use a copy because of a bug in nx.ancestor function.
+        copy_dag.add_nodes_from(self.nodes)
+        copy_dag.add_edges_from(self.edges)
         for src_i in sources:
-            _tgt_option = tgt_option - nx.ancestors(self, src_i)
+            _tgt_option = tgt_option - nx.ancestors(copy_dag, src_i)
             if not _tgt_option:
                 raise BuildFailedError("No merging is possible.")
             tgt_i = Util.get_min_in_node(self, _tgt_option)
             self.add_edge(src_i, tgt_i)
+            copy_dag.add_edge(src_i, tgt_i)
 
 
 class ChainBasedBuilder(DAGBuilderBase):
