@@ -1,5 +1,6 @@
 import networkx as nx
 
+from src.common import Util
 from src.config import Config
 from src.property_setter.random_setter import RandomSetter
 
@@ -18,7 +19,7 @@ class TestRandomSetter:
         random_setter.set(dag)
 
         for node_i in dag.nodes:
-            assert dag.nodes[node_i][param_name] in exec_option
+            assert dag.nodes[node_i][Util.convert_to_property(param_name)] in exec_option
 
     def test_set_edge(self, mocker):
         param_name = "Communication time"
@@ -34,4 +35,4 @@ class TestRandomSetter:
         random_setter.set(dag)
 
         for src_i, tgt_i in dag.edges:
-            assert dag.edges[src_i, tgt_i][param_name] in comm_option
+            assert dag.edges[src_i, tgt_i][Util.convert_to_property(param_name)] in comm_option
