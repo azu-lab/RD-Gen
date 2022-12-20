@@ -28,10 +28,12 @@ class ComboGenerator:
         int
             Number of combinations.
         """
-        num_combos = len(self._combo_values[0])
+        if not self._combo_values:
+            return 0
         if len(self._combo_values) == 1:
-            return num_combos
+            return 1
 
+        num_combos = len(self._combo_values[0])
         for v in self._combo_values[1:]:
             num_combos *= len(v)
 
@@ -55,7 +57,7 @@ class ComboGenerator:
 
         """
         for i, combo in enumerate(itertools.product(*self._combo_values)):
-            combo_dir_name = self._create_combo_dir_name(combo, i)  # type: ignore
+            combo_dir_name = self._create_combo_dir_name(combo, i) or "DAGs"  # type: ignore
             combo_log = {}
             combo_config = copy.deepcopy(self._config)
             for k, v in zip(self._combo_params, combo):
