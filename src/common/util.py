@@ -1,6 +1,6 @@
 import random
 import sys
-from typing import Any, Collection, List, Union
+from typing import Any, Collection, List, Optional, Union
 
 import networkx as nx
 
@@ -14,7 +14,7 @@ class Util:
 
     @staticmethod
     def convert_to_property(param_name: str) -> str:
-        return param_name.lower().replace(" ", "_")
+        return param_name.lower().replace(" ", "_").replace("-", "_")
 
     @staticmethod
     def random_choice(target: Union[Any, list]):
@@ -37,6 +37,24 @@ class Util:
     @staticmethod
     def get_exit_nodes(dag: nx.DiGraph) -> List[int]:
         return [v for v, d in dag.out_degree() if d == 0]
+
+    @staticmethod
+    def get_option_min(option: Optional[Union[list, int, float]]) -> Optional[Union[int, float]]:
+        if option is None:
+            return None
+        if isinstance(option, list):
+            return min(option)
+        else:
+            return option
+
+    @staticmethod
+    def get_option_max(option: Optional[Union[list, int, float]]) -> Optional[Union[int, float]]:
+        if option is None:
+            return None
+        if isinstance(option, list):
+            return max(option)
+        else:
+            return option
 
     @staticmethod
     def get_min_in_node(dag: nx.DiGraph, option: Collection[int]) -> int:

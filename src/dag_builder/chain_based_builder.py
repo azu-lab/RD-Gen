@@ -80,10 +80,14 @@ class ChainBasedDAG(nx.DiGraph):
 
     def __init__(self, chains: List[Chain]) -> None:
         super().__init__()
-        self._chains = chains
-        for chain in self._chains:
+        self.chains = chains
+        for chain in self.chains:
             self.add_nodes_from(chain.nodes)
             self.add_edges_from(chain.edges)
+
+    @property
+    def chain_heads(self) -> List[int]:
+        return [chain.head for chain in self.chains]
 
     def vertically_link_chains(
         self, number_of_entry_nodes: int, link_main_tail: bool, link_sub_tail: bool
@@ -101,7 +105,7 @@ class ChainBasedDAG(nx.DiGraph):
 
         """
         # Determine source option
-        src_chains = set(random.sample(self._chains, number_of_entry_nodes))
+        src_chains = set(random.sample(self.chains, number_of_entry_nodes))
         src_option = []
         for chain in src_chains:
             if link_main_tail:
@@ -110,7 +114,7 @@ class ChainBasedDAG(nx.DiGraph):
                 src_option += chain.sub_sequence_tails
 
         # Determine targets
-        tgt_chains = set(self._chains) - src_chains
+        tgt_chains = set(self.chains) - src_chains
         targets = [chain.head for chain in tgt_chains]
 
         # Add edges
@@ -148,13 +152,23 @@ class ChainBasedDAG(nx.DiGraph):
         if not merge_middle:
             tgt_option = selected_exits
 
+        def anc(dag, src_i: int) -> set:
+            tmp = nx.DiGraph()
+            tmp.add_nodes_from(dag.nodes)
+            tmp.add_edges_from(dag.edges)
+            return nx.ancestors(tmp, src_i)
+
         # Add edges
+        copy_dag = nx.DiGraph()  # Use a copy because of a bug in nx.ancestor function.
+        copy_dag.add_nodes_from(self.nodes)
+        copy_dag.add_edges_from(self.edges)
         for src_i in sources:
-            _tgt_option = tgt_option - nx.ancestors(self, src_i)
+            _tgt_option = tgt_option - nx.ancestors(copy_dag, src_i)
             if not _tgt_option:
                 raise BuildFailedError("No merging is possible.")
             tgt_i = Util.get_min_in_node(self, _tgt_option)
             self.add_edge(src_i, tgt_i)
+            copy_dag.add_edge(src_i, tgt_i)
 
 
 class ChainBasedBuilder(DAGBuilderBase):
@@ -177,7 +191,7 @@ class ChainBasedBuilder(DAGBuilderBase):
             An infeasible parameter was entered.
 
         """
-        main_sequence_length = config.main_sequence_length
+        main_sequence_length = Util.get_option_max(config.main_sequence_length)
         number_of_sub_sequences = config.number_of_sub_sequences
         if main_sequence_length == 1 and number_of_sub_sequences:
             raise InfeasibleConfigError(
@@ -193,9 +207,9 @@ class ChainBasedBuilder(DAGBuilderBase):
                     "Either 'Main sequence tail' or 'Sub sequence tail' must be set to True."
                 )
 
-            number_of_chains = config.number_of_chains
-            number_of_entry_nodes = config.number_of_entry_nodes
-            if number_of_chains < number_of_entry_nodes:
+            number_of_chains = Util.get_option_max(config.number_of_chains)
+            number_of_entry_nodes = Util.get_option_min(config.number_of_entry_nodes)
+            if number_of_entry_nodes and number_of_chains < number_of_entry_nodes:  # type: ignore
                 raise InfeasibleConfigError("'Number of chains' < 'Number of entry nodes.'")
 
         if config.merge_chains:
@@ -206,9 +220,10 @@ class ChainBasedBuilder(DAGBuilderBase):
                     "Either 'Middle of chain' or 'Exit node' must be set to True."
                 )
 
-            number_of_chains = config.number_of_chains
-            number_of_exit_nodes = config.number_of_exit_nodes
-            if number_of_chains * number_of_sub_sequences < number_of_exit_nodes:
+            number_of_chains = Util.get_option_max(config.number_of_chains)
+            number_of_exit_nodes = Util.get_option_min(config.number_of_exit_nodes)
+            number_of_sub_sequences = Util.get_option_min(config.number_of_sub_sequences) or 0
+            if number_of_chains * (number_of_sub_sequences + 1) < number_of_exit_nodes:
                 raise InfeasibleConfigError(
                     "'Number of chains' * 'Number of sub sequence' < 'Number of exit nodes.'"
                 )

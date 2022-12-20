@@ -40,7 +40,10 @@ class TestGNPBuilder:
     def test_build_normal(self, probability_of_edge):
         number_of_nodes = random.randint(1, 100)
         config_raw = get_config_raw(number_of_nodes, probability_of_edge)
-        gnp = DAGBuilderFactory.create_instance(Config(config_raw))
+        try:
+            gnp = DAGBuilderFactory.create_instance(Config(config_raw))
+        except InfeasibleConfigError:
+            return 0
 
         dag_iter = gnp.build()
         try:

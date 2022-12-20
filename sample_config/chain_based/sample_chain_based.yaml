@@ -24,7 +24,7 @@ Properties:
   Execution time:
     Random: (1, 50, 1)
   End-to-end deadline:
-    ratio of deadline to critical path:
+    Ratio of deadline to critical path:
       Random: (1.0, 1.5, 0.1)
   Communication time:
     Random: [2, 3, 4, 5]

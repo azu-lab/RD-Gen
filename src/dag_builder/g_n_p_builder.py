@@ -32,10 +32,10 @@ class GNPBuilder(DAGBuilderBase):
             An infeasible parameter was entered.
 
         """
-        number_of_entry_nodes = config.number_of_entry_nodes or 0
-        number_of_exit_nodes = config.number_of_exit_nodes or 0
-        number_of_nodes = config.number_of_nodes
-        if number_of_entry_nodes + number_of_exit_nodes > number_of_nodes:
+        number_of_entry_nodes = Util.get_option_min(config.number_of_entry_nodes) or 1
+        number_of_exit_nodes = Util.get_option_min(config.number_of_exit_nodes) or 1
+        number_of_nodes = Util.get_option_max(config.number_of_nodes)
+        if number_of_entry_nodes + number_of_exit_nodes > number_of_nodes:  # type: ignore
             raise InfeasibleConfigError(
                 "'Number of entry nodes' + 'Number of exit nodes' > 'Number of nodes'"
             )

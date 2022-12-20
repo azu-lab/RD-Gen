@@ -37,12 +37,12 @@ class ComboGenerator:
 
         return num_combos
 
-    def get_combo_iter(self) -> Generator:
+    def get_combo_iter(self) -> Generator[Tuple[str, dict, Config], None, None]:
         """Get iterator for combinations.
 
         Yields
         ------
-        Generator
+        Generator[Tuple[str, dict, Config], None, None]
             (combo_dir_name, combo_log, combo_config)
             - combo_dir_name:
                 Directory name where the generated DAG set is stored.
@@ -143,10 +143,13 @@ class ComboGenerator:
 
     def _search_combo_and_format_tuple(self, param_dict: dict) -> None:
         for k, v in param_dict.items():
-            if "Combination" in v.keys():
-                self._combo_params.append(k)
-                if isinstance(v["Combination"], str):
-                    v["Combination"] = self._convert_tuple_to_list(v["Combination"])  # format
-                self._combo_values.append(v["Combination"])
-            else:
-                self._search_combo_and_format_tuple(v)
+            if isinstance(v, dict):
+                if "Combination" in v.keys():
+                    self._combo_params.append(k)
+                    if isinstance(v["Combination"], str):
+                        v["Combination"] = self._convert_tuple_to_list(v["Combination"])  # format
+                    self._combo_values.append(v["Combination"])
+                elif "Random" in v.keys() and isinstance(v["Random"], str):
+                    v["Random"] = self._convert_tuple_to_list(v["Random"])
+                else:
+                    self._search_combo_and_format_tuple(v)
