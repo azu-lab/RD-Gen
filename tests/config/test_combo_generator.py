@@ -5,7 +5,10 @@ def get_config_raw_base() -> dict:
     config_raw_base = {
         "Seed": 0,
         "Number of DAGs": 1,
-        "Graph structure": {"Number of nodes": {"Combination": [1, 2]}},
+        "Graph structure": {
+            "Generation method": "G(n, p)",
+            "Number of nodes": {"Combination": [1, 2]},
+        },
         "Properties": {
             "End-to-end deadline": {
                 "Ratio of deadline to critical path": {"Combination": "(3, 4, 1)"}

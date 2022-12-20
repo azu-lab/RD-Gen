@@ -54,14 +54,15 @@ class Config:
     @staticmethod
     def _remove_random_fixed(param_dict: dict) -> None:
         for k, v in param_dict.items():
-            if set(v.keys()) <= {"Random", "Fixed"}:
-                # Remove
-                value = list(v.values())
-                assert len(value) == 1
-                param_dict[k] = value[0]
-                break
-            else:
-                Config._remove_random_fixed(v)
+            if isinstance(v, dict):
+                if set(v.keys()) <= {"Random", "Fixed"}:
+                    # Remove
+                    value = list(v.values())
+                    assert len(value) == 1
+                    param_dict[k] = value[0]
+                    break
+                else:
+                    Config._remove_random_fixed(v)
 
     # ----- Graph Structure -----
     @property
