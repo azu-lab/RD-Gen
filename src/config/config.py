@@ -60,7 +60,6 @@ class Config:
                     value = list(v.values())
                     assert len(value) == 1
                     param_dict[k] = value[0]
-                    break
                 else:
                     Config._remove_random_fixed(v)
 
