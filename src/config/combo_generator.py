@@ -149,5 +149,7 @@ class ComboGenerator:
                     if isinstance(v["Combination"], str):
                         v["Combination"] = self._convert_tuple_to_list(v["Combination"])  # format
                     self._combo_values.append(v["Combination"])
+                elif "Random" in v.keys() and isinstance(v["Random"], str):
+                    v["Random"] = self._convert_tuple_to_list(v["Random"])
                 else:
                     self._search_combo_and_format_tuple(v)

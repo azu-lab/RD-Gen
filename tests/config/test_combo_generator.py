@@ -10,9 +10,10 @@ def get_config_raw_base() -> dict:
             "Number of nodes": {"Combination": [1, 2]},
         },
         "Properties": {
+            "Execution time": {"Random": "(1, 3, 1)"},
             "End-to-end deadline": {
                 "Ratio of deadline to critical path": {"Combination": "(3, 4, 1)"}
-            }
+            },
         },
         "Output formats": {
             "Naming of combination directory": "Abbreviation",
@@ -115,6 +116,7 @@ class TestComboGenerator:
         for _, _, config in combo_iter:
             assert isinstance(config, Config)
             assert config.number_of_nodes in [1, 2]
+            assert config.execution_time == [1, 2, 3]
             assert config.ratio_of_deadline_to_critical_path in [3, 4]
             configs.add(config)
 
