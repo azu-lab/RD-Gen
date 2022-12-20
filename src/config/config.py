@@ -134,7 +134,10 @@ class Config:
 
     @property
     def main_sequence_tail(self):
-        return self.graph_structure["Vertically link chains"].get("Main sequence tail")
+        if self.vertically_link_chains:
+            return self.graph_structure["Vertically link chains"].get("Main sequence tail")
+        else:
+            return None
 
     @main_sequence_tail.setter
     def main_sequence_tail(self, value):
@@ -142,7 +145,10 @@ class Config:
 
     @property
     def sub_sequence_tail(self):
-        return self.graph_structure["Vertically link chains"].get("Sub sequence tail")
+        if self.vertically_link_chains:
+            return self.graph_structure["Vertically link chains"].get("Sub sequence tail")
+        else:
+            return None
 
     @sub_sequence_tail.setter
     def sub_sequence_tail(self, value):
@@ -151,7 +157,10 @@ class Config:
     @property
     def number_of_entry_nodes(self):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
-            return self.graph_structure["Vertically link chains"].get("Number of entry nodes")
+            if self.vertically_link_chains:
+                return self.graph_structure["Vertically link chains"].get("Number of entry nodes")
+            else:
+                return None
         else:
             return self.graph_structure.get("Number of entry nodes")
 
@@ -168,7 +177,10 @@ class Config:
 
     @property
     def middle_of_chain(self):
-        return self.graph_structure["Merge chains"].get("Middle of chain")
+        if self.merge_chains:
+            return self.graph_structure["Merge chains"].get("Middle of chain")
+        else:
+            return None
 
     @middle_of_chain.setter
     def middle_of_chain(self, value):
@@ -176,7 +188,10 @@ class Config:
 
     @property
     def exit_node(self):
-        return self.graph_structure["Merge chains"].get("Exit node")
+        if self.merge_chains:
+            return self.graph_structure["Merge chains"].get("Exit node")
+        else:
+            return None
 
     @exit_node.setter
     def exit_node(self, value):
@@ -185,7 +200,10 @@ class Config:
     @property
     def number_of_exit_nodes(self):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
-            return self.graph_structure["Merge chains"].get("Number of exit nodes")
+            if self.merge_chains:
+                return self.graph_structure["Merge chains"].get("Number of exit nodes")
+            else:
+                return None
         else:
             return self.graph_structure.get("Number of exit nodes")
 
@@ -227,7 +245,10 @@ class Config:
 
     @property
     def ratio_of_deadline_to_critical_path(self):
-        return self.properties["End-to-end deadline"].get("Ratio of deadline to critical path")
+        if self.end_to_end_deadline:
+            return self.properties["End-to-end deadline"].get("Ratio of deadline to critical path")
+        else:
+            return None
 
     @ratio_of_deadline_to_critical_path.setter
     def ratio_of_deadline_to_critical_path(self, value):
@@ -239,7 +260,10 @@ class Config:
 
     @property
     def periodic_type(self):
-        return self.properties["Multi-rate"].get("Periodic type")
+        if self.multi_rate:
+            return self.properties["Multi-rate"].get("Periodic type")
+        else:
+            return None
 
     @periodic_type.setter
     def periodic_type(self, value):
@@ -247,7 +271,10 @@ class Config:
 
     @property
     def period(self):
-        return self.properties["Multi-rate"].get("Period")
+        if self.multi_rate:
+            return self.properties["Multi-rate"].get("Period")
+        else:
+            return None
 
     @period.setter
     def period(self, value):
@@ -255,7 +282,10 @@ class Config:
 
     @property
     def entry_node_period(self):
-        return self.properties["Multi-rate"].get("Entry node period")
+        if self.multi_rate:
+            return self.properties["Multi-rate"].get("Entry node period")
+        else:
+            return None
 
     @entry_node_period.setter
     def entry_node_period(self, value):
@@ -263,7 +293,10 @@ class Config:
 
     @property
     def exit_node_period(self):
-        return self.properties["Multi-rate"].get("Exit node period")
+        if self.multi_rate:
+            return self.properties["Multi-rate"].get("Exit node period")
+        else:
+            return None
 
     @exit_node_period.setter
     def exit_node_period(self, value):
@@ -271,7 +304,10 @@ class Config:
 
     @property
     def offset(self):
-        return self.properties["Multi-rate"].get("Offset")
+        if self.multi_rate:
+            return self.properties["Multi-rate"].get("Offset")
+        else:
+            return None
 
     @offset.setter
     def offset(self, value):
@@ -279,7 +315,10 @@ class Config:
 
     @property
     def total_utilization(self):
-        return self.properties["Multi-rate"].get("Total utilization")
+        if self.multi_rate:
+            return self.properties["Multi-rate"].get("Total utilization")
+        else:
+            return None
 
     @total_utilization.setter
     def total_utilization(self, value):
@@ -287,7 +326,10 @@ class Config:
 
     @property
     def maximum_utilization(self):
-        return self.properties["Multi-rate"].get("Maximum utilization")
+        if self.multi_rate:
+            return self.properties["Multi-rate"].get("Maximum utilization")
+        else:
+            return None
 
     @maximum_utilization.setter
     def maximum_utilization(self, value):
@@ -340,20 +382,35 @@ class Config:
 
     @property
     def draw_legend(self):
-        return self.output_formats["Figure"].get("Draw legend")
+        if self.figure:
+            return self.output_formats["Figure"].get("Draw legend")
+        else:
+            return None
 
     @property
     def png(self):
-        return self.output_formats["Figure"].get("PNG")
+        if self.figure:
+            return self.output_formats["Figure"].get("PNG")
+        else:
+            return None
 
     @property
     def svg(self):
-        return self.output_formats["Figure"].get("SVG")
+        if self.figure:
+            return self.output_formats["Figure"].get("SVG")
+        else:
+            return None
 
     @property
     def eps(self):
-        return self.output_formats["Figure"].get("EPS")
+        if self.figure:
+            return self.output_formats["Figure"].get("EPS")
+        else:
+            return None
 
     @property
     def pdf(self):
-        return self.output_formats["Figure"].get("PDF")
+        if self.figure:
+            return self.output_formats["Figure"].get("PDF")
+        else:
+            return None
