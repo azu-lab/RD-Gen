@@ -9,7 +9,7 @@ RD-Gen makes the following contributions:
 
 ## Setup flow
 ```bash
-$ git clone https://github.com/atsushi421/Random_DAG_Generator.git
+$ git clone https://github.com/azu-lab/RD-Gen.git
 $ cd Random_DAG_Generator
 $ ./setup.bash
 ```
