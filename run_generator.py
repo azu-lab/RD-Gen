@@ -90,7 +90,12 @@ def option_parser():
         "-c", "--config_path", required=True, type=str, help="path to config YAML file."
     )
     arg_parser.add_argument(
-        "-d", "--dest_dir", required=True, type=str, help="path to destination directory."
+        "-d",
+        "--dest_dir",
+        required=False,
+        default=(os.path.dirname(__file__) or ".") + "/DAGs",
+        type=str,
+        help="path to destination directory.",
     )
     args = arg_parser.parse_args()
 

@@ -247,7 +247,7 @@ class ChainBasedBuilder(DAGBuilderBase):
                 # Build each chain
                 chains: List[Chain] = []
                 start_idx = 0
-                for _ in range(self._config.number_of_chains):
+                for _ in range(Util.random_choice(self._config.number_of_chains)):
                     chain = Chain(start_idx)
                     main_sequence_length = Util.random_choice(self._config.main_sequence_length)
                     number_of_sub_sequence = (
