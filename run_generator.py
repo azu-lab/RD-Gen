@@ -48,19 +48,19 @@ def main(config_path, dest_dir):
         # Create setters for utilization, period, execution time and communication time.
         if config.multi_rate:
             all_setter.append(PropertySetterFactory.create_utilization_setter(config))
-        elif config.ccr:
+        elif config.execution_time:
+            all_setter.append(
+                PropertySetterFactory.create_random_setter(config, "Execution time", "node")
+            )
+        # HACK: RD-Gen assumes that 'Multi-rate' and 'CCR' are never specified at the same time.
+        #       If 'Multi-rate' and 'CCR' are specified at the same time,
+        #       the utilization rate is not protected.
+        if config.ccr:
             all_setter.append(PropertySetterFactory.create_ccr_setter(config))
-        if not all_setter:
-            if config.execution_time:
-                all_setter.append(
-                    PropertySetterFactory.create_random_setter(config, "Execution time", "node")
-                )
-            if config.communication_time:
-                all_setter.append(
-                    PropertySetterFactory.create_random_setter(
-                        config, "Communication time", "edge"
-                    )
-                )
+        elif config.communication_time:
+            all_setter.append(
+                PropertySetterFactory.create_random_setter(config, "Communication time", "edge")
+            )
         # Create setter for end-to-end deadline.
         if config.end_to_end_deadline:
             all_setter.append(PropertySetterFactory.create_deadline_setter(config))
