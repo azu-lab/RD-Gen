@@ -155,7 +155,7 @@ class Config:
         self.graph_structure["Vertically link chains"]["Sub sequence tail"] = value
 
     @property
-    def number_of_entry_nodes(self):
+    def number_of_source_nodes(self):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
             if self.vertically_link_chains:
                 return self.graph_structure["Vertically link chains"].get("Number of source nodes")
@@ -164,8 +164,8 @@ class Config:
         else:
             return self.graph_structure.get("Number of source nodes")
 
-    @number_of_entry_nodes.setter
-    def number_of_entry_nodes(self, value):
+    @number_of_source_nodes.setter
+    def number_of_source_nodes(self, value):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
             self.graph_structure["Vertically link chains"]["Number of source nodes"] = value
         else:
@@ -281,14 +281,14 @@ class Config:
         self.properties["Multi-rate"]["Period"] = value
 
     @property
-    def entry_node_period(self):
+    def source_node_period(self):
         if self.multi_rate:
             return self.properties["Multi-rate"].get("Source node period")
         else:
             return None
 
-    @entry_node_period.setter
-    def entry_node_period(self, value):
+    @source_node_period.setter
+    def source_node_period(self, value):
         self.properties["Multi-rate"]["Source node period"] = value
 
     @property

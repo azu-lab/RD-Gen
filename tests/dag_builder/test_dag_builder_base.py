@@ -38,12 +38,12 @@ class TestDAGBuilderBase:
         separate_i = random.choice(nodes[1:-1])
         DAGBuilderBase._add_minimum_edges(nodes[:separate_i], nodes[separate_i:], G)
 
-        before_num_entry = len(Util.get_entry_nodes(G))
+        before_num_entry = len(Util.get_source_nodes(G))
         before_num_exit = len(Util.get_exit_nodes(G))
         DAGBuilderBase._ensure_weakly_connected(G, True, True)
         assert nx.is_directed_acyclic_graph(G)
         assert len(list(nx.weakly_connected_components(G))) == 1
-        assert before_num_entry == len(Util.get_entry_nodes(G))
+        assert before_num_entry == len(Util.get_source_nodes(G))
         assert before_num_exit == len(Util.get_exit_nodes(G))
 
     @pytest.mark.parametrize("number_of_nodes", list(range(3, 20)))
@@ -54,11 +54,11 @@ class TestDAGBuilderBase:
         separate_i = random.choice(nodes[1:-1])
         DAGBuilderBase._add_minimum_edges(nodes[:separate_i], nodes[separate_i:], G)
 
-        before_num_entry = len(Util.get_entry_nodes(G))
+        before_num_entry = len(Util.get_source_nodes(G))
         DAGBuilderBase._ensure_weakly_connected(G, True, False)
         assert nx.is_directed_acyclic_graph(G)
         assert len(list(nx.weakly_connected_components(G))) == 1
-        assert before_num_entry == len(Util.get_entry_nodes(G))
+        assert before_num_entry == len(Util.get_source_nodes(G))
 
     @pytest.mark.parametrize("number_of_nodes", list(range(3, 20)))
     def test_ensure_weakly_connected_keep_exit(self, number_of_nodes):
@@ -94,10 +94,10 @@ class TestDAGBuilderBase:
         DAGBuilderBase._force_create_exit_nodes(G, number_of_exit_nodes)
         assert len(Util.get_exit_nodes(G)) == number_of_exit_nodes
 
-    @pytest.mark.parametrize("number_of_entry_nodes", list(range(1, 10)))
-    def test_force_create_entry_nodes(self, number_of_entry_nodes):
+    @pytest.mark.parametrize("number_of_source_nodes", list(range(1, 10)))
+    def test_force_create_source_nodes(self, number_of_source_nodes):
         G = nx.DiGraph()
         G.add_nodes_from([0, 1, 2])
         G.add_edges_from([(0, 2), (1, 2)])
-        DAGBuilderBase._force_create_entry_nodes(G, number_of_entry_nodes)
-        assert len(Util.get_entry_nodes(G)) == number_of_entry_nodes
+        DAGBuilderBase._force_create_source_nodes(G, number_of_source_nodes)
+        assert len(Util.get_source_nodes(G)) == number_of_source_nodes

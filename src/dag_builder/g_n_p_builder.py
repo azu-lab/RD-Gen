@@ -32,10 +32,10 @@ class GNPBuilder(DAGBuilderBase):
             An infeasible parameter was entered.
 
         """
-        number_of_entry_nodes = Util.get_option_min(config.number_of_entry_nodes) or 1
+        number_of_source_nodes = Util.get_option_min(config.number_of_source_nodes) or 1
         number_of_exit_nodes = Util.get_option_min(config.number_of_exit_nodes) or 1
         number_of_nodes = Util.get_option_max(config.number_of_nodes)
-        if number_of_entry_nodes + number_of_exit_nodes > number_of_nodes:  # type: ignore
+        if number_of_source_nodes + number_of_exit_nodes > number_of_nodes:  # type: ignore
             raise InfeasibleConfigError(
                 "'Number of source nodes' + 'Number of sink nodes' > 'Number of nodes'"
             )
@@ -63,7 +63,7 @@ class GNPBuilder(DAGBuilderBase):
             for try_i in range(1, self._max_try + 1):
                 # Determine number_of_nodes
                 num_nodes = Util.random_choice(self._config.number_of_nodes)
-                num_entry = self._config.number_of_entry_nodes
+                num_entry = self._config.number_of_source_nodes
                 if num_entry:
                     num_entry = Util.random_choice(num_entry)
                     num_nodes -= num_entry
@@ -86,7 +86,7 @@ class GNPBuilder(DAGBuilderBase):
 
                 # Add source nodes (Optional)
                 if num_entry:
-                    self._force_create_entry_nodes(G, num_entry)
+                    self._force_create_source_nodes(G, num_entry)
 
                 # Add sink nodes (Optional)
                 if num_exit:

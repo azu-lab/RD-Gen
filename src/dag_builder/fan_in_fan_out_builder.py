@@ -39,10 +39,10 @@ class FanInFanOutBuilder(DAGBuilderBase):
             An infeasible parameter was entered.
 
         """
-        number_of_entry_nodes = Util.get_option_min(config.number_of_entry_nodes)
+        number_of_source_nodes = Util.get_option_min(config.number_of_source_nodes)
         number_of_exit_nodes = Util.get_option_min(config.number_of_exit_nodes) or 1
         number_of_nodes = Util.get_option_max(config.number_of_nodes)
-        if number_of_entry_nodes + number_of_exit_nodes > number_of_nodes:  # type: ignore
+        if number_of_source_nodes + number_of_exit_nodes > number_of_nodes:  # type: ignore
             raise InfeasibleConfigError(
                 "'Number of source nodes' + 'Number of sink nodes' > 'Number of nodes'"
             )
@@ -74,7 +74,7 @@ class FanInFanOutBuilder(DAGBuilderBase):
                 num_nodes -= num_exit
 
             # Initialize dag
-            num_entry = Util.random_choice(self._config.number_of_entry_nodes)
+            num_entry = Util.random_choice(self._config.number_of_source_nodes)
             G = self._init_dag(num_entry)
 
             while G.number_of_nodes() != num_nodes:

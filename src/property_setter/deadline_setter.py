@@ -33,7 +33,7 @@ class DeadlineSetter(PropertySetterBase):
         """
         for exit_i in Util.get_exit_nodes(dag):
             max_cp_len = 0
-            for entry_i in Util.get_entry_nodes(dag):
+            for entry_i in Util.get_source_nodes(dag):
                 cp_len = self._get_cp_len(dag, entry_i, exit_i)
                 if cp_len > max_cp_len:
                     max_cp_len = cp_len

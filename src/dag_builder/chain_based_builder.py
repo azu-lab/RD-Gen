@@ -90,13 +90,13 @@ class ChainBasedDAG(nx.DiGraph):
         return [chain.head for chain in self.chains]
 
     def vertically_link_chains(
-        self, number_of_entry_nodes: int, link_main_tail: bool, link_sub_tail: bool
+        self, number_of_source_nodes: int, link_main_tail: bool, link_sub_tail: bool
     ) -> None:
         """Vertically link chains.
 
         Parameters
         ----------
-        number_of_entry_nodes : int
+        number_of_source_nodes : int
             Number of source nodes.
         link_main_tail : bool
             Allow link in main sequence tails.
@@ -105,7 +105,7 @@ class ChainBasedDAG(nx.DiGraph):
 
         """
         # Determine source option
-        src_chains = set(random.sample(self.chains, number_of_entry_nodes))
+        src_chains = set(random.sample(self.chains, number_of_source_nodes))
         src_option = []
         for chain in src_chains:
             if link_main_tail:
@@ -146,7 +146,7 @@ class ChainBasedDAG(nx.DiGraph):
         sources = set(Util.get_exit_nodes(self)) - set(selected_exits)
 
         # Determine target option
-        tgt_option = set(self.nodes()) - set(Util.get_entry_nodes(self)) - sources
+        tgt_option = set(self.nodes()) - set(Util.get_source_nodes(self)) - sources
         if not merge_exit:
             tgt_option -= selected_exits
         if not merge_middle:
@@ -208,8 +208,8 @@ class ChainBasedBuilder(DAGBuilderBase):
                 )
 
             number_of_chains = Util.get_option_max(config.number_of_chains)
-            number_of_entry_nodes = Util.get_option_min(config.number_of_entry_nodes)
-            if number_of_entry_nodes and number_of_chains < number_of_entry_nodes:  # type: ignore
+            number_of_source_nodes = Util.get_option_min(config.number_of_source_nodes)
+            if number_of_source_nodes and number_of_chains < number_of_source_nodes:  # type: ignore
                 raise InfeasibleConfigError("'Number of chains' < 'Number of source nodes.'")
 
         if config.merge_chains:
@@ -265,7 +265,7 @@ class ChainBasedBuilder(DAGBuilderBase):
                 # Vertically link chains (optional)
                 if self._config.vertically_link_chains:
                     chain_based_dag.vertically_link_chains(
-                        Util.random_choice(self._config.number_of_entry_nodes),
+                        Util.random_choice(self._config.number_of_source_nodes),
                         self._config.main_sequence_tail,
                         self._config.sub_sequence_tail,
                     )

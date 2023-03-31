@@ -35,10 +35,10 @@ class DAGBuilderBase(metaclass=ABCMeta):
         raise NotImplementedError
 
     @staticmethod
-    def _force_create_entry_nodes(G: nx.DiGraph, number_of_entry_nodes: int) -> None:
+    def _force_create_source_nodes(G: nx.DiGraph, number_of_source_nodes: int) -> None:
         """Create an source node forcibly.
 
-        Add 'number_of_entry_nodes' number of new nodes to the DAG
+        Add 'number_of_source_nodes' number of new nodes to the DAG
         and make them source nodes.
         All original source nodes are connected to the newly added node.
 
@@ -46,12 +46,12 @@ class DAGBuilderBase(metaclass=ABCMeta):
         ----------
         G : nx.DiGraph
             DAG.
-        number_of_entry_nodes : int
+        number_of_source_nodes : int
             Number of source nodes.
 
         """
-        original_entries = Util.get_entry_nodes(G)
-        new_entries = [G.number_of_nodes() + i for i in range(number_of_entry_nodes)]
+        original_entries = Util.get_source_nodes(G)
+        new_entries = [G.number_of_nodes() + i for i in range(number_of_source_nodes)]
         G.add_nodes_from(new_entries)
         DAGBuilderBase._add_minimum_edges(new_entries, original_entries, G)
 
@@ -138,16 +138,16 @@ class DAGBuilderBase(metaclass=ABCMeta):
         comps.sort(key=lambda x: len(x))
         tgt_comp = comps.pop(-1)  # Most big component
 
-        entry_nodes = set(Util.get_entry_nodes(G))
+        source_nodes = set(Util.get_source_nodes(G))
         exit_nodes = set(Util.get_exit_nodes(G))
-        if keep_num_entry and keep_num_exit and (entry_nodes & exit_nodes):
+        if keep_num_entry and keep_num_exit and (source_nodes & exit_nodes):
             raise BuildFailedError(
                 "The number of source nodes and the number of sink nodes"
                 "cannot be maintained because of the size 1 component."
             )
         for src_comp in comps:
             src_option = src_comp - exit_nodes if keep_num_exit else src_comp
-            tgt_option = tgt_comp - entry_nodes if keep_num_entry else tgt_comp
+            tgt_option = tgt_comp - source_nodes if keep_num_entry else tgt_comp
             src_i = Util.get_min_out_node(G, src_option)
             tgt_i = Util.get_min_in_node(G, tgt_option)
             G.add_edge(src_i, tgt_i)
