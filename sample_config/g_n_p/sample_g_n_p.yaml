@@ -5,11 +5,11 @@ Graph structure:
   Generation method: "G(n, p)"
   Number of nodes:
     Random: (10, 100, 10)
-  Probability of edge:
+  Probability of edge existence:
     Combination: (0.1, 0.9, 0.1)
-  Number of entry nodes:
+  Number of source nodes:
     Combination: [2, 3, 4, 5]
-  Number of exit nodes:
+  Number of sink nodes:
     Fixed: 1
   Ensure weakly connected: True
 
@@ -18,9 +18,9 @@ Properties:
     Period:
       Random: (1000, 10000, 100)
     Periodic type: "All"
-    Entry node period:
+    Source node period:
       Combination: [10, 100]
-    Exit node period:
+    Sink node period:
       Fixed: 10
     Offset:
       Random: (1, 5, 1)

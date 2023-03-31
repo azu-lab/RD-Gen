@@ -283,10 +283,10 @@ class UtilizationSetter(PropertySetterBase):
         return utilizations
 
     def _choice_period(self, dag: nx.DiGraph, node_i: int) -> int:
-        if self._config.entry_node_period and node_i in Util.get_entry_nodes(dag):
-            return Util.random_choice(self._config.entry_node_period)
-        if self._config.exit_node_period and node_i in Util.get_exit_nodes(dag):
-            return Util.random_choice(self._config.exit_node_period)
+        if self._config.source_node_period and node_i in Util.get_source_nodes(dag):
+            return Util.random_choice(self._config.source_node_period)
+        if self._config.sink_node_period and node_i in Util.get_sink_nodes(dag):
+            return Util.random_choice(self._config.sink_node_period)
         return Util.random_choice(self._config.period)
 
     def _get_timer_driven_nodes(self, dag: nx.DiGraph) -> List[int]:
@@ -308,9 +308,9 @@ class UtilizationSetter(PropertySetterBase):
         if Util.ambiguous_equals(periodic_type, "All"):
             timer_driven_nodes = list(dag.nodes())
         elif Util.ambiguous_equals(periodic_type, "IO"):
-            timer_driven_nodes = list(set(Util.get_entry_nodes(dag) + Util.get_exit_nodes(dag)))
+            timer_driven_nodes = list(set(Util.get_source_nodes(dag) + Util.get_sink_nodes(dag)))
         elif Util.ambiguous_equals(periodic_type, "Entry"):
-            timer_driven_nodes = Util.get_entry_nodes(dag)
+            timer_driven_nodes = Util.get_source_nodes(dag)
         elif isinstance(dag, ChainBasedDAG) and Util.ambiguous_equals(periodic_type, "Chain"):
             timer_driven_nodes = dag.chain_heads
 

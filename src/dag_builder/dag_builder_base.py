@@ -35,44 +35,44 @@ class DAGBuilderBase(metaclass=ABCMeta):
         raise NotImplementedError
 
     @staticmethod
-    def _force_create_entry_nodes(G: nx.DiGraph, number_of_entry_nodes: int) -> None:
-        """Create an entry node forcibly.
+    def _force_create_source_nodes(G: nx.DiGraph, number_of_source_nodes: int) -> None:
+        """Create an source node forcibly.
 
-        Add 'number_of_entry_nodes' number of new nodes to the DAG
-        and make them entry nodes.
-        All original entry nodes are connected to the newly added node.
+        Add 'number_of_source_nodes' number of new nodes to the DAG
+        and make them source nodes.
+        All original source nodes are connected to the newly added node.
 
         Parameters
         ----------
         G : nx.DiGraph
             DAG.
-        number_of_entry_nodes : int
-            Number of entry nodes.
+        number_of_source_nodes : int
+            Number of source nodes.
 
         """
-        original_entries = Util.get_entry_nodes(G)
-        new_entries = [G.number_of_nodes() + i for i in range(number_of_entry_nodes)]
+        original_entries = Util.get_source_nodes(G)
+        new_entries = [G.number_of_nodes() + i for i in range(number_of_source_nodes)]
         G.add_nodes_from(new_entries)
         DAGBuilderBase._add_minimum_edges(new_entries, original_entries, G)
 
     @staticmethod
-    def _force_create_exit_nodes(G: nx.DiGraph, number_of_exit_nodes: int) -> None:
-        """Create an exit node forcibly.
+    def _force_create_sink_nodes(G: nx.DiGraph, number_of_sink_nodes: int) -> None:
+        """Create an sink node forcibly.
 
-        Add 'number_of_exit_nodes' number of new nodes to the DAG
-        and make them exit nodes.
-        All original exit nodes are connected to the newly added node.
+        Add 'number_of_sink_nodes' number of new nodes to the DAG
+        and make them sink nodes.
+        All original sink nodes are connected to the newly added node.
 
         Parameters
         ----------
         G : nx.DiGraph
             DAG.
-        number_of_exit_nodes : int
-            Number of exit nodes.
+        number_of_sink_nodes : int
+            Number of sink nodes.
 
         """
-        original_exits = Util.get_exit_nodes(G)
-        new_exits = [G.number_of_nodes() + i for i in range(number_of_exit_nodes)]
+        original_exits = Util.get_sink_nodes(G)
+        new_exits = [G.number_of_nodes() + i for i in range(number_of_sink_nodes)]
         G.add_nodes_from(new_exits)
         DAGBuilderBase._add_minimum_edges(original_exits, new_exits, G)
 
@@ -120,14 +120,14 @@ class DAGBuilderBase(metaclass=ABCMeta):
         G : nx.DiGraph
             DAG.
         keep_num_entry : bool
-            Keep the number of entry nodes.
+            Keep the number of source nodes.
         keep_num_exit : bool
-            Keep the number of exit nodes.
+            Keep the number of sink nodes.
 
         Raises
         ------
         BuildFailedError
-            The number of entry nodes and the number of exit nodes
+            The number of source nodes and the number of sink nodes
             cannot be kept because of the size 1 component.
 
         """
@@ -138,16 +138,16 @@ class DAGBuilderBase(metaclass=ABCMeta):
         comps.sort(key=lambda x: len(x))
         tgt_comp = comps.pop(-1)  # Most big component
 
-        entry_nodes = set(Util.get_entry_nodes(G))
-        exit_nodes = set(Util.get_exit_nodes(G))
-        if keep_num_entry and keep_num_exit and (entry_nodes & exit_nodes):
+        source_nodes = set(Util.get_source_nodes(G))
+        sink_nodes = set(Util.get_sink_nodes(G))
+        if keep_num_entry and keep_num_exit and (source_nodes & sink_nodes):
             raise BuildFailedError(
-                "The number of entry nodes and the number of exit nodes"
+                "The number of source nodes and the number of sink nodes"
                 "cannot be maintained because of the size 1 component."
             )
         for src_comp in comps:
-            src_option = src_comp - exit_nodes if keep_num_exit else src_comp
-            tgt_option = tgt_comp - entry_nodes if keep_num_entry else tgt_comp
+            src_option = src_comp - sink_nodes if keep_num_exit else src_comp
+            tgt_option = tgt_comp - source_nodes if keep_num_entry else tgt_comp
             src_i = Util.get_min_out_node(G, src_option)
             tgt_i = Util.get_min_in_node(G, tgt_option)
             G.add_edge(src_i, tgt_i)

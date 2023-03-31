@@ -59,12 +59,12 @@ class ConfigValidator:
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
                     ),
-                    Optional(Regex("Entry node period", flags=re.I)): Or(
+                    Optional(Regex("Source node period", flags=re.I)): Or(
                         {Regex("Fixed", flags=re.I): int},
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
                     ),
-                    Optional(Regex("Exit node period", flags=re.I)): Or(
+                    Optional(Regex("Sink node period", flags=re.I)): Or(
                         {Regex("Fixed", flags=re.I): int},
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
@@ -129,12 +129,12 @@ class ConfigValidator:
     fifo_gnp_common_schema = Schema(
         {
             Regex("Graph structure", flags=re.I): {
-                Regex("Number of entry nodes", flags=re.I): Or(
+                Regex("Number of source nodes", flags=re.I): Or(
                     {Regex("Fixed", flags=re.I): int},
                     {Regex("Random", flags=re.I): Or([int], str)},
                     {Regex("Combination", flags=re.I): Or([int], str)},
                 ),
-                Regex("Number of exit nodes", flags=re.I): Or(
+                Regex("Number of sink nodes", flags=re.I): Or(
                     {Regex("Fixed", flags=re.I): int},
                     {Regex("Random", flags=re.I): Or([int], str)},
                     {Regex("Combination", flags=re.I): Or([int], str)},
@@ -166,7 +166,7 @@ class ConfigValidator:
     g_n_p_schema = Schema(
         {
             Regex("Graph structure", flags=re.I): {
-                Regex("Probability of edge", re.I): Or(
+                Regex("Probability of edge existence", re.I): Or(
                     {Regex("Fixed", flags=re.I): float},
                     {Regex("Random", flags=re.I): Or([float], str)},
                     {Regex("Combination", flags=re.I): Or([float], str)},
@@ -195,7 +195,7 @@ class ConfigValidator:
                     {Regex("Combination", flags=re.I): Or([int], str)},
                 ),
                 Optional(Regex("Vertically link chains", re.I)): {
-                    Regex("Number of entry nodes", re.I): Or(
+                    Regex("Number of source nodes", re.I): Or(
                         {Regex("Fixed", flags=re.I): int},
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
@@ -204,13 +204,13 @@ class ConfigValidator:
                     Regex("Sub sequence tail", re.I): bool,
                 },
                 Optional(Regex("Merge chains", re.I)): {
-                    Regex("Number of exit nodes", re.I): Or(
+                    Regex("Number of sink nodes", re.I): Or(
                         {Regex("Fixed", flags=re.I): int},
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
                     ),
                     Regex("Middle of chain", re.I): bool,
-                    Regex("Exit node", re.I): bool,
+                    Regex("Sink node", re.I): bool,
                 },
             }
         },

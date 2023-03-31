@@ -10,22 +10,22 @@ Graph structure:
   Number of sub sequences:
     Random: [1, 2, 3]
   Vertically link chains:
-    Number of entry nodes:
+    Number of source nodes:
       Fixed: 2
     Main sequence tail: True
     Sub sequence tail: True
   Merge chains:
-    Number of exit nodes:
+    Number of sink nodes:
       Fixed: 1
     Middle of chain: False
-    Exit node: True
+    Sink node: True
 
 Properties:
   Multi-rate:
     Periodic type: 'Chain'
     Period:
       Random: [10000, 20000, 30000, 40000, 50000, 60000]
-    Entry node period:
+    Source node period:
       Random: [50, 100]
     Total utilization:
       Combination: (5.0, 6.5, 0.1)

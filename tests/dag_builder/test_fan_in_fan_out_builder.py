@@ -10,7 +10,7 @@ from src.exceptions import BuildFailedError, InfeasibleConfigError
 
 
 def get_config(
-    number_of_nodes: int, in_degree: int, out_degree: int, number_of_entry_nodes: int
+    number_of_nodes: int, in_degree: int, out_degree: int, number_of_source_nodes: int
 ) -> Config:
     config_raw = {
         "Seed": 0,
@@ -20,7 +20,7 @@ def get_config(
             "Number of nodes": number_of_nodes,
             "In-degree": in_degree,
             "Out-degree": out_degree,
-            "Number of entry nodes": number_of_entry_nodes,
+            "Number of source nodes": number_of_source_nodes,
         },
         "Properties": {
             "End-to-end deadline": {"Ratio of deadline to critical path": {"Random": [1.0, 1.1]}}
@@ -45,10 +45,10 @@ class TestFanInFanOutBuilder:
     ):
         in_degree = random.randint(1, 5)
         out_degree = random.randint(1, 5)
-        number_of_entry_nodes = random.randint(1, 5)
+        number_of_source_nodes = random.randint(1, 5)
         try:
             fan_in_fan_out = DAGBuilderFactory.create_instance(
-                get_config(number_of_nodes, in_degree, out_degree, number_of_entry_nodes)
+                get_config(number_of_nodes, in_degree, out_degree, number_of_source_nodes)
             )
         except InfeasibleConfigError:
             return 0
@@ -61,7 +61,7 @@ class TestFanInFanOutBuilder:
                     assert dag.in_degree(node_i) <= in_degree
                     assert dag.out_degree(node_i) <= out_degree
                 assert dag.number_of_nodes() == number_of_nodes
-                assert len(Util.get_entry_nodes(dag)) == number_of_entry_nodes
+                assert len(Util.get_source_nodes(dag)) == number_of_source_nodes
         except BuildFailedError:
             return 0
 
@@ -69,14 +69,14 @@ class TestFanInFanOutBuilder:
     def test_build_number_of_nodes_lower_10(self, number_of_nodes):
         in_degree = random.randint(1, 5)
         out_degree = random.randint(1, 5)
-        number_of_entry_nodes = random.randint(1, 5)
+        number_of_source_nodes = random.randint(1, 5)
         try:
             fan_in_fan_out = DAGBuilderFactory.create_instance(
                 get_config(
                     number_of_nodes,
                     in_degree,
                     out_degree,
-                    number_of_entry_nodes,
+                    number_of_source_nodes,
                 )
             )
         except InfeasibleConfigError:
@@ -90,16 +90,16 @@ class TestFanInFanOutBuilder:
                     assert dag.in_degree(node_i) <= in_degree
                     assert dag.out_degree(node_i) <= out_degree
                 assert dag.number_of_nodes() == number_of_nodes
-                assert len(Util.get_entry_nodes(dag)) == number_of_entry_nodes
+                assert len(Util.get_source_nodes(dag)) == number_of_source_nodes
         except BuildFailedError:
             return 0
 
-    @pytest.mark.parametrize("number_of_exit_nodes", list(range(1, 6)))
-    def test_exist_number_of_exit_nodes(self, number_of_exit_nodes):
+    @pytest.mark.parametrize("number_of_sink_nodes", list(range(1, 6)))
+    def test_exist_number_of_sink_nodes(self, number_of_sink_nodes):
         number_of_nodes = random.randint(10, 20)
         in_degree = random.randint(1, 5)
         out_degree = random.randint(1, 5)
-        number_of_entry_nodes = random.randint(1, 5)
+        number_of_source_nodes = random.randint(1, 5)
         config_raw = {
             "Seed": 0,
             "Number of DAGs": 100,
@@ -108,8 +108,8 @@ class TestFanInFanOutBuilder:
                 "Number of nodes": number_of_nodes,
                 "In-degree": in_degree,
                 "Out-degree": out_degree,
-                "Number of entry nodes": number_of_entry_nodes,
-                "Number of exit nodes": number_of_exit_nodes,
+                "Number of source nodes": number_of_source_nodes,
+                "Number of sink nodes": number_of_sink_nodes,
             },
             "Properties": {
                 "End-to-end deadline": {
@@ -128,9 +128,9 @@ class TestFanInFanOutBuilder:
         try:
             for dag in dag_iter:
                 assert nx.is_directed_acyclic_graph(dag)
-                for node_i in dag.nodes() - Util.get_exit_nodes(dag):
+                for node_i in dag.nodes() - Util.get_sink_nodes(dag):
                     assert dag.in_degree(node_i) <= in_degree
                 assert dag.number_of_nodes() == number_of_nodes
-                assert len(Util.get_entry_nodes(dag)) == number_of_entry_nodes
+                assert len(Util.get_source_nodes(dag)) == number_of_source_nodes
         except BuildFailedError:
             return 0

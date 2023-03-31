@@ -39,12 +39,12 @@ class FanInFanOutBuilder(DAGBuilderBase):
             An infeasible parameter was entered.
 
         """
-        number_of_entry_nodes = Util.get_option_min(config.number_of_entry_nodes)
-        number_of_exit_nodes = Util.get_option_min(config.number_of_exit_nodes) or 1
+        number_of_source_nodes = Util.get_option_min(config.number_of_source_nodes)
+        number_of_sink_nodes = Util.get_option_min(config.number_of_sink_nodes) or 1
         number_of_nodes = Util.get_option_max(config.number_of_nodes)
-        if number_of_entry_nodes + number_of_exit_nodes > number_of_nodes:  # type: ignore
+        if number_of_source_nodes + number_of_sink_nodes > number_of_nodes:  # type: ignore
             raise InfeasibleConfigError(
-                "'Number of entry nodes' + 'Number of exit nodes' > 'Number of nodes'"
+                "'Number of source nodes' + 'Number of sink nodes' > 'Number of nodes'"
             )
 
     def build(self) -> Generator:
@@ -68,13 +68,13 @@ class FanInFanOutBuilder(DAGBuilderBase):
 
             # Determine number_of_nodes (Loop finish condition)
             num_nodes = Util.random_choice(self._config.number_of_nodes)
-            num_exit = self._config.number_of_exit_nodes
+            num_exit = self._config.number_of_sink_nodes
             if num_exit:
                 num_exit = Util.random_choice(num_exit)
                 num_nodes -= num_exit
 
             # Initialize dag
-            num_entry = Util.random_choice(self._config.number_of_entry_nodes)
+            num_entry = Util.random_choice(self._config.number_of_source_nodes)
             G = self._init_dag(num_entry)
 
             while G.number_of_nodes() != num_nodes:
@@ -114,9 +114,9 @@ class FanInFanOutBuilder(DAGBuilderBase):
                     else:
                         G = self._init_dag(num_entry)  # reset
 
-            # Add exit nodes (Optional)
+            # Add sink nodes (Optional)
             if num_exit:
-                self._force_create_exit_nodes(G, num_exit)
+                self._force_create_sink_nodes(G, num_exit)
 
             # Ensure weakly connected (Optional)
             if self._config.ensure_weakly_connected:

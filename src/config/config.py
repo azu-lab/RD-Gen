@@ -97,12 +97,12 @@ class Config:
         self.graph_structure["In-degree"] = value
 
     @property
-    def probability_of_edge(self):
-        return self.graph_structure.get("Probability of edge")
+    def probability_of_edge_existence(self):
+        return self.graph_structure.get("Probability of edge existence")
 
-    @probability_of_edge.setter
-    def probability_of_edge(self, value):
-        self.graph_structure["Probability of edge"] = value
+    @probability_of_edge_existence.setter
+    def probability_of_edge_existence(self, value):
+        self.graph_structure["Probability of edge existence"] = value
 
     @property
     def number_of_chains(self):
@@ -155,21 +155,21 @@ class Config:
         self.graph_structure["Vertically link chains"]["Sub sequence tail"] = value
 
     @property
-    def number_of_entry_nodes(self):
+    def number_of_source_nodes(self):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
             if self.vertically_link_chains:
-                return self.graph_structure["Vertically link chains"].get("Number of entry nodes")
+                return self.graph_structure["Vertically link chains"].get("Number of source nodes")
             else:
                 return None
         else:
-            return self.graph_structure.get("Number of entry nodes")
+            return self.graph_structure.get("Number of source nodes")
 
-    @number_of_entry_nodes.setter
-    def number_of_entry_nodes(self, value):
+    @number_of_source_nodes.setter
+    def number_of_source_nodes(self, value):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
-            self.graph_structure["Vertically link chains"]["Number of entry nodes"] = value
+            self.graph_structure["Vertically link chains"]["Number of source nodes"] = value
         else:
-            self.graph_structure["Number of entry nodes"] = value
+            self.graph_structure["Number of source nodes"] = value
 
     @property
     def merge_chains(self):
@@ -187,32 +187,32 @@ class Config:
         self.graph_structure["Merge chains"]["Middle of chain"] = value
 
     @property
-    def exit_node(self):
+    def sink_node(self):
         if self.merge_chains:
-            return self.graph_structure["Merge chains"].get("Exit node")
+            return self.graph_structure["Merge chains"].get("Sink node")
         else:
             return None
 
-    @exit_node.setter
-    def exit_node(self, value):
-        self.graph_structure["Merge chains"]["Exit node"] = value
+    @sink_node.setter
+    def sink_node(self, value):
+        self.graph_structure["Merge chains"]["Sink node"] = value
 
     @property
-    def number_of_exit_nodes(self):
+    def number_of_sink_nodes(self):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
             if self.merge_chains:
-                return self.graph_structure["Merge chains"].get("Number of exit nodes")
+                return self.graph_structure["Merge chains"].get("Number of sink nodes")
             else:
                 return None
         else:
-            return self.graph_structure.get("Number of exit nodes")
+            return self.graph_structure.get("Number of sink nodes")
 
-    @number_of_exit_nodes.setter
-    def number_of_exit_nodes(self, value):
+    @number_of_sink_nodes.setter
+    def number_of_sink_nodes(self, value):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
-            self.graph_structure["Merge chains"]["Number of exit nodes"] = value
+            self.graph_structure["Merge chains"]["Number of sink nodes"] = value
         else:
-            self.graph_structure["Number of exit nodes"] = value
+            self.graph_structure["Number of sink nodes"] = value
 
     # ----- Properties -----
     @property
@@ -281,26 +281,26 @@ class Config:
         self.properties["Multi-rate"]["Period"] = value
 
     @property
-    def entry_node_period(self):
+    def source_node_period(self):
         if self.multi_rate:
-            return self.properties["Multi-rate"].get("Entry node period")
+            return self.properties["Multi-rate"].get("Source node period")
         else:
             return None
 
-    @entry_node_period.setter
-    def entry_node_period(self, value):
-        self.properties["Multi-rate"]["Entry node period"] = value
+    @source_node_period.setter
+    def source_node_period(self, value):
+        self.properties["Multi-rate"]["Source node period"] = value
 
     @property
-    def exit_node_period(self):
+    def sink_node_period(self):
         if self.multi_rate:
-            return self.properties["Multi-rate"].get("Exit node period")
+            return self.properties["Multi-rate"].get("Sink node period")
         else:
             return None
 
-    @exit_node_period.setter
-    def exit_node_period(self, value):
-        self.properties["Multi-rate"]["Exit node period"] = value
+    @sink_node_period.setter
+    def sink_node_period(self, value):
+        self.properties["Multi-rate"]["Sink node period"] = value
 
     @property
     def offset(self):

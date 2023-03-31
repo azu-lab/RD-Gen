@@ -31,11 +31,11 @@ class Util:
             return False
 
     @staticmethod
-    def get_entry_nodes(dag: nx.DiGraph) -> List[int]:
+    def get_source_nodes(dag: nx.DiGraph) -> List[int]:
         return [v for v, d in dag.in_degree() if d == 0]
 
     @staticmethod
-    def get_exit_nodes(dag: nx.DiGraph) -> List[int]:
+    def get_sink_nodes(dag: nx.DiGraph) -> List[int]:
         return [v for v, d in dag.out_degree() if d == 0]
 
     @staticmethod
