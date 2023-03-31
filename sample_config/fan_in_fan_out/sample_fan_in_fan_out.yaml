@@ -9,7 +9,7 @@ Graph structure:
     Random: [1, 2, 3]
   Out-degree:
     Random: [1, 2, 3]
-  Number of entry nodes:
+  Number of source nodes:
     Combination: [1, 2, 3, 4]
   Number of exit nodes:
     Fixed: 1

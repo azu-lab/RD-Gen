@@ -158,18 +158,18 @@ class Config:
     def number_of_entry_nodes(self):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
             if self.vertically_link_chains:
-                return self.graph_structure["Vertically link chains"].get("Number of entry nodes")
+                return self.graph_structure["Vertically link chains"].get("Number of source nodes")
             else:
                 return None
         else:
-            return self.graph_structure.get("Number of entry nodes")
+            return self.graph_structure.get("Number of source nodes")
 
     @number_of_entry_nodes.setter
     def number_of_entry_nodes(self, value):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
-            self.graph_structure["Vertically link chains"]["Number of entry nodes"] = value
+            self.graph_structure["Vertically link chains"]["Number of source nodes"] = value
         else:
-            self.graph_structure["Number of entry nodes"] = value
+            self.graph_structure["Number of source nodes"] = value
 
     @property
     def merge_chains(self):
@@ -283,13 +283,13 @@ class Config:
     @property
     def entry_node_period(self):
         if self.multi_rate:
-            return self.properties["Multi-rate"].get("Entry node period")
+            return self.properties["Multi-rate"].get("Source node period")
         else:
             return None
 
     @entry_node_period.setter
     def entry_node_period(self, value):
-        self.properties["Multi-rate"]["Entry node period"] = value
+        self.properties["Multi-rate"]["Source node period"] = value
 
     @property
     def exit_node_period(self):

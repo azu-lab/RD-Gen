@@ -36,18 +36,18 @@ class DAGBuilderBase(metaclass=ABCMeta):
 
     @staticmethod
     def _force_create_entry_nodes(G: nx.DiGraph, number_of_entry_nodes: int) -> None:
-        """Create an entry node forcibly.
+        """Create an source node forcibly.
 
         Add 'number_of_entry_nodes' number of new nodes to the DAG
-        and make them entry nodes.
-        All original entry nodes are connected to the newly added node.
+        and make them source nodes.
+        All original source nodes are connected to the newly added node.
 
         Parameters
         ----------
         G : nx.DiGraph
             DAG.
         number_of_entry_nodes : int
-            Number of entry nodes.
+            Number of source nodes.
 
         """
         original_entries = Util.get_entry_nodes(G)
@@ -120,14 +120,14 @@ class DAGBuilderBase(metaclass=ABCMeta):
         G : nx.DiGraph
             DAG.
         keep_num_entry : bool
-            Keep the number of entry nodes.
+            Keep the number of source nodes.
         keep_num_exit : bool
             Keep the number of exit nodes.
 
         Raises
         ------
         BuildFailedError
-            The number of entry nodes and the number of exit nodes
+            The number of source nodes and the number of exit nodes
             cannot be kept because of the size 1 component.
 
         """
@@ -142,7 +142,7 @@ class DAGBuilderBase(metaclass=ABCMeta):
         exit_nodes = set(Util.get_exit_nodes(G))
         if keep_num_entry and keep_num_exit and (entry_nodes & exit_nodes):
             raise BuildFailedError(
-                "The number of entry nodes and the number of exit nodes"
+                "The number of source nodes and the number of exit nodes"
                 "cannot be maintained because of the size 1 component."
             )
         for src_comp in comps:

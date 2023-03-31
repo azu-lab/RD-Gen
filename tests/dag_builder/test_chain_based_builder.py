@@ -149,7 +149,7 @@ class TestChainBasedBuilder:
                 "Main sequence length": main_sequence_length,
                 "Number of sub sequences": number_of_sub_sequence,
                 "Vertically link chains": {
-                    "Number of entry nodes": number_of_entry_nodes,
+                    "Number of source nodes": number_of_entry_nodes,
                     "Main sequence tail": True,
                     "Sub sequence tail": True,
                 },

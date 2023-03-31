@@ -59,7 +59,7 @@ class ConfigValidator:
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
                     ),
-                    Optional(Regex("Entry node period", flags=re.I)): Or(
+                    Optional(Regex("Source node period", flags=re.I)): Or(
                         {Regex("Fixed", flags=re.I): int},
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
@@ -129,7 +129,7 @@ class ConfigValidator:
     fifo_gnp_common_schema = Schema(
         {
             Regex("Graph structure", flags=re.I): {
-                Regex("Number of entry nodes", flags=re.I): Or(
+                Regex("Number of source nodes", flags=re.I): Or(
                     {Regex("Fixed", flags=re.I): int},
                     {Regex("Random", flags=re.I): Or([int], str)},
                     {Regex("Combination", flags=re.I): Or([int], str)},
@@ -195,7 +195,7 @@ class ConfigValidator:
                     {Regex("Combination", flags=re.I): Or([int], str)},
                 ),
                 Optional(Regex("Vertically link chains", re.I)): {
-                    Regex("Number of entry nodes", re.I): Or(
+                    Regex("Number of source nodes", re.I): Or(
                         {Regex("Fixed", flags=re.I): int},
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},

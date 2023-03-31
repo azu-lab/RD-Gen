@@ -7,7 +7,7 @@ Graph structure:
     Random: (10, 100, 10)
   Probability of edge:
     Combination: (0.1, 0.9, 0.1)
-  Number of entry nodes:
+  Number of source nodes:
     Combination: [2, 3, 4, 5]
   Number of exit nodes:
     Fixed: 1
@@ -18,7 +18,7 @@ Properties:
     Period:
       Random: (1000, 10000, 100)
     Periodic type: "All"
-    Entry node period:
+    Source node period:
       Combination: [10, 100]
     Exit node period:
       Fixed: 10

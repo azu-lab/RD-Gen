@@ -20,7 +20,7 @@ def get_config(
             "Number of nodes": number_of_nodes,
             "In-degree": in_degree,
             "Out-degree": out_degree,
-            "Number of entry nodes": number_of_entry_nodes,
+            "Number of source nodes": number_of_entry_nodes,
         },
         "Properties": {
             "End-to-end deadline": {"Ratio of deadline to critical path": {"Random": [1.0, 1.1]}}
@@ -108,7 +108,7 @@ class TestFanInFanOutBuilder:
                 "Number of nodes": number_of_nodes,
                 "In-degree": in_degree,
                 "Out-degree": out_degree,
-                "Number of entry nodes": number_of_entry_nodes,
+                "Number of source nodes": number_of_entry_nodes,
                 "Number of exit nodes": number_of_exit_nodes,
             },
             "Properties": {

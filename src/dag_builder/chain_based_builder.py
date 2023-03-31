@@ -97,7 +97,7 @@ class ChainBasedDAG(nx.DiGraph):
         Parameters
         ----------
         number_of_entry_nodes : int
-            Number of entry nodes.
+            Number of source nodes.
         link_main_tail : bool
             Allow link in main sequence tails.
         link_sub_tail : bool
@@ -210,7 +210,7 @@ class ChainBasedBuilder(DAGBuilderBase):
             number_of_chains = Util.get_option_max(config.number_of_chains)
             number_of_entry_nodes = Util.get_option_min(config.number_of_entry_nodes)
             if number_of_entry_nodes and number_of_chains < number_of_entry_nodes:  # type: ignore
-                raise InfeasibleConfigError("'Number of chains' < 'Number of entry nodes.'")
+                raise InfeasibleConfigError("'Number of chains' < 'Number of source nodes.'")
 
         if config.merge_chains:
             middle_of_chain = config.middle_of_chain
