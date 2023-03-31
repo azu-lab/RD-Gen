@@ -53,7 +53,7 @@ plugins:
           paths: [src]
           options:
             docstring_style: numpy
-            show_source: true
+            show_source: false
             show_submodules: false
 
 markdown_extensions:
