@@ -154,9 +154,9 @@ class TestChainBasedBuilder:
                     "Sub sequence tail": True,
                 },
                 "Merge chains": {
-                    "Number of exit nodes": number_of_exit_nodes,
+                    "Number of sink nodes": number_of_exit_nodes,
                     "Middle of chain": True,
-                    "Exit node": True,
+                    "Sink node": True,
                 },
             },
             "Properties": {

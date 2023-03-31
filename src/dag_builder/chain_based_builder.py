@@ -130,11 +130,11 @@ class ChainBasedDAG(nx.DiGraph):
         Parameters
         ----------
         number_of_exit_nodes : int
-            Number of exit nodes.
+            Number of sink nodes.
         merge_middle : bool
             Allow merge to middle nodes.
         merge_exit : bool
-            Allow merge to exit nodes.
+            Allow merge to sink nodes.
 
         Raises
         ------
@@ -217,7 +217,7 @@ class ChainBasedBuilder(DAGBuilderBase):
             exit_node = config.exit_node
             if middle_of_chain is False and exit_node is False:
                 raise InfeasibleConfigError(
-                    "Either 'Middle of chain' or 'Exit node' must be set to True."
+                    "Either 'Middle of chain' or 'Sink node' must be set to True."
                 )
 
             number_of_chains = Util.get_option_max(config.number_of_chains)
@@ -225,7 +225,7 @@ class ChainBasedBuilder(DAGBuilderBase):
             number_of_sub_sequences = Util.get_option_min(config.number_of_sub_sequences) or 0
             if number_of_chains * (number_of_sub_sequences + 1) < number_of_exit_nodes:
                 raise InfeasibleConfigError(
-                    "'Number of chains' * 'Number of sub sequence' < 'Number of exit nodes.'"
+                    "'Number of chains' * 'Number of sub sequence' < 'Number of sink nodes.'"
                 )
 
     def build(self) -> Generator[nx.DiGraph, None, None]:

@@ -44,7 +44,7 @@ class FanInFanOutBuilder(DAGBuilderBase):
         number_of_nodes = Util.get_option_max(config.number_of_nodes)
         if number_of_entry_nodes + number_of_exit_nodes > number_of_nodes:  # type: ignore
             raise InfeasibleConfigError(
-                "'Number of source nodes' + 'Number of exit nodes' > 'Number of nodes'"
+                "'Number of source nodes' + 'Number of sink nodes' > 'Number of nodes'"
             )
 
     def build(self) -> Generator:
@@ -114,7 +114,7 @@ class FanInFanOutBuilder(DAGBuilderBase):
                     else:
                         G = self._init_dag(num_entry)  # reset
 
-            # Add exit nodes (Optional)
+            # Add sink nodes (Optional)
             if num_exit:
                 self._force_create_exit_nodes(G, num_exit)
 

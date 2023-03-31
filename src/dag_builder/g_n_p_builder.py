@@ -37,7 +37,7 @@ class GNPBuilder(DAGBuilderBase):
         number_of_nodes = Util.get_option_max(config.number_of_nodes)
         if number_of_entry_nodes + number_of_exit_nodes > number_of_nodes:  # type: ignore
             raise InfeasibleConfigError(
-                "'Number of source nodes' + 'Number of exit nodes' > 'Number of nodes'"
+                "'Number of source nodes' + 'Number of sink nodes' > 'Number of nodes'"
             )
 
         if Util.get_option_max(config.probability_of_edge) > 1.0:  # type: ignore
@@ -88,7 +88,7 @@ class GNPBuilder(DAGBuilderBase):
                 if num_entry:
                     self._force_create_entry_nodes(G, num_entry)
 
-                # Add exit nodes (Optional)
+                # Add sink nodes (Optional)
                 if num_exit:
                     self._force_create_exit_nodes(G, num_exit)
 

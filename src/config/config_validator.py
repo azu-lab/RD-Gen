@@ -64,7 +64,7 @@ class ConfigValidator:
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
                     ),
-                    Optional(Regex("Exit node period", flags=re.I)): Or(
+                    Optional(Regex("Sink node period", flags=re.I)): Or(
                         {Regex("Fixed", flags=re.I): int},
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
@@ -134,7 +134,7 @@ class ConfigValidator:
                     {Regex("Random", flags=re.I): Or([int], str)},
                     {Regex("Combination", flags=re.I): Or([int], str)},
                 ),
-                Regex("Number of exit nodes", flags=re.I): Or(
+                Regex("Number of sink nodes", flags=re.I): Or(
                     {Regex("Fixed", flags=re.I): int},
                     {Regex("Random", flags=re.I): Or([int], str)},
                     {Regex("Combination", flags=re.I): Or([int], str)},
@@ -204,13 +204,13 @@ class ConfigValidator:
                     Regex("Sub sequence tail", re.I): bool,
                 },
                 Optional(Regex("Merge chains", re.I)): {
-                    Regex("Number of exit nodes", re.I): Or(
+                    Regex("Number of sink nodes", re.I): Or(
                         {Regex("Fixed", flags=re.I): int},
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
                     ),
                     Regex("Middle of chain", re.I): bool,
-                    Regex("Exit node", re.I): bool,
+                    Regex("Sink node", re.I): bool,
                 },
             }
         },

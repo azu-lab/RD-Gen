@@ -109,7 +109,7 @@ class TestFanInFanOutBuilder:
                 "In-degree": in_degree,
                 "Out-degree": out_degree,
                 "Number of source nodes": number_of_entry_nodes,
-                "Number of exit nodes": number_of_exit_nodes,
+                "Number of sink nodes": number_of_exit_nodes,
             },
             "Properties": {
                 "End-to-end deadline": {

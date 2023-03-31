@@ -9,7 +9,7 @@ Graph structure:
     Combination: (0.1, 0.9, 0.1)
   Number of source nodes:
     Combination: [2, 3, 4, 5]
-  Number of exit nodes:
+  Number of sink nodes:
     Fixed: 1
   Ensure weakly connected: True
 
@@ -20,7 +20,7 @@ Properties:
     Periodic type: "All"
     Source node period:
       Combination: [10, 100]
-    Exit node period:
+    Sink node period:
       Fixed: 10
     Offset:
       Random: (1, 5, 1)

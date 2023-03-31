@@ -7,7 +7,7 @@ TO_ABB = {
     "main sequence length": "MSL",
     "number of sub sequences": "NSS",
     "number of source nodes": "NEN",
-    "number of exit nodes": "NEX",
+    "number of sink nodes": "NEX",
     "communication time": "CT",
     "execution time": "ET",
     "ccr": "CCR",
@@ -15,7 +15,7 @@ TO_ABB = {
     "offset": "OS",
     "period": "P",
     "source node period": "ENP",
-    "exit node period": "EXP",
+    "sink node period": "EXP",
     "total utilization": "TU",
     "maximum utilization": "MU",
 }
