@@ -40,7 +40,7 @@ class GNPBuilder(DAGBuilderBase):
                 "'Number of source nodes' + 'Number of sink nodes' > 'Number of nodes'"
             )
 
-        if Util.get_option_max(config.probability_of_edge) > 1.0:  # type: ignore
+        if Util.get_option_max(config.probability_of_edge_existence) > 1.0:  # type: ignore
             logger.warning("'Probability of edge existence' > 1.0")
 
     def build(self) -> Generator[nx.DiGraph, None, None]:
@@ -78,7 +78,7 @@ class GNPBuilder(DAGBuilderBase):
                     G.add_node(G.number_of_nodes())
 
                 # Add edge
-                prob_edge = Util.random_choice(self._config.probability_of_edge)
+                prob_edge = Util.random_choice(self._config.probability_of_edge_existence)
                 for i in range(num_nodes):
                     for j in range(num_nodes):
                         if random.randint(1, 100) < prob_edge * 100 and i < j:

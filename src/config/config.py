@@ -97,11 +97,11 @@ class Config:
         self.graph_structure["In-degree"] = value
 
     @property
-    def probability_of_edge(self):
+    def probability_of_edge_existence(self):
         return self.graph_structure.get("Probability of edge existence")
 
-    @probability_of_edge.setter
-    def probability_of_edge(self, value):
+    @probability_of_edge_existence.setter
+    def probability_of_edge_existence(self, value):
         self.graph_structure["Probability of edge existence"] = value
 
     @property

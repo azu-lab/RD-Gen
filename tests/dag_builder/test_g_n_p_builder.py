@@ -9,13 +9,13 @@ from src.dag_builder import DAGBuilderFactory
 from src.exceptions import BuildFailedError, InfeasibleConfigError
 
 
-def get_config_raw(number_of_nodes: int, probability_of_edge: float) -> dict:
+def get_config_raw(number_of_nodes: int, probability_of_edge_existence: float) -> dict:
     config_raw = {
         "Seed": 0,
         "Number of DAGs": 100,
         "Graph structure": {
             "Generation method": "G(n, p)",
-            "Probability of edge existence": probability_of_edge,
+            "Probability of edge existence": probability_of_edge_existence,
             "Number of nodes": number_of_nodes,
             "Ensure weakly connected": True,
         },
@@ -36,10 +36,10 @@ class TestGNPBuilder:
 
         assert ">" in str(e.value)
 
-    @pytest.mark.parametrize("probability_of_edge", np.arange(0, 1.0, 0.01).tolist())
-    def test_build_normal(self, probability_of_edge):
+    @pytest.mark.parametrize("probability_of_edge_existence", np.arange(0, 1.0, 0.01).tolist())
+    def test_build_normal(self, probability_of_edge_existence):
         number_of_nodes = random.randint(1, 100)
-        config_raw = get_config_raw(number_of_nodes, probability_of_edge)
+        config_raw = get_config_raw(number_of_nodes, probability_of_edge_existence)
         try:
             gnp = DAGBuilderFactory.create_instance(Config(config_raw))
         except InfeasibleConfigError:
