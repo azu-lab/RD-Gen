@@ -24,7 +24,7 @@ class TestChain:
         assert chain.end_idx == chain.number_of_nodes() - 1
 
         max_len = -1
-        for tail_i in Util.get_exit_nodes(chain):
+        for tail_i in Util.get_sink_nodes(chain):
             paths = nx.all_simple_paths(chain, 0, tail_i)
             for path in paths:
                 if len(path) > max_len:
@@ -88,49 +88,49 @@ class TestChainBasedDAG:
         assert nx.is_directed_acyclic_graph(chain_based_dag)
         assert len(Util.get_source_nodes(chain_based_dag)) == number_of_source_nodes
 
-    @pytest.mark.parametrize("number_of_exit_nodes", list(range(1, 11)))
-    def test_merge_chains_middle(self, number_of_exit_nodes):
-        number_of_chains = random.randint(number_of_exit_nodes, number_of_exit_nodes + 10)
+    @pytest.mark.parametrize("number_of_sink_nodes", list(range(1, 11)))
+    def test_merge_chains_middle(self, number_of_sink_nodes):
+        number_of_chains = random.randint(number_of_sink_nodes, number_of_sink_nodes + 10)
         chains = get_chains(number_of_chains, 5, 3)
         chain_based_dag = ChainBasedDAG(chains)
 
         try:
-            chain_based_dag.merge_chains(number_of_exit_nodes, True, False)
+            chain_based_dag.merge_chains(number_of_sink_nodes, True, False)
         except BuildFailedError:
             return 0
 
         assert nx.is_directed_acyclic_graph(chain_based_dag)
-        assert len(Util.get_exit_nodes(chain_based_dag)) == number_of_exit_nodes
-        for exit_i in Util.get_exit_nodes(chain_based_dag):
+        assert len(Util.get_sink_nodes(chain_based_dag)) == number_of_sink_nodes
+        for exit_i in Util.get_sink_nodes(chain_based_dag):
             assert chain_based_dag.in_degree(exit_i) == 1
 
-    @pytest.mark.parametrize("number_of_exit_nodes", list(range(1, 11)))
-    def test_merge_chains_exit(self, number_of_exit_nodes):
-        number_of_chains = random.randint(number_of_exit_nodes, number_of_exit_nodes + 10)
+    @pytest.mark.parametrize("number_of_sink_nodes", list(range(1, 11)))
+    def test_merge_chains_exit(self, number_of_sink_nodes):
+        number_of_chains = random.randint(number_of_sink_nodes, number_of_sink_nodes + 10)
         chains = get_chains(number_of_chains, 5, 3)
         chain_based_dag = ChainBasedDAG(chains)
 
-        chain_based_dag.merge_chains(number_of_exit_nodes, False, True)
+        chain_based_dag.merge_chains(number_of_sink_nodes, False, True)
 
         assert nx.is_directed_acyclic_graph(chain_based_dag)
-        assert len(Util.get_exit_nodes(chain_based_dag)) == number_of_exit_nodes
+        assert len(Util.get_sink_nodes(chain_based_dag)) == number_of_sink_nodes
         for middle_i in (
             set(chain_based_dag.nodes())
-            - set(Util.get_exit_nodes(chain_based_dag))
+            - set(Util.get_sink_nodes(chain_based_dag))
             - set(Util.get_source_nodes(chain_based_dag))
         ):
             assert chain_based_dag.in_degree(middle_i) == 1
 
-    @pytest.mark.parametrize("number_of_exit_nodes", list(range(1, 11)))
-    def test_merge_chains_normal(self, number_of_exit_nodes):
-        number_of_chains = random.randint(number_of_exit_nodes, number_of_exit_nodes + 10)
+    @pytest.mark.parametrize("number_of_sink_nodes", list(range(1, 11)))
+    def test_merge_chains_normal(self, number_of_sink_nodes):
+        number_of_chains = random.randint(number_of_sink_nodes, number_of_sink_nodes + 10)
         chains = get_chains(number_of_chains, 5, 3)
         chain_based_dag = ChainBasedDAG(chains)
 
-        chain_based_dag.merge_chains(number_of_exit_nodes, True, True)
+        chain_based_dag.merge_chains(number_of_sink_nodes, True, True)
 
         assert nx.is_directed_acyclic_graph(chain_based_dag)
-        assert len(Util.get_exit_nodes(chain_based_dag)) == number_of_exit_nodes
+        assert len(Util.get_sink_nodes(chain_based_dag)) == number_of_sink_nodes
 
 
 class TestChainBasedBuilder:
@@ -139,7 +139,7 @@ class TestChainBasedBuilder:
         main_sequence_length = random.randint(2, 10)
         number_of_sub_sequence = random.randint(2, 10)
         number_of_source_nodes = random.randint(1, number_of_chains)
-        number_of_exit_nodes = random.randint(1, number_of_chains)
+        number_of_sink_nodes = random.randint(1, number_of_chains)
         config_raw = {
             "Seed": 0,
             "Number of DAGs": 100,
@@ -154,7 +154,7 @@ class TestChainBasedBuilder:
                     "Sub sequence tail": True,
                 },
                 "Merge chains": {
-                    "Number of sink nodes": number_of_exit_nodes,
+                    "Number of sink nodes": number_of_sink_nodes,
                     "Middle of chain": True,
                     "Sink node": True,
                 },
@@ -174,6 +174,6 @@ class TestChainBasedBuilder:
             for dag in dag_iter:
                 assert nx.is_directed_acyclic_graph(dag)
                 assert len(Util.get_source_nodes(dag)) == number_of_source_nodes
-                assert len(Util.get_exit_nodes(dag)) == number_of_exit_nodes
+                assert len(Util.get_sink_nodes(dag)) == number_of_sink_nodes
         except BuildFailedError:
             return 0

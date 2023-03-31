@@ -32,7 +32,7 @@ class Chain(nx.DiGraph):
 
     @property
     def sub_sequence_tails(self) -> List[int]:
-        tails = Util.get_exit_nodes(self)
+        tails = Util.get_sink_nodes(self)
         tails.remove(self.main_tail)
         return tails
 
@@ -123,13 +123,13 @@ class ChainBasedDAG(nx.DiGraph):
             self.add_edge(src_i, tgt_i)
 
     def merge_chains(
-        self, number_of_exit_nodes: int, merge_middle: bool, merge_exit: bool
+        self, number_of_sink_nodes: int, merge_middle: bool, merge_exit: bool
     ) -> None:
         """Merge chains.
 
         Parameters
         ----------
-        number_of_exit_nodes : int
+        number_of_sink_nodes : int
             Number of sink nodes.
         merge_middle : bool
             Allow merge to middle nodes.
@@ -142,8 +142,8 @@ class ChainBasedDAG(nx.DiGraph):
             No merging is possible.
 
         """
-        selected_exits = set(random.sample(Util.get_exit_nodes(self), number_of_exit_nodes))
-        sources = set(Util.get_exit_nodes(self)) - set(selected_exits)
+        selected_exits = set(random.sample(Util.get_sink_nodes(self), number_of_sink_nodes))
+        sources = set(Util.get_sink_nodes(self)) - set(selected_exits)
 
         # Determine target option
         tgt_option = set(self.nodes()) - set(Util.get_source_nodes(self)) - sources
@@ -214,16 +214,16 @@ class ChainBasedBuilder(DAGBuilderBase):
 
         if config.merge_chains:
             middle_of_chain = config.middle_of_chain
-            exit_node = config.exit_node
-            if middle_of_chain is False and exit_node is False:
+            sink_node = config.sink_node
+            if middle_of_chain is False and sink_node is False:
                 raise InfeasibleConfigError(
                     "Either 'Middle of chain' or 'Sink node' must be set to True."
                 )
 
             number_of_chains = Util.get_option_max(config.number_of_chains)
-            number_of_exit_nodes = Util.get_option_min(config.number_of_exit_nodes)
+            number_of_sink_nodes = Util.get_option_min(config.number_of_sink_nodes)
             number_of_sub_sequences = Util.get_option_min(config.number_of_sub_sequences) or 0
-            if number_of_chains * (number_of_sub_sequences + 1) < number_of_exit_nodes:
+            if number_of_chains * (number_of_sub_sequences + 1) < number_of_sink_nodes:
                 raise InfeasibleConfigError(
                     "'Number of chains' * 'Number of sub sequence' < 'Number of sink nodes.'"
                 )
@@ -274,9 +274,9 @@ class ChainBasedBuilder(DAGBuilderBase):
                 if self._config.merge_chains:
                     try:
                         chain_based_dag.merge_chains(
-                            Util.random_choice(self._config.number_of_exit_nodes),
+                            Util.random_choice(self._config.number_of_sink_nodes),
                             self._config.middle_of_chain,
-                            self._config.exit_node,
+                            self._config.sink_node,
                         )
                         break
                     except BuildFailedError:

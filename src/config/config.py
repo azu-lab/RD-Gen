@@ -187,18 +187,18 @@ class Config:
         self.graph_structure["Merge chains"]["Middle of chain"] = value
 
     @property
-    def exit_node(self):
+    def sink_node(self):
         if self.merge_chains:
             return self.graph_structure["Merge chains"].get("Sink node")
         else:
             return None
 
-    @exit_node.setter
-    def exit_node(self, value):
+    @sink_node.setter
+    def sink_node(self, value):
         self.graph_structure["Merge chains"]["Sink node"] = value
 
     @property
-    def number_of_exit_nodes(self):
+    def number_of_sink_nodes(self):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
             if self.merge_chains:
                 return self.graph_structure["Merge chains"].get("Number of sink nodes")
@@ -207,8 +207,8 @@ class Config:
         else:
             return self.graph_structure.get("Number of sink nodes")
 
-    @number_of_exit_nodes.setter
-    def number_of_exit_nodes(self, value):
+    @number_of_sink_nodes.setter
+    def number_of_sink_nodes(self, value):
         if Util.ambiguous_equals(self.generation_method, "chain-based"):
             self.graph_structure["Merge chains"]["Number of sink nodes"] = value
         else:
@@ -292,14 +292,14 @@ class Config:
         self.properties["Multi-rate"]["Source node period"] = value
 
     @property
-    def exit_node_period(self):
+    def sink_node_period(self):
         if self.multi_rate:
             return self.properties["Multi-rate"].get("Sink node period")
         else:
             return None
 
-    @exit_node_period.setter
-    def exit_node_period(self, value):
+    @sink_node_period.setter
+    def sink_node_period(self, value):
         self.properties["Multi-rate"]["Sink node period"] = value
 
     @property

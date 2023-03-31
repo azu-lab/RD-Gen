@@ -94,8 +94,8 @@ class TestFanInFanOutBuilder:
         except BuildFailedError:
             return 0
 
-    @pytest.mark.parametrize("number_of_exit_nodes", list(range(1, 6)))
-    def test_exist_number_of_exit_nodes(self, number_of_exit_nodes):
+    @pytest.mark.parametrize("number_of_sink_nodes", list(range(1, 6)))
+    def test_exist_number_of_sink_nodes(self, number_of_sink_nodes):
         number_of_nodes = random.randint(10, 20)
         in_degree = random.randint(1, 5)
         out_degree = random.randint(1, 5)
@@ -109,7 +109,7 @@ class TestFanInFanOutBuilder:
                 "In-degree": in_degree,
                 "Out-degree": out_degree,
                 "Number of source nodes": number_of_source_nodes,
-                "Number of sink nodes": number_of_exit_nodes,
+                "Number of sink nodes": number_of_sink_nodes,
             },
             "Properties": {
                 "End-to-end deadline": {
@@ -128,7 +128,7 @@ class TestFanInFanOutBuilder:
         try:
             for dag in dag_iter:
                 assert nx.is_directed_acyclic_graph(dag)
-                for node_i in dag.nodes() - Util.get_exit_nodes(dag):
+                for node_i in dag.nodes() - Util.get_sink_nodes(dag):
                     assert dag.in_degree(node_i) <= in_degree
                 assert dag.number_of_nodes() == number_of_nodes
                 assert len(Util.get_source_nodes(dag)) == number_of_source_nodes
