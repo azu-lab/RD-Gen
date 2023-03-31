@@ -41,7 +41,7 @@ class GNPBuilder(DAGBuilderBase):
             )
 
         if Util.get_option_max(config.probability_of_edge) > 1.0:  # type: ignore
-            logger.warning("'Probability of edge' > 1.0")
+            logger.warning("'Probability of edge existence' > 1.0")
 
     def build(self) -> Generator[nx.DiGraph, None, None]:
         """Build DAG using G(n, p) method.

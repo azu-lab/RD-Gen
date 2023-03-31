@@ -98,11 +98,11 @@ class Config:
 
     @property
     def probability_of_edge(self):
-        return self.graph_structure.get("Probability of edge")
+        return self.graph_structure.get("Probability of edge existence")
 
     @probability_of_edge.setter
     def probability_of_edge(self, value):
-        self.graph_structure["Probability of edge"] = value
+        self.graph_structure["Probability of edge existence"] = value
 
     @property
     def number_of_chains(self):

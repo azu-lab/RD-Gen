@@ -166,7 +166,7 @@ class ConfigValidator:
     g_n_p_schema = Schema(
         {
             Regex("Graph structure", flags=re.I): {
-                Regex("Probability of edge", re.I): Or(
+                Regex("Probability of edge existence", re.I): Or(
                     {Regex("Fixed", flags=re.I): float},
                     {Regex("Random", flags=re.I): Or([float], str)},
                     {Regex("Combination", flags=re.I): Or([float], str)},

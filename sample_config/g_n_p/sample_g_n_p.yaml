@@ -5,7 +5,7 @@ Graph structure:
   Generation method: "G(n, p)"
   Number of nodes:
     Random: (10, 100, 10)
-  Probability of edge:
+  Probability of edge existence:
     Combination: (0.1, 0.9, 0.1)
   Number of source nodes:
     Combination: [2, 3, 4, 5]

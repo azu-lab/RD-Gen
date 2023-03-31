@@ -15,7 +15,7 @@ def get_config_raw(number_of_nodes: int, probability_of_edge: float) -> dict:
         "Number of DAGs": 100,
         "Graph structure": {
             "Generation method": "G(n, p)",
-            "Probability of edge": probability_of_edge,
+            "Probability of edge existence": probability_of_edge,
             "Number of nodes": number_of_nodes,
             "Ensure weakly connected": True,
         },

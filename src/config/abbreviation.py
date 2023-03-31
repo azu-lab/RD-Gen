@@ -1,5 +1,5 @@
 TO_ABB = {
-    "probability of edge": "PE",
+    "probability of edge existence": "PE",
     "in-degree": "ID",
     "out-degree": "OD",
     "number of nodes": "NN",
