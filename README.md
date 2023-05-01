@@ -36,6 +36,23 @@ Sample config files can be used without modification.
 ## Documents
 - [wiki](https://github.com/azu-lab/RD-Gen/wiki)
 - [API list (for developer)](https://azu-lab.github.io/RD-Gen/)
+- RD-Gen is presented in the following paper:
+  - A. Yano and T. Azumi, "RD-Gen: Random DAG Generator Considering Multi-rate Applications for Reproducible Scheduling Evaluation", the 26th IEEE International Symposium on Real-Time Distributed Computing (ISORC), 2023
+  
+    <details>
+    <summary>BibTeX</summary>
+
+    ```bibtex
+    @inproceedings{RD-Gen,
+      title={{RD-Gen}: Random {DAG} Generator Considering Multi-rate Applications for Reproducible Scheduling Evaluation},
+      author={Atsushi, Yano and Takuya, Azumi},
+      booktitle={Proceedings of the 26th IEEE International Symposium on Real-Time Distributed Computing (ISORC)},
+      year={2023},
+      organization={IEEE}
+    }
+    ```
+
+    </details>
 
 ## References
 - [1] R. P. Dick, D. L. Rhodes, and W. Wolf. TGFF: task graphs for free. In Proc. of Workshop on CODES/CASHE, 1998.
