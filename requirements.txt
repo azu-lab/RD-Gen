@@ -5,5 +5,5 @@ ghostscript
 networkx==2.6.3
 pydot==1.4.2
 numpy>=1.22.0
-schema>=0.7.5
+schema==0.7.5
 PyYAML>=5.3.1
