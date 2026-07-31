@@ -297,6 +297,17 @@ class Config:
         return self.properties.get("End-to-end deadline")
 
     @property
+    def deadline_mode(self):
+        if self.end_to_end_deadline:
+            return self.properties["End-to-end deadline"].get("Deadline mode", "Arbitrary")
+        else:
+            return None
+
+    @deadline_mode.setter
+    def deadline_mode(self, value):
+        self.properties["End-to-end deadline"]["Deadline mode"] = value
+
+    @property
     def ratio_of_deadline_to_critical_path(self):
         if self.end_to_end_deadline:
             return self.properties["End-to-end deadline"].get("Ratio of deadline to critical path")

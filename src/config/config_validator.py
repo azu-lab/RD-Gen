@@ -1,6 +1,6 @@
 import re
 
-from schema import Optional, Or, Regex, Schema
+from schema import Optional, Or, Regex, Schema, SchemaError
 
 from ..common import Util
 
@@ -41,11 +41,16 @@ class ConfigValidator:
                     {Regex("Combination", flags=re.I): Or([float], str)},
                 ),
                 Optional(Regex("End-to-end deadline", flags=re.I)): {
-                    Regex("Ratio of deadline to critical path", flags=re.I): Or(
+                    Optional(Regex("Deadline mode", flags=re.I)): Or(
+                        Regex("Implicit", flags=re.I),
+                        Regex("Constrained", flags=re.I),
+                        Regex("Arbitrary", flags=re.I),
+                    ),
+                    Optional(Regex("Ratio of deadline to critical path", flags=re.I)): Or(
                         {Regex("Fixed", flags=re.I): float},
                         {Regex("Random", flags=re.I): Or([float], str)},
                         {Regex("Combination", flags=re.I): Or([float], str)},
-                    )
+                    ),
                 },
                 Optional(Regex("Multi-rate", flags=re.I)): {
                     Regex("Periodic type", flags=re.I): Or(
@@ -274,3 +279,42 @@ class ConfigValidator:
         elif Util.ambiguous_equals(gm, "chain-based"):
             self.chain_based_schema.validate(self._config_raw)
             self.branching_schema.validate(self._config_raw)
+
+        self._validate_deadline_mode()
+
+    def _validate_deadline_mode(self) -> None:
+        """Validate cross-field constraints for 'Deadline mode'.
+
+        'Implicit' and 'Constrained' deadline modes need a single,
+        well-defined period per DAG task to compare the deadline against,
+        which only 'Multi-rate' with 'Periodic type: Entry' guarantees.
+        'Arbitrary' (the default when 'Deadline mode' is omitted) instead
+        requires 'Ratio of deadline to critical path', which is otherwise
+        unused.
+
+        """
+        end_to_end_deadline = self._config_raw["Properties"].get("End-to-end deadline")
+        if not end_to_end_deadline:
+            return
+
+        deadline_mode = end_to_end_deadline.get("Deadline mode", "Arbitrary")
+        if Util.ambiguous_equals(deadline_mode, "Arbitrary"):
+            if not end_to_end_deadline.get("Ratio of deadline to critical path"):
+                raise SchemaError(
+                    "'Ratio of deadline to critical path' is required "
+                    "when 'Deadline mode' is 'Arbitrary' or omitted."
+                )
+            return
+
+        multi_rate = self._config_raw["Properties"].get("Multi-rate")
+        if not multi_rate:
+            raise SchemaError(
+                f"'Deadline mode: {deadline_mode}' requires 'Multi-rate' to be specified."
+            )
+
+        periodic_type = multi_rate.get("Periodic type")
+        if not Util.ambiguous_equals(periodic_type, "Entry"):
+            raise SchemaError(
+                f"'Deadline mode: {deadline_mode}' requires 'Multi-rate.Periodic type' "
+                f"to be 'Entry', but got '{periodic_type}'."
+            )
