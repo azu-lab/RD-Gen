@@ -4,16 +4,11 @@ Number of DAGs: 50
 Graph structure:
   Generation method: "Chain-based"
   Number of chains:
-    Combination: [2, 3, 4]
+    Fixed: 1
   Main sequence length:
     Random: (2, 7, 1)
   Number of sub sequences:
-    Random: [1, 2, 3]
-  Vertically link chains:
-    Number of source nodes:
-      Fixed: 2
-    Main sequence tail: True
-    Sub sequence tail: True
+    Random: [5]  # 1～3のいずれか（3以下）
   Merge chains:
     Number of sink nodes:
       Fixed: 1
@@ -28,9 +23,10 @@ Properties:
     Source node period:
       Random: [50, 100]
     Total utilization:
-      Combination: (5.0, 6.5, 0.1)
-    Maximum utilization:
-      Fixed: 2.7
+      Fixed: 2.0
+  End-to-end deadline:
+    Ratio of deadline to critical path:
+      Random: (1.1, 1.5, 0.1)
 
 Output formats:
   Naming of combination directory: "Abbreviation"
@@ -41,7 +37,7 @@ Output formats:
     DOT: False
   Figure:
     Draw legend: False
-    PNG: True
+    PNG: False
     SVG: False
     EPS: False
-    PDF: False
+    PDF: True

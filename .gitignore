@@ -130,3 +130,7 @@ dmypy.json
 
 # vscode setting
 .vscode/
+
+# DAGset
+test/*
+DAGs/*

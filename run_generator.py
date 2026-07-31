@@ -93,7 +93,7 @@ def option_parser():
         "-d",
         "--dest_dir",
         required=False,
-        default=(os.path.dirname(__file__) or ".") + "/DAGs",
+        default=(os.path.dirname(__file__) or ".") + "/test/custom/pub5",
         type=str,
         help="path to destination directory.",
     )
