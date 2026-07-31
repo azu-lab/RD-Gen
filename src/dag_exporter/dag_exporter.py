@@ -82,9 +82,21 @@ class DAGExporter:
         """
         # Preprocessing
         for node_i in dag.nodes():
-            dag.nodes[node_i]["label"] = (
-                f"[{node_i}]\n" f'C: {dag.nodes[node_i]["execution_time"]}'
-            )
+            node_type = dag.nodes[node_i].get("node_type", "regular")
+            if node_type == "v_ent":
+                dag.nodes[node_i]["label"] = "v_ent"
+                dag.nodes[node_i]["shape"] = "diamond"
+                dag.nodes[node_i]["style"] = "filled"
+                dag.nodes[node_i]["fillcolor"] = "#ffd180"
+            elif node_type == "v_ext":
+                dag.nodes[node_i]["label"] = "v_ext"
+                dag.nodes[node_i]["shape"] = "diamond"
+                dag.nodes[node_i]["style"] = "filled"
+                dag.nodes[node_i]["fillcolor"] = "#c8e6c9"
+            else:
+                dag.nodes[node_i]["label"] = (
+                    f"[{node_i}]\n" f'C: {dag.nodes[node_i]["execution_time"]}'
+                )
             if period := dag.nodes[node_i].get("period"):
                 dag.nodes[node_i]["shape"] = "box"
                 dag.nodes[node_i]["label"] += f"\nT: {period}"
@@ -95,6 +107,9 @@ class DAGExporter:
         for src_i, tgt_i in dag.edges():
             if comm := dag.edges[src_i, tgt_i].get("communication_time"):
                 dag.edges[src_i, tgt_i]["label"] = f" {comm}"
+                dag.edges[src_i, tgt_i]["fontsize"] = 10
+            if (prob := dag.edges[src_i, tgt_i].get("firing_prob")) is not None:
+                dag.edges[src_i, tgt_i]["label"] = f" {prob:.2f}"
                 dag.edges[src_i, tgt_i]["fontsize"] = 10
 
         # Add legend

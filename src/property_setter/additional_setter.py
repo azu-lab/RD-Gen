@@ -37,10 +37,12 @@ class AdditionalSetter(PropertySetterBase):
         """
         if node_properties := self._config.node_properties:
             for param_name, option in node_properties.items():
-                for node_i in dag.nodes:
+                for node_i in Util.regular_nodes(dag):
                     dag.nodes[node_i][param_name] = Util.random_choice(option)
 
         if edge_properties := self._config.edge_properties:
             for param_name, option in edge_properties.items():
                 for src_i, tgt_i in dag.edges:
-                    dag.edges[src_i, tgt_i][param_name] = Util.random_choice(option)
+                    if (dag.nodes[src_i].get("node_type", "regular") == "regular"
+                            and dag.nodes[tgt_i].get("node_type", "regular") == "regular"):
+                        dag.edges[src_i, tgt_i][param_name] = Util.random_choice(option)

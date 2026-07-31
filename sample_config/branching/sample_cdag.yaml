@@ -1,0 +1,36 @@
+Seed: 2015
+Number of DAGs: 5
+
+Graph structure:
+  Generation method: "G(n, p)"
+  Number of nodes:
+    Fixed: 10
+  Number of source nodes:
+    Fixed: 1
+  Number of sink nodes:
+    Fixed: 1
+  Probability of edge existence:
+    Fixed: 0.3
+  Ensure weakly connected: True
+  Branching:
+    Probability of branching:
+      Fixed: 0.4         # Melani p_cond
+    Maximum nesting depth:
+      Fixed: 3           # Melani recursion depth
+    Maximum branches:
+      Fixed: 2           # Melani n_cond
+    Firing: deterministic
+    Probability distribution: uniform-normalize
+
+Properties:
+  Execution time:
+    Random: [1, 100]     # Melani WCET ~ U[1, 100]
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    DOT: True
+  Figure:
+    Draw legend: False
+    PDF: True

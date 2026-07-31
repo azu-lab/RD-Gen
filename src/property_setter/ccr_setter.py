@@ -58,7 +58,7 @@ class CCRSetter(PropertySetterBase):
     def _set_by_exec(self, dag: nx.DiGraph, ccr: float) -> None:
         # Set execution time
         sum_exec = 0
-        for node_i in dag.nodes():
+        for node_i in Util.regular_nodes(dag):
             exec = Util.random_choice(self._config.execution_time)
             dag.nodes[node_i]["execution_time"] = exec
             sum_exec += exec
@@ -66,18 +66,28 @@ class CCRSetter(PropertySetterBase):
         # Calculate sum_comm
         sum_comm = int(ccr * sum_exec)
 
-        # Set communication time
-        comm_grouping = self._grouping(sum_comm, dag.number_of_edges())
+        # Set communication time (only on regular-to-regular edges)
+        regular_edges = [
+            (s, t) for s, t in dag.edges()
+            if (dag.nodes[s].get("node_type", "regular") == "regular"
+                and dag.nodes[t].get("node_type", "regular") == "regular")
+        ]
+        comm_grouping = self._grouping(sum_comm, len(regular_edges))
         if not comm_grouping:
             self._output_round_up_warning("Communication time", "CCR")
-            comm_grouping = [1 for _ in range(dag.number_of_edges())]
-        for edge, comm in zip(dag.edges(), comm_grouping):
+            comm_grouping = [1 for _ in range(len(regular_edges))]
+        for edge, comm in zip(regular_edges, comm_grouping):
             dag.edges[edge[0], edge[1]]["communication_time"] = comm
 
     def _set_by_comm(self, dag: nx.DiGraph, ccr: float) -> None:
-        # Set communication time
+        # Set communication time (only on regular-to-regular edges)
         sum_comm = 0
-        for src_i, tgt_i in dag.edges():
+        regular_edges = [
+            (s, t) for s, t in dag.edges()
+            if (dag.nodes[s].get("node_type", "regular") == "regular"
+                and dag.nodes[t].get("node_type", "regular") == "regular")
+        ]
+        for src_i, tgt_i in regular_edges:
             comm = Util.random_choice(self._config.communication_time)
             dag.edges[src_i, tgt_i]["communication_time"] = comm
             sum_comm += comm
@@ -85,10 +95,11 @@ class CCRSetter(PropertySetterBase):
         # Calculate sum_exec
         sum_exec = int(sum_comm / ccr)
 
-        # Set communication time
-        exec_grouping = self._grouping(sum_exec, dag.number_of_nodes())
+        # Set execution time
+        regular_node_list = Util.regular_nodes(dag)
+        exec_grouping = self._grouping(sum_exec, len(regular_node_list))
         if not exec_grouping:
             self._output_round_up_warning("Execution time", "CCR")
-            exec_grouping = [1 for _ in range(dag.number_of_nodes())]
-        for node_i, exec in zip(dag.nodes(), exec_grouping):
+            exec_grouping = [1 for _ in range(len(regular_node_list))]
+        for node_i, exec in zip(regular_node_list, exec_grouping):
             dag.nodes[node_i]["execution_time"] = exec

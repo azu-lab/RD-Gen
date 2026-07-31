@@ -1,0 +1,41 @@
+Seed: 2025
+Number of DAGs: 5
+
+Graph structure:
+  Generation method: "G(n, p)"
+  Number of nodes:
+    Fixed: 20
+  Number of source nodes:
+    Fixed: 1
+  Number of sink nodes:
+    Fixed: 1
+  Probability of edge existence:
+    Fixed: 0.2           # Zhao connection probability
+  Ensure weakly connected: True
+  Branching:
+    Probability of branching:
+      Fixed: 0.4         # default psr
+    Maximum nesting depth:
+      Fixed: 2
+    Maximum branches:
+      Fixed: 3           # Zhao k=3
+    Firing: probabilistic
+    Probability distribution: uniform-normalize
+
+Properties:
+  Multi-rate:
+    Periodic type: 'Entry'
+    Period:
+      Random: [1, 1400]  # Zhao T ~ U[1, 1400]
+    Source node period:
+      Fixed: 100
+    Total utilization:
+      Fixed: 0.5         # Zhao fixed 50%
+    Maximum utilization:
+      Fixed: 1.0
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    DOT: True

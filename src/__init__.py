@@ -1,5 +1,6 @@
 from logging import DEBUG, Formatter, StreamHandler, getLogger
 
+from .branching_validator import BranchingValidator, BranchingConstraintError
 from .config import ComboGenerator, Config, ConfigValidator
 from .dag_builder import DAGBuilderFactory
 from .dag_exporter import DAGExporter
@@ -15,6 +16,8 @@ __all__ = [
     "PropertySetterFactory",
     "DAGExporter",
     "BuildFailedError",
+    "BranchingValidator",
+    "BranchingConstraintError",
 ]
 
 

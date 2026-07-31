@@ -68,7 +68,7 @@ class UtilizationSetter(PropertySetterBase):
                 self._set_by_only_max_utilization(dag)
 
         # Set remain execution times
-        for node_i in dag.nodes:
+        for node_i in Util.regular_nodes(dag):
             if not dag.nodes[node_i].get("execution_time"):
                 dag.nodes[node_i]["execution_time"] = Util.random_choice(
                     self._config.execution_time
@@ -306,7 +306,7 @@ class UtilizationSetter(PropertySetterBase):
         periodic_type = self._config.periodic_type
         timer_driven_nodes: List[int]
         if Util.ambiguous_equals(periodic_type, "All"):
-            timer_driven_nodes = list(dag.nodes())
+            timer_driven_nodes = Util.regular_nodes(dag)
         elif Util.ambiguous_equals(periodic_type, "IO"):
             timer_driven_nodes = list(set(Util.get_source_nodes(dag) + Util.get_sink_nodes(dag)))
         elif Util.ambiguous_equals(periodic_type, "Entry"):

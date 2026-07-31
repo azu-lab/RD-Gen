@@ -214,6 +214,59 @@ class Config:
         else:
             self.graph_structure["Number of sink nodes"] = value
 
+    # ----- Branching -----
+    @property
+    def branching(self):
+        return self.graph_structure.get("Branching")
+
+    @property
+    def probability_of_branching(self):
+        if self.branching:
+            return self.branching.get("Probability of branching")
+        return None
+
+    @probability_of_branching.setter
+    def probability_of_branching(self, value):
+        self.graph_structure["Branching"]["Probability of branching"] = value
+
+    @property
+    def maximum_nesting_depth(self):
+        if self.branching:
+            return self.branching.get("Maximum nesting depth")
+        return None
+
+    @maximum_nesting_depth.setter
+    def maximum_nesting_depth(self, value):
+        self.graph_structure["Branching"]["Maximum nesting depth"] = value
+
+    @property
+    def maximum_branches(self):
+        if self.branching:
+            return self.branching.get("Maximum branches")
+        return None
+
+    @maximum_branches.setter
+    def maximum_branches(self, value):
+        self.graph_structure["Branching"]["Maximum branches"] = value
+
+    @property
+    def firing(self):
+        if self.branching:
+            return self.branching.get("Firing")
+        return None
+
+    @property
+    def probability_distribution(self):
+        if self.branching:
+            return self.branching.get("Probability distribution")
+        return None
+
+    @property
+    def dirichlet_alpha(self):
+        if self.branching:
+            return self.branching.get("Dirichlet alpha", 1.0)
+        return 1.0
+
     # ----- Properties -----
     @property
     def execution_time(self):

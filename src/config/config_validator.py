@@ -176,6 +176,40 @@ class ConfigValidator:
         ignore_extra_keys=True,
     )
 
+    branching_schema = Schema(
+        {
+            Regex("Graph structure", flags=re.I): {
+                Optional(Regex("Branching", flags=re.I)): {
+                    Regex("Probability of branching", flags=re.I): Or(
+                        {Regex("Fixed", flags=re.I): float},
+                        {Regex("Random", flags=re.I): Or([float], str)},
+                        {Regex("Combination", flags=re.I): Or([float], str)},
+                    ),
+                    Regex("Maximum nesting depth", flags=re.I): Or(
+                        {Regex("Fixed", flags=re.I): int},
+                        {Regex("Random", flags=re.I): Or([int], str)},
+                        {Regex("Combination", flags=re.I): Or([int], str)},
+                    ),
+                    Regex("Maximum branches", flags=re.I): Or(
+                        {Regex("Fixed", flags=re.I): int},
+                        {Regex("Random", flags=re.I): Or([int], str)},
+                        {Regex("Combination", flags=re.I): Or([int], str)},
+                    ),
+                    Regex("Firing", flags=re.I): Or(
+                        Regex("^deterministic$", flags=re.I),
+                        Regex("^probabilistic$", flags=re.I),
+                    ),
+                    Regex("Probability distribution", flags=re.I): Or(
+                        Regex("^dirichlet$", flags=re.I),
+                        Regex("^uniform-normalize$", flags=re.I),
+                    ),
+                    Optional(Regex("Dirichlet alpha", flags=re.I)): Or(float, int),
+                }
+            }
+        },
+        ignore_extra_keys=True,
+    )
+
     chain_based_schema = Schema(
         {
             Regex("Graph structure", flags=re.I): {
@@ -232,8 +266,11 @@ class ConfigValidator:
         if Util.ambiguous_equals(gm, "fan-in/fan-out"):
             self.fifo_gnp_common_schema.validate(self._config_raw)
             self.fan_in_fan_out_schema.validate(self._config_raw)
+            self.branching_schema.validate(self._config_raw)
         elif Util.ambiguous_equals(gm, "g(n, p)"):
             self.fifo_gnp_common_schema.validate(self._config_raw)
             self.g_n_p_schema.validate(self._config_raw)
+            self.branching_schema.validate(self._config_raw)
         elif Util.ambiguous_equals(gm, "chain-based"):
             self.chain_based_schema.validate(self._config_raw)
+            self.branching_schema.validate(self._config_raw)

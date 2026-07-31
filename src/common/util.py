@@ -39,6 +39,11 @@ class Util:
         return [v for v, d in dag.out_degree() if d == 0]
 
     @staticmethod
+    def regular_nodes(dag: nx.DiGraph) -> List[int]:
+        return [n for n in dag.nodes()
+                if dag.nodes[n].get("node_type", "regular") == "regular"]
+
+    @staticmethod
     def get_option_min(option: Optional[Union[list, int, float]]) -> Optional[Union[int, float]]:
         if option is None:
             return None

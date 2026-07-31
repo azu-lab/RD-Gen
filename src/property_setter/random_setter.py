@@ -45,8 +45,10 @@ class RandomSetter(PropertySetterBase):
         property_name = Util.convert_to_property(self._param_name)
         option = getattr(self._config, property_name)
         if self._target == "node":
-            for node_i in dag.nodes():
+            for node_i in Util.regular_nodes(dag):
                 dag.nodes[node_i][property_name] = Util.random_choice(option)
         else:
             for src_i, tgt_i in dag.edges():
-                dag.edges[src_i, tgt_i][property_name] = Util.random_choice(option)
+                if (dag.nodes[src_i].get("node_type", "regular") == "regular"
+                        and dag.nodes[tgt_i].get("node_type", "regular") == "regular"):
+                    dag.edges[src_i, tgt_i][property_name] = Util.random_choice(option)
