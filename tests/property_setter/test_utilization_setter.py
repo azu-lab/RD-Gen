@@ -4,9 +4,28 @@ from typing import List
 import networkx as nx
 import pytest
 
+from src.common import Util
 from src.config import Config
 from src.dag_builder.chain_based_builder import Chain, ChainBasedDAG
 from src.property_setter.utilization_setter import UtilizationSetter
+
+
+def create_linear_chain(downstream_exec: int, n_downstream: int = 3) -> nx.DiGraph:
+    """Create entry(0) -> 1 -> ... -> n_downstream, a single linear chain.
+
+    Node 0 ('entry') is left without 'execution_time' so it can play the
+    role of a not-yet-assigned timer-driven node, matching the DAG state
+    'UtilizationSetter' sees just before it picks a period for it.
+
+    """
+    dag = nx.DiGraph()
+    dag.add_node(0)
+    prev = 0
+    for node_i in range(1, n_downstream + 1):
+        dag.add_edge(prev, node_i)
+        dag.nodes[node_i]["execution_time"] = downstream_exec
+        prev = node_i
+    return dag
 
 
 def get_chains(
@@ -134,6 +153,7 @@ class TestUtilizationSetter:
         mocker.patch.object(config_mock, "source_node_period", None)
         mocker.patch.object(config_mock, "sink_node_period", None)
         mocker.patch.object(config_mock, "periodic_type", "All")
+        mocker.patch.object(config_mock, "auto_fit_cycle", False)
         util_setter = UtilizationSetter(config_mock)
         dag = nx.DiGraph()
         dag.add_nodes_from(list(range(0, 30)))
@@ -160,6 +180,7 @@ class TestUtilizationSetter:
         mocker.patch.object(config_mock, "source_node_period", None)
         mocker.patch.object(config_mock, "sink_node_period", None)
         mocker.patch.object(config_mock, "periodic_type", "All")
+        mocker.patch.object(config_mock, "auto_fit_cycle", False)
         util_setter = UtilizationSetter(config_mock)
         dag = nx.DiGraph()
         dag.add_nodes_from(list(range(0, 30)))
@@ -189,6 +210,7 @@ class TestUtilizationSetter:
         mocker.patch.object(config_mock, "source_node_period", None)
         mocker.patch.object(config_mock, "sink_node_period", None)
         mocker.patch.object(config_mock, "periodic_type", "All")
+        mocker.patch.object(config_mock, "auto_fit_cycle", False)
         util_setter = UtilizationSetter(config_mock)
         dag = nx.DiGraph()
         dag.add_nodes_from(list(range(0, number_of_nodes)))
@@ -236,3 +258,300 @@ class TestUtilizationSetter:
             after_total_utilization += chain_utilization
 
         assert abs(after_total_utilization - total_utilization) <= 0.01
+
+
+class TestUtilizationSetterAutoAdjustPeriod:
+    def test_adjust_period_grows_to_required_value(self, mocker):
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "source_node_period", [10, 1000])
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "period", None)
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = create_linear_chain(downstream_exec=30, n_downstream=3)  # L_rest = 90
+        # required_period = ceil(90 / (1 - 0.5)) = 180
+        adjusted = util_setter._adjust_period_for_feasibility(dag, 0, 0.5, selected_period=10)
+
+        assert adjusted == 180
+
+    def test_adjust_period_no_op_if_already_sufficient(self, mocker):
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "source_node_period", [10, 1000])
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "period", None)
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = create_linear_chain(downstream_exec=30, n_downstream=3)  # needs only 180
+        adjusted = util_setter._adjust_period_for_feasibility(dag, 0, 0.5, selected_period=500)
+
+        assert adjusted == 500
+
+    def test_adjust_period_capped_at_configured_max(self, mocker):
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "source_node_period", [10, 20])  # cap = 20
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "period", None)
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = create_linear_chain(downstream_exec=30, n_downstream=3)  # needs 180, cap is 20
+        adjusted = util_setter._adjust_period_for_feasibility(dag, 0, 0.5, selected_period=10)
+
+        assert adjusted == 20
+
+    def test_adjust_period_no_op_when_no_downstream_nodes(self, mocker):
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "source_node_period", [10, 1000])
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "period", None)
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = nx.DiGraph()
+        dag.add_node(0)  # entry is also the sink: no downstream critical path
+
+        adjusted = util_setter._adjust_period_for_feasibility(dag, 0, 0.5, selected_period=10)
+
+        assert adjusted == 10
+
+    def test_adjust_period_leaves_entry_execution_time_unset(self, mocker):
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "source_node_period", [10, 1000])
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "period", None)
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = create_linear_chain(downstream_exec=30, n_downstream=3)
+        util_setter._adjust_period_for_feasibility(dag, 0, 0.5, selected_period=10)
+
+        assert "execution_time" not in dag.nodes[0]
+
+    def test_set_end_to_end_preserves_utilization_and_feasibility(self, mocker):
+        total_utilization = 0.5
+
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "total_utilization", total_utilization)
+        mocker.patch.object(config_mock, "maximum_utilization", None)
+        mocker.patch.object(config_mock, "period", None)
+        mocker.patch.object(config_mock, "source_node_period", [10, 1000])
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "periodic_type", "Entry")
+        mocker.patch.object(config_mock, "auto_fit_cycle", True)
+        mocker.patch.object(config_mock, "whole_dag_utilization", None)
+        mocker.patch.object(config_mock, "execution_time", 30)
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = nx.DiGraph()
+        dag.add_edge(0, 1)
+        dag.add_edge(1, 2)
+        dag.add_edge(2, 3)  # entry(0) -> 1 -> 2 -> sink(3), each downstream node exec=30
+
+        util_setter.set(dag)
+
+        period = dag.nodes[0]["period"]
+        entry_exec = dag.nodes[0]["execution_time"]
+        assert abs(entry_exec / period - total_utilization) < 0.01
+
+        critical_path_length = Util.get_critical_path_length(dag, 0, 3)
+        assert critical_path_length <= period
+
+    def test_set_disabled_by_default_can_remain_infeasible(self, mocker):
+        total_utilization = 0.5
+
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "total_utilization", total_utilization)
+        mocker.patch.object(config_mock, "maximum_utilization", None)
+        mocker.patch.object(config_mock, "period", None)
+        mocker.patch.object(config_mock, "source_node_period", [10])
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "periodic_type", "Entry")
+        mocker.patch.object(config_mock, "auto_fit_cycle", False)
+        mocker.patch.object(config_mock, "whole_dag_utilization", None)
+        mocker.patch.object(config_mock, "execution_time", 30)
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = nx.DiGraph()
+        dag.add_edge(0, 1)
+        dag.add_edge(1, 2)
+        dag.add_edge(2, 3)
+
+        util_setter.set(dag)
+
+        # Feature disabled: period stays exactly at the (too small) configured
+        # value, leaving the resulting instance infeasible -- this is the
+        # behavior 'auto_fit_cycle=True' is meant to fix.
+        assert dag.nodes[0]["period"] == 10
+        critical_path_length = Util.get_critical_path_length(dag, 0, 3)
+        assert critical_path_length > dag.nodes[0]["period"]
+
+
+class TestUtilizationSetterWholeDagUtilization:
+    def test_distributes_across_all_regular_nodes(self, mocker):
+        whole_dag_utilization = 0.8
+        period_option = list(range(1000, 10000, 10))
+
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "whole_dag_utilization", whole_dag_utilization)
+        mocker.patch.object(config_mock, "maximum_utilization", None)
+        mocker.patch.object(config_mock, "period", period_option)
+        mocker.patch.object(config_mock, "source_node_period", None)
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "periodic_type", "Entry")
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = nx.DiGraph()
+        dag.add_edge(0, 1)
+        dag.add_edge(0, 2)
+        dag.add_edge(1, 3)
+        dag.add_edge(2, 3)
+
+        util_setter._set_by_whole_dag_utilization(dag)
+
+        period = dag.nodes[0]["period"]
+        assert period in period_option
+        total_exec = 0
+        for node_i in dag.nodes():
+            assert dag.nodes[node_i]["execution_time"] >= 1
+            total_exec += dag.nodes[node_i]["execution_time"]
+
+        assert abs(total_exec / period - whole_dag_utilization) <= 0.01
+
+    def test_allows_utilization_greater_than_one(self, mocker):
+        whole_dag_utilization = 1.2
+        period_option = [1000]
+
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "whole_dag_utilization", whole_dag_utilization)
+        mocker.patch.object(config_mock, "maximum_utilization", None)
+        mocker.patch.object(config_mock, "period", period_option)
+        mocker.patch.object(config_mock, "source_node_period", None)
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "periodic_type", "Entry")
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = nx.DiGraph()
+        dag.add_edge(0, 1)
+        dag.add_edge(1, 2)
+        dag.add_edge(2, 3)
+
+        util_setter._set_by_whole_dag_utilization(dag)
+
+        period = dag.nodes[0]["period"]
+        total_exec = sum(dag.nodes[node_i]["execution_time"] for node_i in dag.nodes())
+        assert abs(total_exec / period - whole_dag_utilization) <= 0.01
+
+    def test_respects_maximum_utilization_cap(self, mocker):
+        whole_dag_utilization = 3.0
+        max_utilization = 1.0
+        period_option = [1000]
+
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "whole_dag_utilization", whole_dag_utilization)
+        mocker.patch.object(config_mock, "maximum_utilization", max_utilization)
+        mocker.patch.object(config_mock, "period", period_option)
+        mocker.patch.object(config_mock, "source_node_period", None)
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "periodic_type", "Entry")
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = nx.DiGraph()
+        dag.add_edge(0, 1)
+        dag.add_edge(1, 2)
+
+        util_setter._set_by_whole_dag_utilization(dag)
+
+        period = dag.nodes[0]["period"]
+        for node_i in dag.nodes():
+            util = dag.nodes[node_i]["execution_time"] / period
+            assert util <= max_utilization + 1e-9
+
+    def test_set_dispatches_to_whole_dag_utilization(self, mocker):
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "total_utilization", None)
+        mocker.patch.object(config_mock, "whole_dag_utilization", 1.2)
+        mocker.patch.object(config_mock, "maximum_utilization", None)
+        mocker.patch.object(config_mock, "period", [1000])
+        mocker.patch.object(config_mock, "source_node_period", None)
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "periodic_type", "Entry")
+        mocker.patch.object(config_mock, "auto_fit_cycle", False)
+        util_setter = UtilizationSetter(config_mock)
+
+        dag = nx.DiGraph()
+        dag.add_edge(0, 1)
+        dag.add_edge(1, 2)
+
+        util_setter.set(dag)
+
+        period = dag.nodes[0]["period"]
+        total_exec = sum(dag.nodes[node_i]["execution_time"] for node_i in dag.nodes())
+        assert abs(total_exec / period - 1.2) <= 0.01
+
+
+class TestDistributeExecutionTimes:
+    def test_total_matches_target_exactly_when_unconstrained(self, mocker):
+        config_mock = mocker.Mock(spec=Config)
+        util_setter = UtilizationSetter(config_mock)
+
+        period = 1000
+        # Fixed, evenly-sized shares so no node's fair share rounds to 0
+        # (that edge case intentionally forces a surplus -- see
+        # 'test_zero_share_is_rounded_up_with_warning' -- and would make
+        # this exact-match assertion flaky).
+        utilizations = [0.06] * 20
+
+        exec_times = util_setter._distribute_execution_times(utilizations, period)
+
+        assert sum(exec_times) == round(sum(utilizations) * period)
+        assert all(e >= 1 for e in exec_times)
+
+    def test_no_systematic_downward_bias_near_threshold(self, mocker):
+        """The naive int()-truncation approach this replaces loses ~0.5
+        execution-time unit per node on average, which is exactly the
+        failure mode that can silently flip a DAG's Federated heavy/light
+        classification (utilization >= 1) even though its target was
+        chosen to sit clearly on one side of it.
+
+        """
+        config_mock = mocker.Mock(spec=Config)
+        util_setter = UtilizationSetter(config_mock)
+
+        period = 1000
+        target = 1.01  # just above the heavy/light threshold
+        n_nodes = 20
+
+        for _ in range(50):
+            utilizations = UtilizationSetter._UUniFast(target, n_nodes)
+            exec_times = util_setter._distribute_execution_times(utilizations, period)
+            measured = sum(exec_times) / period
+            # Naive truncation could lose up to ~0.5 * n_nodes / period = 0.01,
+            # exactly enough to cross back under 1.0. The largest-remainder
+            # method must not.
+            assert measured >= 1.0
+
+    def test_respects_maximum_utilization_cap(self, mocker):
+        """Both nodes sit just below a *non-integer* cap (cap=999.5), so
+        floor+1 (1000) would overshoot it -- the distributor must skip
+        handing out the leftover unit to them rather than exceed the cap.
+
+        """
+        config_mock = mocker.Mock(spec=Config)
+        util_setter = UtilizationSetter(config_mock)
+
+        period = 1000
+        max_utilization = 0.9995
+        utilizations = [0.9994, 0.9994]
+
+        exec_times = util_setter._distribute_execution_times(
+            utilizations, period, max_utilization
+        )
+
+        for exec_i in exec_times:
+            assert exec_i / period <= max_utilization + 1e-9
+        assert exec_times == [999, 999]
+
+    def test_zero_share_is_rounded_up_with_warning(self, mocker, caplog):
+        config_mock = mocker.Mock(spec=Config)
+        util_setter = UtilizationSetter(config_mock)
+
+        exec_times = util_setter._distribute_execution_times([0.0004], period=10)
+
+        assert exec_times == [1]

@@ -62,6 +62,50 @@ class Util:
             return option
 
     @staticmethod
+    def get_critical_path_length(dag: nx.DiGraph, source: int, exit: int) -> int:
+        """Get critical path length from 'source' to 'exit'.
+
+        Parameters
+        ----------
+        dag : nx.DiGraph
+            DAG. Every node reachable from 'source' up to and including
+            'exit' must already have 'execution_time' set.
+        source : int
+            Index of path source.
+        exit : int
+            Index of path exit.
+
+        Returns
+        -------
+        int
+            Critical path length. 0 if 'exit' is not reachable from 'source'.
+
+        Notes
+        -----
+        If the edge has 'Communication time',
+        'Communication time' is also included in critical path length.
+
+        Computed with a topological-order dynamic program (O(V+E)) rather
+        than enumerating all simple paths (nx.all_simple_paths), whose
+        count can be exponential in the size of the DAG, especially once
+        branching constructs are present.
+
+        """
+        longest_from_source = {source: dag.nodes[source]["execution_time"]}
+        for node in nx.topological_sort(dag):
+            if node not in longest_from_source or node == exit:
+                continue
+            for succ in dag.successors(node):
+                edge_len = dag.nodes[succ]["execution_time"]
+                if dag.edges[node, succ].get("communication_time"):
+                    edge_len += dag.edges[node, succ]["communication_time"]
+                candidate = longest_from_source[node] + edge_len
+                if candidate > longest_from_source.get(succ, 0):
+                    longest_from_source[succ] = candidate
+
+        return longest_from_source.get(exit, 0)
+
+    @staticmethod
     def get_min_in_node(dag: nx.DiGraph, option: Collection[int]) -> int:
         min_in_node_i: int
         min_in = sys.maxsize

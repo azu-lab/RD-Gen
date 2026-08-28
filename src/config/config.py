@@ -400,6 +400,44 @@ class Config:
         self.properties["Multi-rate"]["Maximum utilization"] = value
 
     @property
+    def auto_fit_cycle(self):
+        """Whether to grow a timer-driven node's period (up to the
+        configured maximum) so that 'Total utilization' stays feasible for
+        that DAG instance instead of being left to chance.
+
+        Named without the word 'period' to avoid colliding with the
+        substring-matching 'Period' key in the config schema (see
+        ConfigValidator's Multi-rate schema).
+
+        """
+        if self.multi_rate:
+            return self.properties["Multi-rate"].get("Auto-fit cycle", False)
+        else:
+            return False
+
+    @auto_fit_cycle.setter
+    def auto_fit_cycle(self, value):
+        self.properties["Multi-rate"]["Auto-fit cycle"] = value
+
+    @property
+    def whole_dag_utilization(self):
+        """Target utilization for the DAG's *total* workload (the sum of
+        every node's execution time) divided by its period, as opposed to
+        'total_utilization' which only sizes a single timer-driven node's
+        own execution time. Unlike 'total_utilization', this can exceed 1
+        -- the case Federated-style heavy/light classification needs.
+
+        """
+        if self.multi_rate:
+            return self.properties["Multi-rate"].get("Whole-DAG utilization")
+        else:
+            return None
+
+    @whole_dag_utilization.setter
+    def whole_dag_utilization(self, value):
+        self.properties["Multi-rate"]["Whole-DAG utilization"] = value
+
+    @property
     def additional_properties(self) -> Optional[dict]:
         return self.properties.get("Additional properties")
 

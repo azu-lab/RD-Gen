@@ -1,0 +1,44 @@
+Seed: 0
+Number of DAGs: 50
+
+Graph structure:
+  Generation method: "Chain-based"
+  Number of chains:
+    Fixed: 1
+  Main sequence length:
+    Random: (2, 7, 1)
+  Number of sub sequences:
+    Random: [5]  # 1～3のいずれか（3以下）
+  Merge chains:
+    Number of sink nodes:
+      Fixed: 1
+    Middle of chain: False
+    Sink node: True
+
+Properties:
+  Multi-rate:
+    Periodic type: 'Chain'
+    Period:
+      Random: [10000, 20000, 30000, 40000, 50000, 60000]
+    Source node period:
+      Random: [50, 100]
+    Total utilization:
+      Fixed: 2.0
+  End-to-end deadline:
+    Deadline mode: 'Arbitrary'  # D = critical path length * ratio (independent of T)
+    Ratio of deadline to critical path:
+      Random: (1.1, 1.5, 0.1)
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    JSON: False
+    XML: False
+    DOT: False
+  Figure:
+    Draw legend: False
+    PNG: False
+    SVG: False
+    EPS: False
+    PDF: True

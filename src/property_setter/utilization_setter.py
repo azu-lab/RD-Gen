@@ -1,3 +1,4 @@
+import math
 import random
 import sys
 from logging import getLogger
@@ -37,6 +38,11 @@ class UtilizationSetter(PropertySetterBase):
                 "but 'Execution time' is determined based on utilization and period. "
                 "So, the range of 'Execution time' entered is ignored."
             )
+        if config.whole_dag_utilization and Util.ambiguous_equals(config.periodic_type, "chain"):
+            logger.warning(
+                "'Whole-DAG utilization' is not supported together with "
+                "'Periodic type: Chain'; it will be ignored."
+            )
 
     def set(self, dag: nx.DiGraph) -> None:
         """Set period and execution time based on utilization.
@@ -51,11 +57,42 @@ class UtilizationSetter(PropertySetterBase):
         If a chain-based DAG is entered 'Periodic type' is 'Chain',
         the chain utilization is used (see https://par.nsf.gov/servlets/purl/10276465).
 
+        If 'Auto-fit cycle' is enabled (only takes effect together with
+        'Total utilization' on a non-chain DAG), the execution times of the
+        non-timer-driven nodes are drawn *before* periods are chosen, so
+        that the downstream critical path length is already known when a
+        timer-driven node's period is picked. This lets the period be grown
+        (up to the configured maximum) just enough to keep the target
+        utilization feasible, instead of leaving it to chance. See
+        '_set_by_total_utilization' for the actual adjustment.
+
+        If 'Whole-DAG utilization' is specified (and 'Periodic type' is not
+        'Chain'), it takes priority over 'Total utilization' /
+        'Maximum utilization': the DAG's *total* workload (summed over all
+        regular nodes, not just a timer-driven one) is sized against a
+        single shared period, allowing utilization >= 1. See
+        '_set_by_whole_dag_utilization'.
+
         """
         total_utilization = self._config.total_utilization
+        whole_dag_utilization = self._config.whole_dag_utilization
         is_chain_case = isinstance(dag, ChainBasedDAG) and Util.ambiguous_equals(
             self._config.periodic_type, "chain"
         )
+        auto_adjust = bool(self._config.auto_fit_cycle) and total_utilization and not is_chain_case
+
+        if whole_dag_utilization and not is_chain_case:
+            self._set_by_whole_dag_utilization(dag)
+            return
+
+        if auto_adjust:
+            timer_driven_nodes = set(self._get_timer_driven_nodes(dag))
+            for node_i in Util.regular_nodes(dag):
+                if node_i not in timer_driven_nodes and not dag.nodes[node_i].get("execution_time"):
+                    dag.nodes[node_i]["execution_time"] = Util.random_choice(
+                        self._config.execution_time
+                    )
+
         if is_chain_case:
             if total_utilization:
                 self._set_by_total_utilization_chain(dag)
@@ -73,6 +110,110 @@ class UtilizationSetter(PropertySetterBase):
                 dag.nodes[node_i]["execution_time"] = Util.random_choice(
                     self._config.execution_time
                 )
+
+    def _set_by_whole_dag_utilization(self, dag: nx.DiGraph) -> None:
+        """Set a single shared period and distribute the DAG's *total*
+        workload (the sum of every node's execution time) across all
+        regular nodes via UUniFast, so that
+        (sum of execution times) / period == target utilization.
+
+        Unlike '_set_by_total_utilization' (which only sizes a single
+        timer-driven node's own execution time), this allows the target
+        utilization to exceed 1, which is what Federated-style heavy/light
+        classification needs. It does not attempt to widen the graph or
+        adjust the period for feasibility: whether a critical path stays
+        under the period depends on how the random UUniFast split lands
+        and how much parallel width the DAG structure provides.
+
+        Parameters
+        ----------
+        dag : nx.DiGraph
+            DAG.
+
+        """
+        timer_driven_nodes = self._get_timer_driven_nodes(dag)
+        selected_period = self._choice_period(dag, timer_driven_nodes[0])
+        for timer_i in timer_driven_nodes:
+            dag.nodes[timer_i]["period"] = selected_period
+
+        regular_nodes = Util.regular_nodes(dag)
+        utilizations = self._UUniFast(
+            Util.random_choice(self._config.whole_dag_utilization),
+            len(regular_nodes),
+            self._config.maximum_utilization,
+        )
+
+        exec_times = self._distribute_execution_times(
+            utilizations, selected_period, self._config.maximum_utilization
+        )
+        for node_i, exec in zip(regular_nodes, exec_times):
+            dag.nodes[node_i]["execution_time"] = exec
+
+    def _distribute_execution_times(
+        self, utilizations: List[float], period: int, max_utilization: Optional[float] = None
+    ) -> List[int]:
+        """Convert per-node utilization shares into integer execution
+        times via the largest-remainder method, instead of truncating
+        each node independently with 'int(u_i * period)'.
+
+        Parameters
+        ----------
+        utilizations : List[float]
+            Per-node utilization shares (as returned by '_UUniFast').
+        period : int
+            Shared period.
+        max_utilization : float, optional
+            Per-node utilization cap; a node is never bumped past
+            'floor(max_utilization * period)', by default None.
+
+        Returns
+        -------
+        List[int]
+            Integer execution times, one per input utilization.
+
+        Notes
+        -----
+        Independently truncating every node (the naive approach) always
+        rounds *down*, so the resulting total drifts below the target by
+        roughly 0.5 per node on average. That drift is not just cosmetic:
+        near a classification threshold that depends on total utilization
+        (e.g. Federated's heavy/light split at utilization == 1), it can
+        silently flip which side of the threshold a generated DAG actually
+        lands on even though its configured target was on the other side.
+
+        The largest-remainder method instead floors every node, then
+        hands out the leftover units (the difference between the rounded
+        target total and the sum of floors) one at a time to the nodes
+        with the largest fractional remainder, skipping any node already
+        at 'max_utilization'. This makes the total match the target as
+        closely as integer execution times allow, with no systematic
+        directional bias.
+
+        """
+        raw = [u * period for u in utilizations]
+        floor_vals = [int(r) for r in raw]
+        remainders = [r - f for r, f in zip(raw, floor_vals)]
+        target_total = round(sum(raw))
+        deficit = target_total - sum(floor_vals)
+
+        cap = max_utilization * period if max_utilization else None
+
+        exec_vals = floor_vals[:]
+        order = sorted(range(len(raw)), key=lambda i: remainders[i], reverse=True)
+        for idx in order:
+            if deficit <= 0:
+                break
+            if cap is not None and exec_vals[idx] + 1 > cap + 1e-9:
+                continue
+            exec_vals[idx] += 1
+            deficit -= 1
+
+        for i, exec_i in enumerate(exec_vals):
+            if exec_i == 0:
+                self._output_round_up_warning("Execution time", "Utilization")
+                exec_vals[i] = 1
+
+        return exec_vals
 
     def _set_by_total_utilization(self, dag: nx.DiGraph) -> None:
         """Set period and execution time based on total utilization.
@@ -92,12 +233,77 @@ class UtilizationSetter(PropertySetterBase):
 
         for timer_i, utilization in zip(timer_driven_nodes, utilizations):
             selected_period = self._choice_period(dag, timer_i)
+            if self._config.auto_fit_cycle and utilization < 1:
+                selected_period = self._adjust_period_for_feasibility(
+                    dag, timer_i, utilization, selected_period
+                )
             dag.nodes[timer_i]["period"] = selected_period
             exec = int(utilization * selected_period)
             if exec == 0:
                 self._output_round_up_warning("Execution time", "Utilization")
                 exec = 1
             dag.nodes[timer_i]["execution_time"] = exec
+
+    def _adjust_period_for_feasibility(
+        self, dag: nx.DiGraph, timer_i: int, utilization: float, selected_period: int
+    ) -> int:
+        """Grow 'selected_period' (up to the configured maximum) so that the
+        downstream critical path still fits once 'timer_i' consumes
+        'utilization' of the period, preserving the target utilization
+        exactly (i.e. the execution time is still 'utilization * period').
+
+        Parameters
+        ----------
+        dag : nx.DiGraph
+            DAG. Non-timer-driven nodes reachable from 'timer_i' must
+            already have 'execution_time' set (see 'set').
+        timer_i : int
+            Timer-driven node whose period is being chosen.
+        utilization : float
+            Target utilization for 'timer_i', already known to be < 1.
+        selected_period : int
+            Period randomly drawn from the configured range.
+
+        Returns
+        -------
+        int
+            'selected_period', or a larger value (capped at the configured
+            maximum period for 'timer_i') if that was needed to keep the
+            downstream critical path length within reach of the deadline.
+
+        Notes
+        -----
+        This is a heuristic sizing based on execution times only: any
+        'Communication time' added by a later property setter is not yet
+        known here, so a residual chance of infeasibility remains. The
+        feasibility check in 'DeadlineSetter' (which runs after
+        'Communication time' has been set) is the authoritative guard and
+        must stay in place regardless of this adjustment.
+
+        """
+        dag.nodes[timer_i]["execution_time"] = 0
+        l_rest = max(
+            (
+                Util.get_critical_path_length(dag, timer_i, exit_i)
+                for exit_i in Util.get_sink_nodes(dag)
+            ),
+            default=0,
+        )
+        del dag.nodes[timer_i]["execution_time"]
+
+        if l_rest == 0:
+            return selected_period
+
+        required_period = math.ceil(l_rest / (1 - utilization))
+        period_cap = self._period_cap(dag, timer_i)
+        return max(selected_period, min(required_period, period_cap))
+
+    def _period_cap(self, dag: nx.DiGraph, node_i: int) -> int:
+        if self._config.source_node_period and node_i in Util.get_source_nodes(dag):
+            return Util.get_option_max(self._config.source_node_period)
+        if self._config.sink_node_period and node_i in Util.get_sink_nodes(dag):
+            return Util.get_option_max(self._config.sink_node_period)
+        return Util.get_option_max(self._config.period)
 
     def _set_by_total_utilization_chain(self, chain_based_dag: ChainBasedDAG) -> None:
         timer_driven_nodes = self._get_timer_driven_nodes(chain_based_dag)

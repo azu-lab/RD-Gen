@@ -89,6 +89,12 @@ class ConfigValidator:
                         {Regex("Random", flags=re.I): Or([float], str)},
                         {Regex("Combination", flags=re.I): Or([float], str)},
                     ),
+                    Optional(Regex("Auto-fit cycle", flags=re.I)): bool,
+                    Optional(Regex("Whole-DAG utilization", flags=re.I)): Or(
+                        {Regex("Fixed", flags=re.I): float},
+                        {Regex("Random", flags=re.I): Or([float], str)},
+                        {Regex("Combination", flags=re.I): Or([float], str)},
+                    ),
                 },
                 Optional(Regex("Additional properties", flags=re.I)): {
                     Optional(Regex("Node properties", flags=re.I)): {

@@ -38,7 +38,9 @@ class DeadlineSetter(PropertySetterBase):
         The relationship enforced between the deadline D and the period T
         depends on 'Deadline mode':
 
-        - 'Implicit': D = T.
+        - 'Implicit': D = T. Raises BuildFailedError if L > T (i.e. the
+          critical path alone already exceeds the period, making the
+          instance infeasible for any scheduler regardless of D).
         - 'Constrained': D is drawn uniformly from (L, T], where L is the
           critical path length. Raises BuildFailedError if L >= T (i.e. the
           critical path alone already exceeds the period).
@@ -79,6 +81,11 @@ class DeadlineSetter(PropertySetterBase):
             period = reaching_periods.pop()
 
             if Util.ambiguous_equals(mode, "implicit"):
+                if max_cp_len > period:
+                    raise BuildFailedError(
+                        f"Implicit deadline is infeasible at sink {exit_i}: "
+                        f"critical path length {max_cp_len} > period {period}."
+                    )
                 dag.nodes[exit_i]["end_to_end_deadline"] = period
             else:  # Constrained
                 if max_cp_len >= period:
@@ -94,41 +101,10 @@ class DeadlineSetter(PropertySetterBase):
     def _get_cp_len(dag: nx.DiGraph, source: int, exit: int) -> int:
         """Get critical path length from 'source' to 'exit'.
 
-        Parameters
-        ----------
-        dag : nx.DiGraph
-            DAG.
-        source : int
-            Index of path source.
-        exit : int
-            Index of path exit.
-
-        Returns
-        -------
-        int
-            Critical path length. 0 if 'exit' is not reachable from 'source'.
-
-        Notes
-        -----
-        If the edge has 'Communication time',
-        'Communication time' is also included in critical path length.
-
-        Computed with a topological-order dynamic program (O(V+E)) rather
-        than enumerating all simple paths (nx.all_simple_paths), whose
-        count can be exponential in the size of the DAG, especially once
-        branching constructs are present.
+        Thin wrapper kept for backward compatibility; the implementation
+        now lives in 'Util.get_critical_path_length' so it can be shared
+        with 'UtilizationSetter' (used there to size periods that keep a
+        target utilization feasible; see 'Auto-adjust period').
 
         """
-        longest_from_source = {source: dag.nodes[source]["execution_time"]}
-        for node in nx.topological_sort(dag):
-            if node not in longest_from_source or node == exit:
-                continue
-            for succ in dag.successors(node):
-                edge_len = dag.nodes[succ]["execution_time"]
-                if dag.edges[node, succ].get("communication_time"):
-                    edge_len += dag.edges[node, succ]["communication_time"]
-                candidate = longest_from_source[node] + edge_len
-                if candidate > longest_from_source.get(succ, 0):
-                    longest_from_source[succ] = candidate
-
-        return longest_from_source.get(exit, 0)
+        return Util.get_critical_path_length(dag, source, exit)

@@ -81,6 +81,28 @@ class TestRandomSetter:
         setter.set(dag)
         assert dag.nodes[6]["end_to_end_deadline"] == 100
 
+    def test_set_implicit_boundary_equal_is_feasible(self, mocker):
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "deadline_mode", "Implicit")
+        setter = DeadlineSetter(config_mock)
+
+        dag = create_fan_in_dag()
+        dag.nodes[0]["period"] = 5  # equal to critical path length -> still feasible (L == D)
+
+        setter.set(dag)
+        assert dag.nodes[6]["end_to_end_deadline"] == 5
+
+    def test_set_implicit_infeasible_raises(self, mocker):
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "deadline_mode", "Implicit")
+        setter = DeadlineSetter(config_mock)
+
+        dag = create_fan_in_dag()
+        dag.nodes[0]["period"] = 4  # less than critical path length (5) -> infeasible
+
+        with pytest.raises(BuildFailedError):
+            setter.set(dag)
+
     def test_set_constrained(self, mocker):
         config_mock = mocker.Mock(spec=Config)
         mocker.patch.object(config_mock, "deadline_mode", "Constrained")

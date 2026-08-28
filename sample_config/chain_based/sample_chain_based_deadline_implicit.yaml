@@ -1,0 +1,46 @@
+Seed: 0
+Number of DAGs: 50
+
+Graph structure:
+  Generation method: "Chain-based"
+  Number of chains:
+    Fixed: 1
+  Main sequence length:
+    Random: (2, 7, 1)
+  Number of sub sequences:
+    Random: (1, 3, 1)  # 1～3のいずれか（3以下）  # No sub-chains: keeps a single source node per DAG so every
+              # node reaching a sink shares one well-defined period
+              # (required by Implicit/Constrained deadline modes).
+  Merge chains:
+    Number of sink nodes:
+      Fixed: 1
+    Middle of chain: False
+    Sink node: True
+
+Properties:
+  Execution time:  # Needed for non-source nodes (only source nodes get exec time from utilization when Periodic type is 'Entry')
+    Random: (1, 50, 1)
+  Multi-rate:
+    Periodic type: 'Entry'  # Implicit/Constrained requires 'Entry' (not 'Chain')
+    Source node period:
+      Random: [50, 100]
+    Total utilization:  # Kept small: with a single Entry-period node, this
+      Fixed: 0.05        # utilization applies to that one node alone, so it
+                         # must leave headroom under the period for the rest
+                         # of the chain to stay realistically schedulable.
+  End-to-end deadline:
+    Deadline mode: 'Implicit'  # D = T (deadline == period)
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    JSON: False
+    XML: False
+    DOT: False
+  Figure:
+    Draw legend: False
+    PNG: False
+    SVG: False
+    EPS: False
+    PDF: True
