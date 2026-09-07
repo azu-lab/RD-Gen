@@ -1,20 +1,23 @@
-Seed: 2015
+# Conditional DAGs (cDAG) calibrated to the Melani 2015 generator
+# (p_cond 0.4, n_cond 2, recursion depth 3, WCET ~ U[1, 100]): about 33 nodes and
+# 2.5 branching constructs per DAG, nesting depth <= 3.
+Seed: 4001
 Number of DAGs: 5
 
 Graph structure:
   Generation method: "G(n, p)"
   Number of nodes:
-    Fixed: 10
+    Fixed: 15
   Number of source nodes:
     Fixed: 1
   Number of sink nodes:
     Fixed: 1
   Probability of edge existence:
-    Fixed: 0.3
+    Fixed: 0.15
   Ensure weakly connected: True
   Branching:
     Probability of branching:
-      Fixed: 0.4         # Melani p_cond
+      Fixed: 0.1         # expected constructs per DAG ~ p_b * (|V| - 2) at depth 0
     Maximum nesting depth:
       Fixed: 3           # Melani recursion depth
     Maximum branches:
@@ -24,7 +27,7 @@ Graph structure:
 
 Properties:
   Execution time:
-    Random: [1, 100]     # Melani WCET ~ U[1, 100]
+    Random: (1, 100, 1)  # Melani WCET ~ U[1, 100]
 
 Output formats:
   Naming of combination directory: "Abbreviation"

@@ -1,38 +1,41 @@
-Seed: 2025
+# Probabilistic DAGs (pDAG) reproducing the Zhao 2025 setting: one period per DAG,
+# three probabilistic structures on average (|Theta| = 3), k = 3 branches each,
+# firing probabilities from normalised U(0, 1), and U = 0.5 measured on the
+# heaviest branch of every structure (Zhao 2025, Eq. (10)).
+Seed: 5001
 Number of DAGs: 5
 
 Graph structure:
   Generation method: "G(n, p)"
   Number of nodes:
-    Fixed: 20
+    Random: (20, 40, 10)   # Zhao: 5-8 layers x 2-6 nodes
   Number of source nodes:
     Fixed: 1
   Number of sink nodes:
     Fixed: 1
   Probability of edge existence:
-    Fixed: 0.2           # Zhao connection probability
+    Fixed: 0.2             # Zhao connection probability
   Ensure weakly connected: True
   Branching:
     Probability of branching:
-      Fixed: 0.4         # default psr
+      Fixed: 0.1           # ~3 structures per DAG
     Maximum nesting depth:
-      Fixed: 2
+      Fixed: 1             # Zhao branches are non-conditional sub-graphs
     Maximum branches:
-      Fixed: 3           # Zhao k=3
+      Fixed: 3             # Zhao k = 3 exactly (both bounds)
+    Minimum branches:
+      Fixed: 3
     Firing: probabilistic
     Probability distribution: uniform-normalize
+    Accounting: max-branch # U and CCR count the heaviest branch of each structure
 
 Properties:
   Multi-rate:
-    Periodic type: 'Entry'
+    Periodic type: DAG     # one period T for the whole DAG (graph attribute + source node)
     Period:
-      Random: [1, 1400]  # Zhao T ~ U[1, 1400]
-    Source node period:
-      Fixed: 100
+      Random: (1000, 1400000, 1000)  # Zhao T ~ U{1, ..., 1400} in units of 10^-3
     Total utilization:
-      Fixed: 0.5         # Zhao fixed 50%
-    Maximum utilization:
-      Fixed: 1.0
+      Fixed: 0.5           # Zhao: workload = 0.5 T
 
 Output formats:
   Naming of combination directory: "Abbreviation"

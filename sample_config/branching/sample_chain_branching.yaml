@@ -1,0 +1,55 @@
+# Chain-based multi-rate DAG with branching constructs: chain heads stay regular and
+# timer-driven ('Periodic type: Chain'), nodes created by a replacement inherit the
+# chain_id of the replaced node, and each chain's aggregate execution time follows
+# 'Accounting'.
+Seed: 7
+Number of DAGs: 5
+
+Graph structure:
+  Generation method: "Chain-based"
+  Number of chains:
+    Fixed: 3
+  Main sequence length:
+    Random: [4, 5, 6]
+  Number of sub sequences:
+    Fixed: 1
+  Vertically link chains:
+    Number of source nodes:
+      Fixed: 2
+    Main sequence tail: True
+    Sub sequence tail: True
+  Merge chains:
+    Number of sink nodes:
+      Fixed: 1
+    Middle of chain: False
+    Sink node: True
+  Branching:
+    Probability of branching:
+      Fixed: 0.3
+    Maximum nesting depth:
+      Fixed: 1
+    Maximum branches:
+      Fixed: 3
+    Sub-chain length:
+      Random: [1, 2]       # length of each branch body (default: remaining chain length)
+    Firing: probabilistic
+    Probability distribution: dirichlet
+    Accounting: expected   # C_Gamma = sum of marginal-probability-weighted WCETs
+
+Properties:
+  Multi-rate:
+    Periodic type: 'Chain'
+    Period:
+      Random: [10000, 20000, 30000]
+    Total utilization:
+      Fixed: 1.5
+    Maximum utilization:
+      Fixed: 1.0
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+  Figure:
+    Draw legend: False
+    PDF: True
