@@ -1,6 +1,7 @@
 name: pytest
 
 on:
+  push:
   pull_request:
 
 jobs:
@@ -8,16 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Install test packages
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
         run: |
-          sudo apt install -y python3-pytest-mock
-        shell: bash
-
-      - name: Install dependent packages
-        run: | 
-          python3 -m pip install networkx numpy PyYAML schema
+          sudo apt-get install -y graphviz
+          python3 -m pip install -r requirements.txt pytest pytest-mock
 
       - name: Run pytest
         run: |
