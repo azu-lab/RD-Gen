@@ -1,78 +1,57 @@
-from typing import Dict, List, Set
+from collections import defaultdict
+from typing import Callable, Dict, Set
 
 import networkx as nx
 
-
-class BranchingConstraintError(Exception):
-    """Raised when a DAG violates Melani Def III.1 or Zhao p-DAG constraints."""
+from .branching_structure import BranchingConstraintError, BranchingStructure
 
 
 class BranchingValidator:
-    """Verify cDAG / pDAG structural constraints.
+    """Verify cDAG / pDAG structural constraints from the output graph alone.
 
     Melani 2015 Def III.1 (cDAG):
+      - The graph is acyclic.
       - Each branch_unit_id has exactly one v_ent and one v_ext.
-      - branch_id values on v_ent out-edges are {0, 1, ..., k-1}.
-      - For each unit u, the branch bodies B_j(u) are pairwise disjoint.
+      - branch_id values on v_ent out-edges are {0, 1, ..., k-1} with k >= 2.
+      - Branch bodies of one unit are pairwise disjoint and properly nested in
+        the enclosing branch.
+      - No edge enters a body except v_ent -> head, and no edge leaves a body
+        except into v_ext; every predecessor of v_ext lies in a body.
+      - v_ent dominates and v_ext post-dominates every body node (checked
+        independently with NetworkX dominator trees).
 
     Zhao 2025 p-DAG (only when firing == "probabilistic"):
-      - Sum of firing_prob across one unit equals 1 (within 1e-9).
-      - All firing_prob values are in [0, 1].
-      - branch_unit_id is unique per (v_ent, v_ext) pair (already implied by the
-        Melani check, included here for explicitness).
+      - Every v_ent out-edge carries firing_prob in [0, 1].
+      - firing_prob values of one unit sum to 1 (within 1e-9).
     """
 
     _TOLERANCE = 1e-9
 
     @staticmethod
-    def assert_valid(dag: nx.DiGraph, firing: str) -> None:
-        BranchingValidator._check_melani_def_iii_1(dag)
+    def assert_valid(dag: nx.DiGraph, firing: str) -> BranchingStructure:
+        if not nx.is_directed_acyclic_graph(dag):
+            raise BranchingConstraintError("graph contains a cycle")
+        structure = BranchingStructure(dag)
+        BranchingValidator._check_branches(dag, structure)
+        if structure.units:
+            BranchingValidator._check_dominance(dag, structure)
         if firing == "probabilistic":
-            BranchingValidator._check_zhao_p_dag(dag)
+            BranchingValidator._check_firing_probabilities(structure)
+        return structure
 
     @staticmethod
-    def _collect_units(dag: nx.DiGraph) -> Dict[int, Dict[str, List[int]]]:
-        units: Dict[int, Dict[str, List[int]]] = {}
-        for n, attr in dag.nodes(data=True):
-            t = attr.get("node_type", "regular")
-            if t not in ("v_ent", "v_ext"):
-                continue
-            uid = attr.get("branch_unit_id")
-            if uid is None:
-                raise BranchingConstraintError(
-                    f"node {n} of type {t} has no branch_unit_id"
-                )
-            units.setdefault(uid, {"v_ent": [], "v_ext": []})[t].append(n)
-        return units
-
-    @staticmethod
-    def _check_melani_def_iii_1(dag: nx.DiGraph) -> None:
-        units = BranchingValidator._collect_units(dag)
-        for uid, members in units.items():
-            srcs, snks = members["v_ent"], members["v_ext"]
-            if len(srcs) != 1 or len(snks) != 1:
-                raise BranchingConstraintError(
-                    f"unit {uid} must have exactly one v_ent and one v_ext; "
-                    f"got v_ent={srcs}, v_ext={snks}"
-                )
-            vent, vext = srcs[0], snks[0]
-            out_edges = list(dag.out_edges(vent, data=True))
-            raw_ids = [d.get("branch_id") for _, _, d in out_edges]
-            if any(bid is None for bid in raw_ids):
-                raise BranchingConstraintError(
-                    f"unit {uid}: one or more v_ent out-edges missing branch_id"
-                )
-            branch_ids = sorted(raw_ids)
-            if branch_ids != list(range(len(out_edges))):
+    def _check_branches(dag: nx.DiGraph, s: BranchingStructure) -> None:
+        for uid in s.units:
+            vent, vext = s.vent[uid], s.vext[uid]
+            branch_ids = sorted(s.heads[uid])
+            if len(branch_ids) < 2:
+                raise BranchingConstraintError(f"unit {uid} has fewer than two branches")
+            if branch_ids != list(range(len(branch_ids))):
                 raise BranchingConstraintError(
                     f"unit {uid}: branch_id on v_ent out-edges must be "
                     f"{{0, ..., k-1}}; got {branch_ids}"
                 )
-
-            bodies: List[Set[int]] = []
-            for _, succ, _ in out_edges:
-                body = BranchingValidator._branch_body(dag, succ, vext)
-                bodies.append(body)
+            bodies = [s.bodies[uid][b] for b in branch_ids]
             for i in range(len(bodies)):
                 for j in range(i + 1, len(bodies)):
                     overlap = bodies[i] & bodies[j]
@@ -80,39 +59,91 @@ class BranchingValidator:
                         raise BranchingConstraintError(
                             f"unit {uid}: branches {i} and {j} share vertices {overlap}"
                         )
+            all_bodies: Set[int] = set().union(*bodies)
+            for bid, body in zip(branch_ids, bodies):
+                if not body:
+                    raise BranchingConstraintError(f"unit {uid}: branch {bid} is empty")
+                for v in body:
+                    for p in dag.predecessors(v):
+                        if p not in body and p != vent:
+                            raise BranchingConstraintError(
+                                f"unit {uid}: edge ({p}, {v}) enters branch {bid} "
+                                "from outside"
+                            )
+                if not any(vext in dag.successors(v) for v in body):
+                    raise BranchingConstraintError(
+                        f"unit {uid}: branch {bid} never reaches v_ext {vext}"
+                    )
+            for p in dag.predecessors(vext):
+                if p not in all_bodies:
+                    raise BranchingConstraintError(
+                        f"unit {uid}: edge ({p}, {vext}) reaches v_ext from outside the branches"
+                    )
 
     @staticmethod
-    def _branch_body(dag: nx.DiGraph, start: int, vext: int) -> Set[int]:
-        """All vertices reachable from `start` without traversing `vext`."""
-        if start == vext:
-            return set()
-        body: Set[int] = {start}
-        stack = [start]
+    def _check_dominance(dag: nx.DiGraph, s: BranchingStructure) -> None:
+        dominates = BranchingValidator._dominance_test(dag, reverse=False)
+        post_dominates = BranchingValidator._dominance_test(dag, reverse=True)
+        for uid in s.units:
+            vent, vext = s.vent[uid], s.vext[uid]
+            body_nodes = set().union(*s.bodies[uid].values())
+            for v in body_nodes | {vext}:
+                if not dominates(vent, v):
+                    raise BranchingConstraintError(
+                        f"unit {uid}: v_ent {vent} does not dominate node {v}"
+                    )
+            for v in body_nodes | {vent}:
+                if not post_dominates(vext, v):
+                    raise BranchingConstraintError(
+                        f"unit {uid}: v_ext {vext} does not post-dominate node {v}"
+                    )
+
+    @staticmethod
+    def _dominance_test(dag: nx.DiGraph, reverse: bool) -> Callable[[int, int], bool]:
+        """Return ``test(a, v)`` = "a (post-)dominates v", via NetworkX dominator trees.
+
+        A virtual root above all sources (sinks when ``reverse``) turns the DAG into
+        a single-entry flow graph; the tree is then labelled with Euler-tour
+        intervals so that each ancestor test costs O(1).
+        """
+        h = nx.DiGraph()
+        h.add_nodes_from(dag.nodes())
+        h.add_edges_from((b, a) if reverse else (a, b) for a, b in dag.edges())
+        root = object()
+        roots = [n for n in h.nodes() if h.in_degree(n) == 0]
+        h.add_edges_from((root, n) for n in roots)
+        idom = nx.immediate_dominators(h, root)
+        tree_children: Dict[object, list] = defaultdict(list)
+        for v, d in idom.items():
+            if v != root:
+                tree_children[d].append(v)
+        tin: Dict[object, int] = {}
+        tout: Dict[object, int] = {}
+        clock = 0
+        stack = [(root, False)]
         while stack:
-            u = stack.pop()
-            for v in dag.successors(u):
-                if v == vext or v in body:
-                    continue
-                body.add(v)
-                stack.append(v)
-        return body
+            v, leaving = stack.pop()
+            if leaving:
+                tout[v] = clock
+            else:
+                tin[v] = clock
+                stack.append((v, True))
+                stack.extend((c, False) for c in tree_children[v])
+            clock += 1
+        return lambda a, v: tin[a] <= tin[v] and tout[v] <= tout[a]
 
     @staticmethod
-    def _check_zhao_p_dag(dag: nx.DiGraph) -> None:
-        units = BranchingValidator._collect_units(dag)
-        for uid in units.keys():
-            vent = units[uid]["v_ent"][0]
+    def _check_firing_probabilities(s: BranchingStructure) -> None:
+        for uid in s.units:
             total = 0.0
-            for _, _, d in dag.out_edges(vent, data=True):
-                p = d.get("firing_prob")
+            for bid, p in s.firing_prob[uid].items():
                 if p is None:
                     raise BranchingConstraintError(
-                        f"unit {uid}: out-edge of v_ent {vent} missing firing_prob"
+                        f"unit {uid}: out-edge of v_ent {s.vent[uid]} (branch {bid}) "
+                        "missing firing_prob"
                     )
                 if not (0.0 <= p <= 1.0):
-                    raise BranchingConstraintError(
-                        f"unit {uid}: firing_prob {p} out of [0, 1]"
-                    )
+                    raise BranchingConstraintError(f"unit {uid}: firing_prob {p} out of [0, 1]")
                 total += p
             if abs(total - 1.0) > BranchingValidator._TOLERANCE:
                 raise BranchingConstraintError(

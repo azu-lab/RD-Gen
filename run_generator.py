@@ -73,6 +73,7 @@ def main(config_path, dest_dir):
 
         dag_exporter = DAGExporter(config)
         # Loop for each dag.
+        retries: List[int] = []
         for i, dag in enumerate(dag_iter):
             try:
                 # Set all properties.
@@ -80,8 +81,21 @@ def main(config_path, dest_dir):
                     setter.set(dag)
                 # Export DAG.
                 dag_exporter.export(dag, combo_dest_dir, f"dag_{i}")
+                retries.append(dag.graph.get("augmentation_retries", 0))
             except BuildFailedError as e:
                 logger.warning(e.message)
+
+        # Instances whose augmentation failed the structural verification 100 times
+        # are discarded, so fewer DAGs than requested may be exported.
+        stats = {
+            "requested": config.number_of_dags,
+            "exported": len(retries),
+            "discarded": dag_builder.num_discarded,
+            "augmentation_retries_total": sum(retries),
+            "augmentation_retries_max": max(retries, default=0),
+        }
+        with open(f"{combo_dest_dir}/generation_stats.yaml", "w") as f:
+            yaml.dump(stats, f)
 
 
 def option_parser():

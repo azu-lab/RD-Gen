@@ -91,3 +91,46 @@ class TestRandomSetter:
             exec = dag.nodes[node_i]["execution_time"]
             assert isinstance(exec, int)
             assert exec == 1
+
+
+def test_ccr_follows_branching_accounting(mocker):
+    import random
+    from src.branching_structure import BranchingStructure
+    from tests.test_branching_structure import nested_pdag
+
+    random.seed(0)
+    config_mock = mocker.Mock(spec=Config)
+    mocker.patch.object(config_mock, "ccr", 1.0)
+    mocker.patch.object(config_mock, "execution_time", list(range(1000, 10000, 1000)))
+    mocker.patch.object(config_mock, "communication_time", None)
+    mocker.patch.object(config_mock, "branching_accounting", "max-branch")
+    dag, _ = nested_pdag()
+    # Insert regular nodes so that regular-to-regular edges exist at every level.
+    for before, new, after in ((0, 11, 1), (3, 12, 6), (7, 13, 9)):
+        attrs = dict(dag.edges[before, after])
+        dag.remove_edge(before, after)
+        dag.add_node(new, node_type="regular", execution_time=1)
+        dag.add_edge(before, new)
+        dag.add_edge(new, after, **attrs)
+    CCRSetter(config_mock).set(dag)
+
+    s = BranchingStructure(dag)
+    execs = {n: a["execution_time"] for n, a in dag.nodes(data=True)}
+    comms = {(u, v): d["communication_time"] for u, v, d in dag.edges(data=True)
+             if "communication_time" in d}
+    assert set(comms) == {(0, 11), (3, 12), (7, 13)}
+    achieved = s.aggregate(comms, "max-branch") / s.aggregate(execs, "max-branch")
+    assert abs(achieved - 1.0) <= 0.01
+
+
+def test_ccr_setter_without_regular_edges_does_not_fail(mocker):
+    from tests.test_branching_structure import nested_pdag
+
+    config_mock = mocker.Mock(spec=Config)
+    mocker.patch.object(config_mock, "ccr", 1.0)
+    mocker.patch.object(config_mock, "execution_time", [10, 20])
+    mocker.patch.object(config_mock, "communication_time", None)
+    mocker.patch.object(config_mock, "branching_accounting", "all")
+    dag, _ = nested_pdag()  # every edge touches a v_ent or v_ext
+    CCRSetter(config_mock).set(dag)
+    assert not any("communication_time" in d for _, _, d in dag.edges(data=True))

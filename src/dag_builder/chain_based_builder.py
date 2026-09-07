@@ -81,8 +81,8 @@ class ChainBasedDAG(nx.DiGraph):
     def __init__(self, chains: List[Chain]) -> None:
         super().__init__()
         self.chains = chains
-        for chain in self.chains:
-            self.add_nodes_from(chain.nodes)
+        for chain_id, chain in enumerate(self.chains):
+            self.add_nodes_from(chain.nodes, chain_id=chain_id)
             self.add_edges_from(chain.edges)
 
     @property
@@ -104,8 +104,9 @@ class ChainBasedDAG(nx.DiGraph):
             Allow link in sub sequence tails.
 
         """
-        # Determine source option
-        src_chains = set(random.sample(self.chains, number_of_source_nodes))
+        # Determine source option (lists, not sets: Chain objects hash by identity,
+        # so set iteration order would differ between processes).
+        src_chains = random.sample(self.chains, number_of_source_nodes)
         src_option = []
         for chain in src_chains:
             if link_main_tail:
@@ -114,8 +115,7 @@ class ChainBasedDAG(nx.DiGraph):
                 src_option += chain.sub_sequence_tails
 
         # Determine targets
-        tgt_chains = set(self.chains) - src_chains
-        targets = [chain.head for chain in tgt_chains]
+        targets = [chain.head for chain in self.chains if chain not in src_chains]
 
         # Add edges
         for tgt_i in targets:
@@ -143,10 +143,10 @@ class ChainBasedDAG(nx.DiGraph):
 
         """
         selected_exits = set(random.sample(Util.get_sink_nodes(self), number_of_sink_nodes))
-        sources = set(Util.get_sink_nodes(self)) - set(selected_exits)
+        sources = [n for n in Util.get_sink_nodes(self) if n not in selected_exits]
 
         # Determine target option
-        tgt_option = set(self.nodes()) - set(Util.get_source_nodes(self)) - sources
+        tgt_option = set(self.nodes()) - set(Util.get_source_nodes(self)) - set(sources)
         if not merge_exit:
             tgt_option -= selected_exits
         if not merge_middle:

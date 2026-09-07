@@ -80,3 +80,66 @@ def test_no_branching_dag_passes_trivially():
     g.add_edge(0, 1)
     BranchingValidator.assert_valid(g, "deterministic")
     BranchingValidator.assert_valid(g, "probabilistic")
+
+
+# ---- extended checks (acyclicity, entry edges, dominance, nesting) ----
+
+from tests.test_branching_structure import nested_pdag  # noqa: E402
+
+
+def test_nested_pdag_passes_and_returns_structure():
+    g, _ = nested_pdag()
+    s = BranchingValidator.assert_valid(g, "probabilistic")
+    assert s.nesting_depth == 2
+
+
+def test_cycle_is_rejected():
+    g, _ = nested_pdag()
+    g.add_edge(10, 0)
+    with pytest.raises(BranchingConstraintError, match="cycle"):
+        BranchingValidator.assert_valid(g, "probabilistic")
+
+
+def test_edge_entering_branch_body_is_rejected():
+    g, _ = nested_pdag()
+    g.add_edge(0, 2)
+    with pytest.raises(BranchingConstraintError, match="enters branch"):
+        BranchingValidator.assert_valid(g, "probabilistic")
+
+
+def test_edge_bypassing_body_into_v_ext_is_rejected():
+    g, _ = nested_pdag()
+    g.add_edge(0, 5)
+    with pytest.raises(BranchingConstraintError, match="from outside the branches"):
+        BranchingValidator.assert_valid(g, "probabilistic")
+
+
+def test_branch_not_reaching_v_ext_is_rejected():
+    g, _ = nested_pdag()
+    g.remove_edge(2, 5)
+    with pytest.raises(BranchingConstraintError, match="never reaches v_ext"):
+        BranchingValidator.assert_valid(g, "probabilistic")
+
+
+def test_unit_with_single_branch_is_rejected():
+    g, _ = nested_pdag()
+    g.remove_edge(6, 8)
+    g.remove_node(8)
+    with pytest.raises(BranchingConstraintError, match="fewer than two branches"):
+        BranchingValidator.assert_valid(g, "probabilistic")
+
+
+def test_duplicate_v_ent_for_unit_is_rejected():
+    g, _ = nested_pdag()
+    g.nodes[6]["branch_unit_id"] = 0
+    with pytest.raises(BranchingConstraintError):
+        BranchingValidator.assert_valid(g, "probabilistic")
+
+
+def test_dominance_test_independent_of_structure():
+    """v_ent must dominate and v_ext post-dominate: checked on a plain diamond."""
+    g = nx.DiGraph([(0, 1), (0, 2), (1, 3), (2, 3), (3, 4)])
+    dominates = BranchingValidator._dominance_test(g, reverse=False)
+    post_dominates = BranchingValidator._dominance_test(g, reverse=True)
+    assert dominates(0, 3) and dominates(0, 4) and not dominates(1, 3)
+    assert post_dominates(3, 1) and post_dominates(4, 0) and not post_dominates(1, 0)

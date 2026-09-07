@@ -1,14 +1,19 @@
+from logging import getLogger
 from typing import Generator
 
 import networkx as nx
 
 from ..common import Util
 from ..config import Config
+from ..exceptions import BuildFailedError
 from .branching_augmentor import BranchingAugmentor
 from .chain_based_builder import ChainBasedBuilder
 from .dag_builder_base import DAGBuilderBase
 from .fan_in_fan_out_builder import FanInFanOutBuilder
 from .g_n_p_builder import GNPBuilder
+
+
+logger = getLogger(__name__)
 
 
 class _AugmentedBuilder(DAGBuilderBase):
@@ -18,6 +23,7 @@ class _AugmentedBuilder(DAGBuilderBase):
         self._max_try = 100
         self._augmentor = BranchingAugmentor(config)
         self._layout_hint = layout_hint
+        self.num_discarded = 0
 
     def _validate_config(self, config: Config):
         pass  # base builder already validated
@@ -28,7 +34,12 @@ class _AugmentedBuilder(DAGBuilderBase):
             # ChainBasedDAG cannot be copied via nx default path (constructor
             # requires positional args), so normalise to a plain DiGraph first.
             plain = nx.DiGraph(g)
-            yield self._augmentor.augment(plain, self._layout_hint)
+            try:
+                yield self._augmentor.augment(plain, self._layout_hint)
+            except BuildFailedError as e:
+                # The host DAG is discarded; the caller reports num_discarded.
+                self.num_discarded += 1
+                logger.warning(e.message)
 
 
 class DAGBuilderFactory:

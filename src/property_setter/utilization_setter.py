@@ -5,9 +5,9 @@ from typing import List, Optional
 
 import networkx as nx
 
+from ..branching_structure import BranchingStructure
 from ..common import Util
 from ..config import Config
-from ..dag_builder import ChainBasedDAG
 from .property_setter_base import PropertySetterBase
 
 logger = getLogger(__name__)
@@ -23,6 +23,19 @@ class UtilizationSetter(PropertySetterBase):
     (i.e., the range of 'Execution time' specified is ignored).
     The minimum value of 'Execution time' is 1 and never 0.
 
+    'Periodic type' selects the timer-driven nodes and the quantity that
+    'Total utilization' controls:
+
+    - All / IO / Entry: every timer-driven node gets its own period and a
+      UUniFast share of the utilization.
+    - Chain: every chain head gets a period; the chain's aggregate execution
+      time C_Gamma = u_Gamma * T_Gamma is split over the chain's nodes.
+    - DAG: one period T shared by the whole DAG (stored on the source nodes and
+      in ``dag.graph["period"]``); the aggregate execution time U * T is split
+      over all regular nodes.
+
+    For chains and DAGs that contain branching constructs the aggregate follows
+    'Accounting' (all / expected / max-branch, see BranchingStructure.aggregate).
     """
 
     def __init__(self, config: Config) -> None:
@@ -37,6 +50,13 @@ class UtilizationSetter(PropertySetterBase):
                 "but 'Execution time' is determined based on utilization and period. "
                 "So, the range of 'Execution time' entered is ignored."
             )
+        if Util.ambiguous_equals(config.periodic_type, "DAG") and (
+            config.source_node_period or config.sink_node_period
+        ):
+            logger.warning(
+                "'Periodic type: DAG' uses a single 'Period' for the whole DAG; "
+                "'Source node period' and 'Sink node period' are ignored."
+            )
 
     def set(self, dag: nx.DiGraph) -> None:
         """Set period and execution time based on utilization.
@@ -46,21 +66,19 @@ class UtilizationSetter(PropertySetterBase):
         dag : nx.DiGraph
             DAG.
 
-        Notes
-        -----
-        If a chain-based DAG is entered 'Periodic type' is 'Chain',
-        the chain utilization is used (see https://par.nsf.gov/servlets/purl/10276465).
-
         """
+        periodic_type = self._config.periodic_type
         total_utilization = self._config.total_utilization
-        is_chain_case = isinstance(dag, ChainBasedDAG) and Util.ambiguous_equals(
-            self._config.periodic_type, "chain"
-        )
-        if is_chain_case:
+        if Util.ambiguous_equals(periodic_type, "chain"):
             if total_utilization:
                 self._set_by_total_utilization_chain(dag)
             else:
                 self._set_by_only_max_utilization_chain(dag)
+        elif Util.ambiguous_equals(periodic_type, "DAG"):
+            if total_utilization:
+                self._set_by_total_utilization_dag(dag)
+            else:
+                self._set_by_only_max_utilization_dag(dag)
         else:
             if total_utilization:
                 self._set_by_total_utilization(dag)
@@ -73,6 +91,8 @@ class UtilizationSetter(PropertySetterBase):
                 dag.nodes[node_i]["execution_time"] = Util.random_choice(
                     self._config.execution_time
                 )
+
+    # ---------- All / IO / Entry ----------
 
     def _set_by_total_utilization(self, dag: nx.DiGraph) -> None:
         """Set period and execution time based on total utilization.
@@ -98,26 +118,6 @@ class UtilizationSetter(PropertySetterBase):
                 self._output_round_up_warning("Execution time", "Utilization")
                 exec = 1
             dag.nodes[timer_i]["execution_time"] = exec
-
-    def _set_by_total_utilization_chain(self, chain_based_dag: ChainBasedDAG) -> None:
-        timer_driven_nodes = self._get_timer_driven_nodes(chain_based_dag)
-        utilizations = self._UUniFast(
-            Util.random_choice(self._config.total_utilization),
-            len(timer_driven_nodes),
-            self._config.maximum_utilization,
-        )
-
-        for chain in chain_based_dag.chains:
-            selected_period = self._choice_period(chain_based_dag, chain.head)
-            chain_based_dag.nodes[chain.head]["period"] = selected_period
-            utilization = utilizations[timer_driven_nodes.index(chain.head)]
-            sum_exec = int(utilization * selected_period)
-            exec_grouping = self._grouping(sum_exec, chain.number_of_nodes())  # type: ignore
-            if not exec_grouping:
-                self._output_round_up_warning("Execution time", "Utilization")
-                exec_grouping = [1 for _ in range(chain.number_of_nodes())]
-            for node_i, exec in zip(chain.nodes, exec_grouping):
-                chain_based_dag.nodes[node_i]["execution_time"] = exec
 
     def _set_by_only_max_utilization(self, dag: nx.DiGraph) -> None:
         """Set period and execution time randomly by only maximum utilization.
@@ -146,13 +146,28 @@ class UtilizationSetter(PropertySetterBase):
                 exec = int(utilization * selected_period)
             dag.nodes[node_i]["execution_time"] = exec
 
-    def _set_by_only_max_utilization_chain(self, chain_based_dag: ChainBasedDAG) -> None:
+    # ---------- Chain ----------
+
+    def _set_by_total_utilization_chain(self, dag: nx.DiGraph) -> None:
+        chains = Util.chains(dag)
+        utilizations = self._UUniFast(
+            Util.random_choice(self._config.total_utilization),
+            len(chains),
+            self._config.maximum_utilization,
+        )
+        for chain_nodes, utilization in zip(chains.values(), utilizations):
+            head = Util.chain_head(dag, chain_nodes)
+            selected_period = self._choice_period(dag, head)
+            dag.nodes[head]["period"] = selected_period
+            self._distribute_execution_time(dag, chain_nodes, int(utilization * selected_period))
+
+    def _set_by_only_max_utilization_chain(self, dag: nx.DiGraph) -> None:
         """Set period and execution time randomly by only maximum utilization.
 
         Parameters
         ----------
-        chain_based_dag: ChainBasedDAG
-            Chain-based DAG.
+        dag : nx.DiGraph
+            Chain-based DAG (nodes carry ``chain_id``).
 
         Notes
         -----
@@ -161,24 +176,90 @@ class UtilizationSetter(PropertySetterBase):
 
         """
         max_u = self._config.maximum_utilization or 1.0
-        for chain in chain_based_dag.chains:
-            selected_period = self._choice_period(chain_based_dag, chain.head)
-            chain_based_dag.nodes[chain.head]["period"] = selected_period
-            min_u = (
-                chain.number_of_nodes() / selected_period
-            )  # Ensure 'Execution time' is at least 1.
-            if min_u > max_u:
+        for chain_nodes in Util.chains(dag).values():
+            head = Util.chain_head(dag, chain_nodes)
+            selected_period = self._choice_period(dag, head)
+            dag.nodes[head]["period"] = selected_period
+            num_regular = len([n for n in chain_nodes if self._is_regular(dag, n)])
+            self._distribute_execution_time(
+                dag, chain_nodes, self._sample_aggregate(num_regular, selected_period, max_u)
+            )
+
+    # ---------- DAG ----------
+
+    def _set_by_total_utilization_dag(self, dag: nx.DiGraph) -> None:
+        selected_period = self._set_dag_period(dag)
+        utilization = self._UUniFast(
+            Util.random_choice(self._config.total_utilization),
+            1,
+            self._config.maximum_utilization,
+        )[0]
+        self._distribute_execution_time(
+            dag, list(dag.nodes()), int(utilization * selected_period)
+        )
+
+    def _set_by_only_max_utilization_dag(self, dag: nx.DiGraph) -> None:
+        selected_period = self._set_dag_period(dag)
+        max_u = self._config.maximum_utilization or 1.0
+        self._distribute_execution_time(
+            dag,
+            list(dag.nodes()),
+            self._sample_aggregate(len(Util.regular_nodes(dag)), selected_period, max_u),
+        )
+
+    def _set_dag_period(self, dag: nx.DiGraph) -> int:
+        selected_period = Util.random_choice(self._config.period)
+        dag.graph["period"] = selected_period
+        for source_i in Util.get_source_nodes(dag):
+            dag.nodes[source_i]["period"] = selected_period
+        return selected_period
+
+    # ---------- common ----------
+
+    @staticmethod
+    def _is_regular(dag: nx.DiGraph, node_i: int) -> bool:
+        return dag.nodes[node_i].get("node_type", "regular") == "regular"
+
+    def _sample_aggregate(self, num_regular: int, period: int, max_u: float) -> int:
+        """Aggregate execution time for u ~ U(min_u, max_u), each node needing C >= 1."""
+        min_u = num_regular / period
+        if min_u > max_u:
+            self._output_round_up_warning("Execution time", "Utilization")
+            return num_regular
+        return int(random.uniform(min_u, max_u) * period)
+
+    def _distribute_execution_time(self, dag: nx.DiGraph, nodes: List[int], target: int) -> None:
+        """Split ``target`` over the regular nodes of ``nodes`` so that the aggregate
+        selected by 'Accounting' equals ``target``.
+
+        'all' (or no branching construct among ``nodes``) partitions ``target``
+        randomly, so the sum is exact. 'expected' / 'max-branch' draw raw execution
+        times ('Execution time' if given, else U(0, 1)) and scale them so that the
+        aggregate hits ``target`` up to integer rounding.
+        """
+        regulars = [n for n in nodes if self._is_regular(dag, n)]
+        mode = self._config.branching_accounting
+        has_units = any(dag.nodes[n].get("node_type") == "v_ent" for n in nodes)
+        if mode == "all" or not has_units:
+            grouping = self._grouping(target, len(regulars))
+            if not grouping:
                 self._output_round_up_warning("Execution time", "Utilization")
-                exec_grouping = [1 for _ in range(chain.number_of_nodes())]
-            else:
-                utilization = random.uniform(min_u, max_u)
-                sum_exec = int(utilization * selected_period)
-                exec_grouping = self._grouping(sum_exec, chain.number_of_nodes())  # type: ignore
-                if not exec_grouping:
-                    self._output_round_up_warning("Execution time", "Utilization")
-                    exec_grouping = [1 for _ in range(chain.number_of_nodes())]
-            for node_i, exec in zip(chain.nodes, exec_grouping):
-                chain_based_dag.nodes[node_i]["execution_time"] = exec
+                grouping = [1 for _ in regulars]
+            for node_i, exec in zip(regulars, grouping):
+                dag.nodes[node_i]["execution_time"] = exec
+            return
+
+        if target < len(regulars):
+            self._output_round_up_warning("Execution time", "Utilization")
+        execution_time = self._config.execution_time
+        raw = {
+            n: (Util.random_choice(execution_time) if execution_time else random.random())
+            for n in regulars
+        }
+        aggregate = BranchingStructure(dag).aggregate(raw, mode)
+        factor = target / aggregate if aggregate > 0 else 0.0
+        for node_i in regulars:
+            dag.nodes[node_i]["execution_time"] = max(1, round(raw[node_i] * factor))
 
     @staticmethod
     def _UUniFast(total_u: float, n: int, max_u: Optional[float] = None) -> List[float]:
@@ -204,7 +285,7 @@ class UtilizationSetter(PropertySetterBase):
         -----
         - If both 'Total utilization' and 'Maximum utilization' cannot be met,
           ignore 'Total utilization' and set each utilization to 'Maximum utilization'.
-        - If $'total_u' / 'n' \simeq 'max_u'$,
+        - If $'total_u' / 'n' \\simeq 'max_u'$,
           it takes an enormous amount of time to distribute them.
           Therefore, if the number of attempts exceeds the threshold,
           the utilization is distributed equally.
@@ -255,7 +336,7 @@ class UtilizationSetter(PropertySetterBase):
 
         Notes
         -----
-        If $'total_u' / 'n' \simeq 'max_u'$,
+        If $'total_u' / 'n' \\simeq 'max_u'$,
         it takes an enormous amount of time to distribute them.
         Therefore, if the number of attempts exceeds the threshold,
         the utilization is distributed equally.
@@ -304,14 +385,14 @@ class UtilizationSetter(PropertySetterBase):
 
         """
         periodic_type = self._config.periodic_type
-        timer_driven_nodes: List[int]
         if Util.ambiguous_equals(periodic_type, "All"):
-            timer_driven_nodes = Util.regular_nodes(dag)
-        elif Util.ambiguous_equals(periodic_type, "IO"):
-            timer_driven_nodes = list(set(Util.get_source_nodes(dag) + Util.get_sink_nodes(dag)))
-        elif Util.ambiguous_equals(periodic_type, "Entry"):
-            timer_driven_nodes = Util.get_source_nodes(dag)
-        elif isinstance(dag, ChainBasedDAG) and Util.ambiguous_equals(periodic_type, "Chain"):
-            timer_driven_nodes = dag.chain_heads
-
-        return timer_driven_nodes
+            return Util.regular_nodes(dag)
+        if Util.ambiguous_equals(periodic_type, "IO"):
+            return list(set(Util.get_source_nodes(dag) + Util.get_sink_nodes(dag)))
+        if Util.ambiguous_equals(periodic_type, "Entry") or Util.ambiguous_equals(
+            periodic_type, "DAG"
+        ):
+            return Util.get_source_nodes(dag)
+        if Util.ambiguous_equals(periodic_type, "Chain"):
+            return [Util.chain_head(dag, nodes) for nodes in Util.chains(dag).values()]
+        raise ValueError(f"unknown 'Periodic type': {periodic_type}")

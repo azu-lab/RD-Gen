@@ -64,3 +64,16 @@ class TestGNPBuilder:
                 assert nx.is_directed_acyclic_graph(dag)
         except BuildFailedError:
             return 0
+
+
+def test_edge_probability_is_not_discretized():
+    """p = 0.4 must give ~40% edges (the old randint(1, 100) < 100p test gave 39%)."""
+    random.seed(11)
+    p, n, num_dags = 0.4, 100, 20
+    config_raw = get_config_raw(n, p)
+    config_raw["Number of DAGs"] = num_dags
+    config_raw["Graph structure"]["Ensure weakly connected"] = False
+    builder = DAGBuilderFactory.create_instance(Config(config_raw))
+    total_edges = sum(dag.number_of_edges() for dag in builder.build())
+    fraction = total_edges / (num_dags * n * (n - 1) / 2)
+    assert abs(fraction - p) < 0.005

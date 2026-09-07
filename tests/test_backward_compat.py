@@ -77,6 +77,6 @@ def test_existing_sample_pipeline(config, tmp_path):
     found = False
     for root, _, files in os.walk(dest):
         for fn in files:
-            if fn.endswith(".yaml") and fn != "combination_log.yaml":
+            if fn.startswith("dag_") and fn.endswith(".yaml"):
                 found = True
     assert found, f"No DAGs produced for {config}"

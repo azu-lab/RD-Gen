@@ -1,8 +1,11 @@
 import re
+from typing import List, Union
 
 from schema import Optional, Or, Regex, Schema
 
 from ..common import Util
+from ..exceptions import InfeasibleConfigError
+from .combo_generator import ComboGenerator
 
 
 class ConfigValidator:
@@ -49,10 +52,11 @@ class ConfigValidator:
                 },
                 Optional(Regex("Multi-rate", flags=re.I)): {
                     Regex("Periodic type", flags=re.I): Or(
-                        Regex("All", flags=re.I),
-                        Regex("IO", flags=re.I),
-                        Regex("Entry", flags=re.I),
-                        Regex("Chain", flags=re.I),
+                        Regex("^All$", flags=re.I),
+                        Regex("^IO$", flags=re.I),
+                        Regex("^Entry$", flags=re.I),
+                        Regex("^Chain$", flags=re.I),
+                        Regex("^DAG$", flags=re.I),
                     ),
                     Regex("Period", flags=re.I): Or(
                         {Regex("Fixed", flags=re.I): int},
@@ -195,6 +199,11 @@ class ConfigValidator:
                         {Regex("Random", flags=re.I): Or([int], str)},
                         {Regex("Combination", flags=re.I): Or([int], str)},
                     ),
+                    Optional(Regex("Minimum branches", flags=re.I)): Or(
+                        {Regex("Fixed", flags=re.I): int},
+                        {Regex("Random", flags=re.I): Or([int], str)},
+                        {Regex("Combination", flags=re.I): Or([int], str)},
+                    ),
                     Regex("Firing", flags=re.I): Or(
                         Regex("^deterministic$", flags=re.I),
                         Regex("^probabilistic$", flags=re.I),
@@ -204,6 +213,16 @@ class ConfigValidator:
                         Regex("^uniform-normalize$", flags=re.I),
                     ),
                     Optional(Regex("Dirichlet alpha", flags=re.I)): Or(float, int),
+                    Optional(Regex("Sub-chain length", flags=re.I)): Or(
+                        {Regex("Fixed", flags=re.I): int},
+                        {Regex("Random", flags=re.I): Or([int], str)},
+                        {Regex("Combination", flags=re.I): Or([int], str)},
+                    ),
+                    Optional(Regex("Accounting", flags=re.I)): Or(
+                        Regex("^all$", flags=re.I),
+                        Regex("^expected$", flags=re.I),
+                        Regex("^max-branch$", flags=re.I),
+                    ),
                 }
             }
         },
@@ -274,3 +293,77 @@ class ConfigValidator:
         elif Util.ambiguous_equals(gm, "chain-based"):
             self.chain_based_schema.validate(self._config_raw)
             self.branching_schema.validate(self._config_raw)
+        self._validate_semantics()
+
+    def _validate_semantics(self) -> None:
+        """Reject parameter combinations the schema alone cannot express.
+
+        Raises
+        ------
+        InfeasibleConfigError
+            Branching combined with 'Periodic type' All/IO (timer-driven nodes
+            would appear inside branching constructs), 'Maximum branches' < 2,
+            'Minimum branches' < 2 or above 'Maximum branches',
+            'Probability of branching' outside [0, 1], 'Maximum nesting depth' < 0,
+            'Accounting: expected' with deterministic firing, 'Periodic type'
+            Chain without the Chain-based method, or 'CCR' without a base quantity.
+        """
+        gm = self._config_raw["Graph structure"]["Generation method"]
+        branching = self._config_raw["Graph structure"].get("Branching")
+        properties = self._config_raw["Properties"]
+        multi_rate = properties.get("Multi-rate")
+        if properties.get("CCR") and not (
+            properties.get("Execution time") or properties.get("Communication time")
+        ):
+            raise InfeasibleConfigError(
+                "'CCR' requires 'Execution time' or 'Communication time' to derive the other."
+            )
+        periodic_type = multi_rate.get("Periodic type") if multi_rate else None
+        if periodic_type and Util.ambiguous_equals(periodic_type, "chain") and not (
+            Util.ambiguous_equals(gm, "chain-based")
+        ):
+            raise InfeasibleConfigError(
+                "'Periodic type: Chain' requires 'Generation method: Chain-based'."
+            )
+        if not branching:
+            return
+        if periodic_type and (
+            Util.ambiguous_equals(periodic_type, "all") or Util.ambiguous_equals(periodic_type, "io")
+        ):
+            raise InfeasibleConfigError(
+                "'Branching' cannot be combined with 'Periodic type' All or IO "
+                "(timer-driven nodes must stay outside branching constructs). "
+                "Use Entry, DAG, or Chain."
+            )
+        if min(self._option_values(branching["Maximum branches"])) < 2:
+            raise InfeasibleConfigError("'Maximum branches' must be at least 2.")
+        if "Minimum branches" in branching:
+            minimum = self._option_values(branching["Minimum branches"])
+            if min(minimum) < 2:
+                raise InfeasibleConfigError("'Minimum branches' must be at least 2.")
+            if max(minimum) > min(self._option_values(branching["Maximum branches"])):
+                raise InfeasibleConfigError(
+                    "'Minimum branches' must not exceed 'Maximum branches'."
+                )
+        if min(self._option_values(branching["Maximum nesting depth"])) < 0:
+            raise InfeasibleConfigError("'Maximum nesting depth' must be non-negative.")
+        p_b = self._option_values(branching["Probability of branching"])
+        if min(p_b) < 0.0 or max(p_b) > 1.0:
+            raise InfeasibleConfigError("'Probability of branching' must be within [0, 1].")
+        accounting = branching.get("Accounting", "all")
+        if Util.ambiguous_equals(accounting, "expected") and not Util.ambiguous_equals(
+            branching["Firing"], "probabilistic"
+        ):
+            raise InfeasibleConfigError(
+                "'Accounting: expected' requires 'Firing: probabilistic'."
+            )
+
+    @staticmethod
+    def _option_values(option: dict) -> List[Union[int, float]]:
+        """All values a Fixed / Random / Combination option can take."""
+        value = list(option.values())[0]
+        if isinstance(value, str):
+            return ComboGenerator._convert_tuple_to_list(value)
+        if isinstance(value, list):
+            return value
+        return [value]

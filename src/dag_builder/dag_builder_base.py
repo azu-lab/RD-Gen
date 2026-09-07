@@ -25,6 +25,7 @@ class DAGBuilderBase(metaclass=ABCMeta):
         self._validate_config(config)
         self._config = config
         self._max_try = max_try
+        self.num_discarded = 0
 
     @abstractmethod
     def build(self) -> Generator[nx.DiGraph, None, None]:

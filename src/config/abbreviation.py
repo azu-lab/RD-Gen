@@ -18,4 +18,9 @@ TO_ABB = {
     "sink node period": "EXP",
     "total utilization": "TU",
     "maximum utilization": "MU",
+    "probability of branching": "PB",
+    "maximum nesting depth": "MND",
+    "maximum branches": "MB",
+    "minimum branches": "MINB",
+    "sub-chain length": "SCL",
 }

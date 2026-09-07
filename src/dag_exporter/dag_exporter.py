@@ -47,14 +47,14 @@ class DAGExporter:
 
         """
         if self._config.yaml:
-            data = json_graph.node_link_data(dag)
+            data = json_graph.node_link_data(dag, edges="links")
             s = json.dumps(data)
             dic = json.loads(s)
             with open(f"{dest_dir}/{file_name}.yaml", "w") as f:
                 yaml.dump(dic, f)
 
         if self._config.json:
-            data = json_graph.node_link_data(dag)
+            data = json_graph.node_link_data(dag, edges="links")
             s = json.dumps(data)
             with open(f"{dest_dir}/{file_name}.json", "w") as f:
                 json.dump(s, f)

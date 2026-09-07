@@ -100,3 +100,18 @@ def test_factory_returns_augmented_builder_for_fanin_branching():
     for g in dags:
         BranchingValidator.assert_valid(g, "probabilistic")
         assert any(a.get("node_type") == "v_ent" for _, a in g.nodes(data=True))
+
+
+def test_failed_augmentation_discards_instance_and_continues(mocker):
+    from src.dag_builder.branching_augmentor import BranchingAugmentor
+    from src.exceptions import BuildFailedError
+
+    raw = _chain_branching_config()
+    cfg = Config(raw)
+    cfg.optimize()
+    cfg.set_random_seed()
+    builder = DAGBuilderFactory.create_instance(cfg)
+    mocker.patch.object(BranchingAugmentor, "augment",
+                        side_effect=BuildFailedError("augmentation failed"))
+    assert list(builder.build()) == []
+    assert builder.num_discarded == cfg.number_of_dags

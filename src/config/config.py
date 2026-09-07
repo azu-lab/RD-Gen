@@ -245,6 +245,16 @@ class Config:
             return self.branching.get("Maximum branches")
         return None
 
+    @property
+    def minimum_branches(self):
+        if self.branching:
+            return self.branching.get("Minimum branches", 2)
+        return None
+
+    @minimum_branches.setter
+    def minimum_branches(self, value):
+        self.graph_structure["Branching"]["Minimum branches"] = value
+
     @maximum_branches.setter
     def maximum_branches(self, value):
         self.graph_structure["Branching"]["Maximum branches"] = value
@@ -266,6 +276,23 @@ class Config:
         if self.branching:
             return self.branching.get("Dirichlet alpha", 1.0)
         return 1.0
+
+    @property
+    def sub_chain_length(self):
+        if self.branching:
+            return self.branching.get("Sub-chain length")
+        return None
+
+    @sub_chain_length.setter
+    def sub_chain_length(self, value):
+        self.graph_structure["Branching"]["Sub-chain length"] = value
+
+    @property
+    def branching_accounting(self) -> str:
+        """How U, C_Gamma and CCR aggregate over branches: all / expected / max-branch."""
+        if self.branching:
+            return self.branching.get("Accounting", "all").lower()
+        return "all"
 
     # ----- Properties -----
     @property

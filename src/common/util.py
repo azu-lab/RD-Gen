@@ -1,6 +1,6 @@
 import random
 import sys
-from typing import Any, Collection, List, Optional, Union
+from typing import Any, Collection, Dict, List, Optional, Union
 
 import networkx as nx
 
@@ -42,6 +42,26 @@ class Util:
     def regular_nodes(dag: nx.DiGraph) -> List[int]:
         return [n for n in dag.nodes()
                 if dag.nodes[n].get("node_type", "regular") == "regular"]
+
+    @staticmethod
+    def chains(dag: nx.DiGraph) -> Dict[int, List[int]]:
+        """Nodes grouped by ``chain_id`` (empty for non chain-based DAGs)."""
+        chains: Dict[int, List[int]] = {}
+        for n in sorted(dag.nodes()):
+            cid = dag.nodes[n].get("chain_id")
+            if cid is not None:
+                chains.setdefault(cid, []).append(n)
+        return dict(sorted(chains.items()))
+
+    @staticmethod
+    def chain_head(dag: nx.DiGraph, chain_nodes: List[int]) -> int:
+        """The unique node of a chain with no predecessor inside the chain."""
+        members = set(chain_nodes)
+        heads = [n for n in chain_nodes
+                 if not any(p in members for p in dag.predecessors(n))]
+        if len(heads) != 1:
+            raise ValueError(f"chain {chain_nodes} has {len(heads)} heads: {heads}")
+        return heads[0]
 
     @staticmethod
     def get_option_min(option: Optional[Union[list, int, float]]) -> Optional[Union[int, float]]:

@@ -4,9 +4,13 @@ from typing import List
 import networkx as nx
 import pytest
 
+from src.common import Util
 from src.config import Config
 from src.dag_builder.chain_based_builder import Chain, ChainBasedDAG
 from src.property_setter.utilization_setter import UtilizationSetter
+from src.branching_structure import BranchingStructure
+from src.dag_builder.branching_augmentor import BranchingAugmentor
+from tests.test_branching_structure import nested_pdag
 
 
 def get_chains(
@@ -236,3 +240,96 @@ class TestUtilizationSetter:
             after_total_utilization += chain_utilization
 
         assert abs(after_total_utilization - total_utilization) <= 0.01
+
+
+def _dag_type_mock(mocker, accounting, total_utilization=0.5, max_utilization=None):
+    config_mock = mocker.Mock(spec=Config)
+    mocker.patch.object(config_mock, "total_utilization", total_utilization)
+    mocker.patch.object(config_mock, "maximum_utilization", max_utilization)
+    mocker.patch.object(config_mock, "period", 100000)
+    mocker.patch.object(config_mock, "source_node_period", None)
+    mocker.patch.object(config_mock, "sink_node_period", None)
+    mocker.patch.object(config_mock, "periodic_type", "DAG")
+    mocker.patch.object(config_mock, "execution_time", None)
+    mocker.patch.object(config_mock, "branching_accounting", accounting)
+    return config_mock
+
+
+class TestPeriodicTypeDAG:
+    @pytest.mark.parametrize("accounting", ["all", "expected", "max-branch"])
+    def test_total_utilization_hits_accounted_aggregate(self, mocker, accounting):
+        random.seed(0)
+        dag, _ = nested_pdag()
+        UtilizationSetter(_dag_type_mock(mocker, accounting)).set(dag)
+
+        assert dag.graph["period"] == 100000
+        assert dag.nodes[0]["period"] == 100000
+        assert all("period" not in dag.nodes[n] for n in dag.nodes() if n != 0)
+        for n, a in dag.nodes(data=True):
+            if a["node_type"] == "regular":
+                assert a["execution_time"] >= 1
+            else:
+                assert a["execution_time"] == 0
+        execs = {n: a["execution_time"] for n, a in dag.nodes(data=True)}
+        achieved = BranchingStructure(dag).aggregate(execs, accounting) / 100000
+        assert abs(achieved - 0.5) <= 0.001
+
+    def test_only_max_utilization(self, mocker):
+        random.seed(0)
+        dag, _ = nested_pdag()
+        UtilizationSetter(_dag_type_mock(mocker, "max-branch", total_utilization=None,
+                                         max_utilization=0.8)).set(dag)
+        execs = {n: a["execution_time"] for n, a in dag.nodes(data=True)}
+        achieved = BranchingStructure(dag).aggregate(execs, "max-branch") / 100000
+        assert 0 < achieved <= 0.8 + 0.001
+
+    def test_accounting_modes_differ_on_the_same_structure(self, mocker):
+        random.seed(0)
+        dag, _ = nested_pdag()
+        UtilizationSetter(_dag_type_mock(mocker, "max-branch")).set(dag)
+        execs = {n: a["execution_time"] for n, a in dag.nodes(data=True)}
+        s = BranchingStructure(dag)
+        assert s.aggregate(execs, "all") > s.aggregate(execs, "max-branch") > s.aggregate(execs, "expected")
+
+
+class TestPeriodicTypeChainWithBranching:
+    def test_chain_utilization_with_branching_constructs(self, mocker):
+        random.seed(0)
+        raw = {
+            "Seed": 0, "Number of DAGs": 1,
+            "Graph structure": {
+                "Generation method": "Chain-based",
+                "Number of chains": 3, "Main sequence length": 5, "Number of sub sequences": 1,
+                "Branching": {"Probability of branching": 1.0, "Maximum nesting depth": 1,
+                              "Maximum branches": 3, "Firing": "probabilistic",
+                              "Probability distribution": "uniform-normalize",
+                              "Sub-chain length": 2, "Accounting": "max-branch"},
+            },
+            "Properties": {}, "Output formats": {"DAG": {"YAML": True}},
+        }
+        chain_dag = nx.DiGraph(ChainBasedDAG(get_chains(3, 5, 1)))
+        dag = BranchingAugmentor(Config(raw)).augment(chain_dag, "chain")
+        assert any(a["node_type"] == "v_ent" for _, a in dag.nodes(data=True))
+
+        config_mock = mocker.Mock(spec=Config)
+        mocker.patch.object(config_mock, "total_utilization", 1.5)
+        mocker.patch.object(config_mock, "maximum_utilization", 1.0)
+        mocker.patch.object(config_mock, "period", 1000000)
+        mocker.patch.object(config_mock, "source_node_period", None)
+        mocker.patch.object(config_mock, "sink_node_period", None)
+        mocker.patch.object(config_mock, "periodic_type", "Chain")
+        mocker.patch.object(config_mock, "execution_time", None)
+        mocker.patch.object(config_mock, "branching_accounting", "max-branch")
+        UtilizationSetter(config_mock).set(dag)
+
+        s = BranchingStructure(dag)
+        total = 0.0
+        for chain_nodes in Util.chains(dag).values():
+            head = Util.chain_head(dag, chain_nodes)
+            assert dag.nodes[head]["period"] == 1000000
+            execs = {n: dag.nodes[n]["execution_time"] for n in chain_nodes}
+            total += s.aggregate(execs, "max-branch") / 1000000
+        assert abs(total - 1.5) <= 0.001
+        timer_nodes = [n for n, a in dag.nodes(data=True) if "period" in a]
+        assert sorted(timer_nodes) == sorted(
+            Util.chain_head(dag, c) for c in Util.chains(dag).values())

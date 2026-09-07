@@ -80,8 +80,8 @@ class GNPBuilder(DAGBuilderBase):
                 # Add edge
                 prob_edge = Util.random_choice(self._config.probability_of_edge_existence)
                 for i in range(num_nodes):
-                    for j in range(num_nodes):
-                        if random.randint(1, 100) < prob_edge * 100 and i < j:
+                    for j in range(i + 1, num_nodes):
+                        if random.random() < prob_edge:
                             G.add_edge(i, j)
 
                 # Add source nodes (Optional)
