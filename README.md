@@ -10,7 +10,7 @@
 ## About
 **RD-Gen** (random DAG generator considering multi-rate applications for reproducible scheduling evaluation) is a tool for researchers targeting DAGs.
 
-The current release, [v2.0.0](https://github.com/azu-lab/RD-Gen/releases/tag/v2.0.0), is **RD-Gen+**, which extends RD-Gen with conditional (cDAG) and probabilistic (pDAG) branching DAGs through the `Branching` block described in [RD-Gen+ (branching augmentation)](#rd-gen-branching-augmentation). RD-Gen+ is described in the IEEE Access article listed under [Documents](#documents). The RD-Gen of ISORC 2023 remains available as release [v1.0.0](https://github.com/azu-lab/RD-Gen/releases/tag/v1.0.0).
+The current release, [v2.0.0](https://github.com/azu-lab/RD-Gen/releases/tag/v2.0.0), is **RD-Gen+**, which extends RD-Gen with conditional (cDAG) and probabilistic (pDAG) branching DAGs through the `Branching` block described in [RD-Gen+ (branching augmentation)](#rd-gen-branching-augmentation). The RD-Gen of ISORC 2023 remains available as release [v1.0.0](https://github.com/azu-lab/RD-Gen/releases/tag/v1.0.0).
 RD-Gen makes the following contributions:
 - RD-Gen **extends existing random DAG construction methods**, Fan-in/Fan-out [1] and G(n, p) [2] methods, to meet researchers’ requirements.
 - RD-Gen proposes a new **Chain-based method** to flexibly construct state-of-the-art chain-based multi-rate DAGs.
@@ -66,22 +66,7 @@ The emitted number of nodes grows with augmentation: `Number of nodes` is the ho
 ## Documents
 - [wiki](https://github.com/azu-lab/RD-Gen/wiki)
 - [API list (for developer)](https://azu-lab.github.io/RD-Gen/)
-- RD-Gen+ (release v2.0.0) is presented in the following article:
-  - A. Yano and T. Azumi, "RD-Gen+: A Random DAG Generator Unifying Multi-rate, Conditional, and Probabilistic DAGs for Reproducible Scheduling Evaluation", submitted to IEEE Access, 2026 (under review)
-
-    <details>
-    <summary>BibTeX</summary>
-
-    ```bibtex
-    @unpublished{RD-Gen-plus,
-      title={{RD-Gen+}: A Random {DAG} Generator Unifying Multi-rate, Conditional, and Probabilistic {DAGs} for Reproducible Scheduling Evaluation},
-      author={Atsushi, Yano and Takuya, Azumi},
-      note={Submitted to IEEE Access},
-      year={2026}
-    }
-    ```
-
-    </details>
+- The article describing RD-Gen+ (release v2.0.0) will be listed here when it is published.
 - RD-Gen (release v1.0.0) is presented in the following paper:
   - A. Yano and T. Azumi, "RD-Gen: Random DAG Generator Considering Multi-rate Applications for Reproducible Scheduling Evaluation", the 26th IEEE International Symposium on Real-Time Distributed Computing (ISORC), 2023
   
