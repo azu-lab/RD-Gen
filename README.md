@@ -10,7 +10,7 @@
 ## About
 **RD-Gen** (random DAG generator considering multi-rate applications for reproducible scheduling evaluation) is a tool for researchers targeting DAGs.
 
-The current release, [v2.0.0](https://github.com/azu-lab/RD-Gen/releases/tag/v2.0.0), is **RD-Gen+**, which extends RD-Gen with conditional (cDAG) and probabilistic (pDAG) branching DAGs through the `Branching` block described in [RD-Gen+ (branching augmentation)](#rd-gen-branching-augmentation). The RD-Gen of ISORC 2023 remains available as release [v1.0.0](https://github.com/azu-lab/RD-Gen/releases/tag/v1.0.0).
+Releases v2.0.0 and later (currently [v2.0.1](https://github.com/azu-lab/RD-Gen/releases/tag/v2.0.1)) are **RD-Gen+**, which extends RD-Gen with conditional (cDAG) and probabilistic (pDAG) branching DAGs through the `Branching` block described in [RD-Gen+ (branching augmentation)](#rd-gen-branching-augmentation). The RD-Gen of ISORC 2023 remains available as release [v1.0.0](https://github.com/azu-lab/RD-Gen/releases/tag/v1.0.0).
 RD-Gen makes the following contributions:
 - RD-Gen **extends existing random DAG construction methods**, Fan-in/Fan-out [1] and G(n, p) [2] methods, to meet researchers’ requirements.
 - RD-Gen proposes a new **Chain-based method** to flexibly construct state-of-the-art chain-based multi-rate DAGs.
@@ -59,14 +59,14 @@ RD-Gen+ adds conditional (cDAG) and probabilistic (pDAG) branching constructs to
 
 Entry and exit vertices of a construct are exported as nodes with `node_type` `v_ent` / `v_ext`, `branch_unit_id` and `execution_time` 0; the edges leaving `v_ent` carry `branch_id`. Every generated DAG is verified against the structural constraints of Melani 2015 and Zhao 2025 (acyclicity, proper nesting, no edge entering or leaving a branch body, dominance of `v_ent` and post-dominance of `v_ext`, firing probabilities summing to 1); an instance that fails 100 times is discarded and counted in `generation_stats.yaml`, and `augmentation_retries` is stored on every exported graph.
 
-With branching, `Periodic type` must be `Entry`, `DAG` or `Chain`. `DAG` assigns one period to the whole DAG (graph attribute `period` and the source nodes) and scales the execution times so that the aggregate selected by `Accounting` equals `Total utilization` x period. Chain-based DAGs export `chain_id` on every node; nodes created by a replacement inherit it, so `Periodic type: Chain` also works on branch-augmented chains.
+With branching, `Periodic type` must be `DAG` or `Chain`. `DAG` assigns one period to the whole DAG (graph attribute `period` and the source nodes) and scales the execution times so that the aggregate selected by `Accounting` equals `Total utilization` x period. Chain-based DAGs export `chain_id` on every node; nodes created by a replacement inherit it, so `Periodic type: Chain` also works on branch-augmented chains.
 
 The emitted number of nodes grows with augmentation: `Number of nodes` is the host graph size, and each replacement removes one node and adds k (n_sub + 1) + 2 nodes (G(n, p) / Fan-in/Fan-out hosts, n_sub = max(2, |V| / (k (d_b - d + 1))) at depth d) or k L + 2 nodes (Chain-based hosts, L = `Sub-chain length`).
 
 ## Documents
 - [wiki](https://github.com/azu-lab/RD-Gen/wiki)
 - [API list (for developer)](https://azu-lab.github.io/RD-Gen/)
-- The article describing RD-Gen+ (release v2.0.0) will be listed here when it is published.
+- The article describing RD-Gen+ (releases v2.0.0 and later) will be listed here when it is published.
 - RD-Gen (release v1.0.0) is presented in the following paper:
   - A. Yano and T. Azumi, "RD-Gen: Random DAG Generator Considering Multi-rate Applications for Reproducible Scheduling Evaluation", the 26th IEEE International Symposium on Real-Time Distributed Computing (ISORC), 2023
   

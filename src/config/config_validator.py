@@ -53,8 +53,6 @@ class ConfigValidator:
                 Optional(Regex("Multi-rate", flags=re.I)): {
                     Regex("Periodic type", flags=re.I): Or(
                         Regex("^All$", flags=re.I),
-                        Regex("^IO$", flags=re.I),
-                        Regex("^Entry$", flags=re.I),
                         Regex("^Chain$", flags=re.I),
                         Regex("^DAG$", flags=re.I),
                     ),
@@ -301,7 +299,7 @@ class ConfigValidator:
         Raises
         ------
         InfeasibleConfigError
-            Branching combined with 'Periodic type' All/IO (timer-driven nodes
+            Branching combined with 'Periodic type' All (timer-driven nodes
             would appear inside branching constructs), 'Maximum branches' < 2,
             'Minimum branches' < 2 or above 'Maximum branches',
             'Probability of branching' outside [0, 1], 'Maximum nesting depth' < 0,
@@ -327,13 +325,11 @@ class ConfigValidator:
             )
         if not branching:
             return
-        if periodic_type and (
-            Util.ambiguous_equals(periodic_type, "all") or Util.ambiguous_equals(periodic_type, "io")
-        ):
+        if periodic_type and Util.ambiguous_equals(periodic_type, "all"):
             raise InfeasibleConfigError(
-                "'Branching' cannot be combined with 'Periodic type' All or IO "
+                "'Branching' cannot be combined with 'Periodic type' All "
                 "(timer-driven nodes must stay outside branching constructs). "
-                "Use Entry, DAG, or Chain."
+                "Use DAG or Chain."
             )
         if min(self._option_values(branching["Maximum branches"])) < 2:
             raise InfeasibleConfigError("'Maximum branches' must be at least 2.")

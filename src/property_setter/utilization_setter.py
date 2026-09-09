@@ -387,11 +387,7 @@ class UtilizationSetter(PropertySetterBase):
         periodic_type = self._config.periodic_type
         if Util.ambiguous_equals(periodic_type, "All"):
             return Util.regular_nodes(dag)
-        if Util.ambiguous_equals(periodic_type, "IO"):
-            return list(set(Util.get_source_nodes(dag) + Util.get_sink_nodes(dag)))
-        if Util.ambiguous_equals(periodic_type, "Entry") or Util.ambiguous_equals(
-            periodic_type, "DAG"
-        ):
+        if Util.ambiguous_equals(periodic_type, "DAG"):
             return Util.get_source_nodes(dag)
         if Util.ambiguous_equals(periodic_type, "Chain"):
             return [Util.chain_head(dag, nodes) for nodes in Util.chains(dag).values()]

@@ -87,17 +87,24 @@ def _multi_rate(periodic_type):
             "Total utilization": {"Fixed": 0.5}}
 
 
-@pytest.mark.parametrize("periodic_type", ["All", "IO"])
-def test_branching_with_all_or_io_periodic_type_is_rejected(periodic_type):
+def test_branching_with_all_periodic_type_is_rejected():
     cfg = _base_chain_config()
     cfg["Graph structure"]["Branching"] = _branching()
-    cfg["Properties"] = {"Multi-rate": _multi_rate(periodic_type)}
-    with pytest.raises(InfeasibleConfigError, match="All or IO"):
+    cfg["Properties"] = {"Multi-rate": _multi_rate("All")}
+    with pytest.raises(InfeasibleConfigError, match="'Periodic type' All"):
         ConfigValidator(cfg).validate()
 
 
-@pytest.mark.parametrize("periodic_type", ["Entry", "DAG", "Chain"])
-def test_branching_with_entry_dag_chain_periodic_type_is_accepted(periodic_type):
+@pytest.mark.parametrize("periodic_type", ["IO", "Entry"])
+def test_removed_periodic_types_are_rejected_by_the_schema(periodic_type):
+    cfg = _base_chain_config()
+    cfg["Properties"] = {"Multi-rate": _multi_rate(periodic_type)}
+    with pytest.raises(SchemaError):
+        ConfigValidator(cfg).validate()
+
+
+@pytest.mark.parametrize("periodic_type", ["DAG", "Chain"])
+def test_branching_with_dag_or_chain_periodic_type_is_accepted(periodic_type):
     cfg = _base_chain_config()
     cfg["Graph structure"]["Branching"] = _branching(Accounting="max-branch")
     cfg["Properties"] = {"Multi-rate": _multi_rate(periodic_type)}

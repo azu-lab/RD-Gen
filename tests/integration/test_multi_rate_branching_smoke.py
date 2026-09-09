@@ -90,15 +90,6 @@ def _run(tmp_path, body):
     return dags, stats
 
 
-def test_entry_type_with_branching(tmp_path):
-    dags, stats = _run(tmp_path, CHAIN_STRUCTURE + _multi_rate("Entry") + OUTPUT)
-    assert stats == {"requested": 3, "exported": 3, "discarded": 0,
-                     "augmentation_retries_total": 0, "augmentation_retries_max": 0}
-    assert len(dags) == 3
-    assert any(a.get("node_type") == "v_ent" for g in dags for _, a in g.nodes(data=True))
-    for g in dags:
-        for n in Util.get_source_nodes(g):
-            assert g.nodes[n]["node_type"] == "regular" and "period" in g.nodes[n]
 
 
 def test_chain_type_with_branching(tmp_path):
@@ -136,8 +127,8 @@ def test_dag_type_with_branching(tmp_path):
             assert 0.0 < a["marginal_prob"] <= 1.0
 
 
-@pytest.mark.parametrize("periodic_type", ["All", "IO"])
-def test_all_and_io_types_are_rejected_with_branching(tmp_path, periodic_type):
+def test_all_type_is_rejected_with_branching(tmp_path):
+    periodic_type = "All"
     cfg_path = tmp_path / "bad.yaml"
     cfg_path.write_text("Seed: 1\nNumber of DAGs: 1\n\n" + GNP_STRUCTURE
                         + _multi_rate(periodic_type) + OUTPUT)
@@ -146,4 +137,4 @@ def test_all_and_io_types_are_rejected_with_branching(tmp_path, periodic_type):
         cwd=RDGEN_ROOT, capture_output=True, text=True, timeout=120,
     )
     assert proc.returncode != 0
-    assert "All or IO" in proc.stderr
+    assert "'Periodic type' All" in proc.stderr
