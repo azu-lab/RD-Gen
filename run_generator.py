@@ -93,7 +93,7 @@ def option_parser():
         "-d",
         "--dest_dir",
         required=False,
-        default=(os.path.dirname(__file__) or ".") + "/test/implicit/test5",
+        default=(os.path.dirname(__file__) or ".") + "/test/awkernel_sweep_constrained",
         type=str,
         help="path to destination directory.",
     )

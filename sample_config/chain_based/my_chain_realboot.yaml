@@ -1,10 +1,11 @@
 Seed: 0
-# Sweep config: 50 DAGs per combo, one combo per Whole-DAG utilization value
-# in (0.1..3.0 step 0.1) -- see "Combination" below. Feeds
-# run_schedulability_evaluation.py's resampling (--dags-per-set/--cores),
-# not the single-shot real-boot demo (that's a separate, smaller config with
-# "Fixed" utilization -- see run_realboot_evaluation.py).
-Number of DAGs: 50
+# Single-shot config for run_realboot_evaluation.py: one concrete, curated
+# task set (8 DAGs, each individually at utilization 0.8) actually admitted
+# and booted for real -- as opposed to my_chain.yaml, which now sweeps
+# Whole-DAG utilization across many combos for the offline acceptance-ratio
+# curve (run_schedulability_evaluation.py). With 8 dag-pool cores, this
+# gives U_norm = (8 DAGs * 0.8) / 8 cores = 0.8 for that one real boot.
+Number of DAGs: 8
 
 Graph structure:
   Generation method: "Chain-based"
@@ -26,7 +27,7 @@ Properties:
     Source node period:
       Fixed: 1000
     Whole-DAG utilization:
-      Combination: (0.1, 3.0, 0.1)
+      Fixed: 0.8
   End-to-end deadline:
     Deadline mode: 'Constrained'
 

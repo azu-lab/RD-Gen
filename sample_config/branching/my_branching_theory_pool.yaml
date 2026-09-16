@@ -1,0 +1,131 @@
+Seed: 0
+# Shared DAG pool for the paper-faithful theory-vs-reality pipeline, using
+# RD-Gen's "G(n, p)" + "Branching" generator -- a reimplementation of Melani
+# et al.'s recursive DAG generator, the SAME one the TPDS23 V-Fed paper's own
+# evaluation cites (Section 7). Supersedes
+# ../chain_based/my_chain_theory_pool.yaml for the reason below.
+#
+# Why: the Chain-based pool (1-3 narrow side-branches off one main sequence)
+# is structurally narrow -- most nodes sit *on* the single dominant chain, so
+# critical_path L tracks volume C closely (low C/L "width"). Even after
+# fixing its two real bugs (UUniFast for utilization control instead of raw
+# WCET; T = D/beta period generation instead of clamping D to a fixed
+# period -- see that file's own comments), it still produces enough
+# all-light or mostly-light 8-DAG draws (~3-4% all-light, confirmed via
+# applications/rd_gen_to_dags/examples/diagnose_light_dominance.rs) that
+# V-Fed's acceptance ratio drops below classical Federated's at high U_norm.
+# This isn't a bug in V-Fed: its passive-VP supply is generated *only* as a
+# byproduct of a heavy DAG's own active-VP allocation (see
+# dag_sched::policy::vfed's module doc), so an all-light draw has nothing to
+# draw on and falls back entirely to best-fit partitioned-EDF -- the same
+# design TPDS23's own Algorithm 2 has for light tasks unreachable by
+# passive-VP. But the user showed the paper's own Fig. 9(a) (constrained
+# deadlines): OURS1/OURS2 stay strictly above *every* compared method,
+# including XU-17 (semi-federated) and UE-18 (reservation-based), across the
+# whole plotted U_norm range, with no crossover at all. Since semi-federated
+# and reservation-based both appear (per TPDS23's own description of them)
+# to inherit classical Federated's *light*-task handling unchanged -- their
+# own contributions are specifically about reclaiming *heavy* tasks' leftover
+# capacity -- the most likely explanation isn't that this light-DAG weakness
+# doesn't exist for them too; it's that the paper's own wide, aggressively-
+# branching generator (p_par=0.8, n_par=8, depth=3) makes an all-light or
+# mostly-light 8-DAG draw rare enough to barely register in a 1000-trial
+# aggregate. An earlier, brief trial of this same Branching method (before
+# the UUniFast/T=D-beta fixes existed) supports this: even at a *reduced*
+# depth=1, the resulting heavy ratio swung to ~100% (7-8 of 8 heavy in
+# nearly every draw) -- this pool now re-tests that with the two real bugs
+# already fixed, since that earlier attempt was confounded by them (a
+# separate period-vs-volume scale mismatch, and the same D-clamped-to-period
+# ceiling-inflation bug the Chain-based pool had).
+#
+# Parameter mapping confirmed directly against RD-Gen source
+# (branching_augmentor.py's `_augment_gnp`): "Probability of branching" is
+# exactly p_par, "Maximum branches" is exactly n_par (branches drawn
+# Uniform[2, n_par], matching the paper's own range), "Maximum nesting
+# depth" is exactly the recursion depth (paper: 3). Confirmed EXACT, not an
+# approximation, unlike the two items below.
+#
+# Two things RD-Gen does NOT reproduce exactly:
+# 1. The paper starts its recursion from a single 2-vertex/1-edge seed;
+#    "Number of nodes" here only sizes RD-Gen's own G(n,p) *seed* graph that
+#    Branching then recursively expands from -- there's no config path to a
+#    literal 2-vertex start. A 2-node seed crashes RD-Gen's own
+#    force-single-source post-processing (UnboundLocalError in
+#    Util.get_min_in_node, dag_builder_base.py's _add_minimum_edges) --
+#    confirmed empirically -- so this uses the smallest size confirmed to
+#    work: the existing repo precedent's own 10
+#    (sample_config/branching/sample_cdag.yaml).
+# 2. The paper's `padd` (a separate, final "add extra edges with probability
+#    padd=0.1" pass over the already-built DAG) has no RD-Gen equivalent --
+#    "Probability of edge existence" instead governs edge density of BOTH
+#    the seed graph and every branch's own internal G(n,p) subgraph (same
+#    knob, reused, confirmed in g_n_p_builder.py and branching_augmentor.py
+#    directly -- no separate padd-style pass exists anywhere). Kept at the
+#    existing repo precedent (sample_config/branching/sample_cdag.yaml's own
+#    0.3) rather than forcing padd's 0.1 into a role RD-Gen didn't design it
+#    for.
+# 3. depth=1, not the paper's 3: RD-Gen's specific recursive-replacement
+#    mechanics compound far more aggressively than the paper's own number
+#    suggests -- confirmed empirically: depth=1 -> 130 nodes/DAG, depth=2 ->
+#    1448 (~11x), depth=3 -> 17008 (~12x again, impractical at pool scale
+#    both to generate and to later parse/critical-path-DP in Rust). depth=1
+#    is the practical ceiling; still meaningfully wider than the superseded
+#    Chain-based pool.
+#
+# UUniFast ("Whole-DAG utilization"), single-source/single-sink (via
+# "Number of source/sink nodes: Fixed: 1" -- Awkernel's own model
+# requirement, satisfied here the same way the paper's own model is: see
+# ../chain_based/my_chain_theory_pool.yaml's doc for the full reasoning,
+# identical here), and 'Arbitrary' deadline mode as a discarded placeholder
+# (relative_deadline AND period are both overridden per-DAG in
+# acceptance_ratio.rs regardless of what's generated here) -- all identical
+# to, and for the identical reasons documented in,
+# ../chain_based/my_chain_theory_pool.yaml.
+Number of DAGs: 5000
+
+Graph structure:
+  Generation method: "G(n, p)"
+  Number of nodes:
+    Fixed: 10
+  Number of source nodes:
+    Fixed: 1
+  Number of sink nodes:
+    Fixed: 1
+  Probability of edge existence:
+    Fixed: 0.3
+  Ensure weakly connected: True
+  Branching:
+    Probability of branching:
+      Fixed: 0.8         # Melani p_par
+    Maximum nesting depth:
+      Fixed: 1           # see doc item 3 above
+    Maximum branches:
+      Fixed: 8           # Melani n_par
+    Firing: deterministic
+    Probability distribution: uniform-normalize
+
+Properties:
+  Multi-rate:
+    Periodic type: "Entry"
+    Source node period:
+      Fixed: 1000
+    Whole-DAG utilization:
+      Random: [0.1, 1.5]
+  End-to-end deadline:
+    Deadline mode: 'Arbitrary'
+    Ratio of deadline to critical path:
+      Fixed: 1.0
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    JSON: False
+    XML: False
+    DOT: False
+  Figure:
+    Draw legend: False
+    PNG: False
+    SVG: False
+    EPS: False
+    PDF: True

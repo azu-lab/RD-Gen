@@ -1,0 +1,101 @@
+Seed: 0
+# Shared DAG pool for the paper-faithful theory-vs-reality pipeline
+# (awkernel_script/2026_ECRTS_Awkernel_result/scripts/run_schedulability_evaluation.py).
+# Generated ONCE, no "Combination" sweep: acceptance_ratio.rs resamples task
+# sets from this single pool and computes M = ceil(U_Sigma/U_norm) per
+# resampled set, so no per-U_norm directory is needed.
+#
+# UUniFast ("Whole-DAG utilization"), not RD-Gen's own "Deadline mode" or a
+# raw "Execution time: Random[1,100]" range -- this is a deliberate reversal
+# of an earlier attempt in this pool's history (see below) to chase the
+# TPDS23 V-Fed paper's own WCET~Uniform[1,100]-independent-of-utilization
+# methodology plus its Melani-style wide-branching generator. That attempt
+# hit an unresolvable tuning problem: the resulting heavy/light DAG mix (via
+# density = C/D) turned out extremely sensitive to DAG "width" (C/L ratio),
+# swinging from ~34% heavy (this pool's old narrow Chain-based structure)
+# to ~100% heavy (a Melani-style wide-branching structure, once tuned to a
+# workable node count and period) with no stated target ratio in the paper
+# to tune against. "Whole-DAG utilization: Random(0.1, 1.5)" instead gives
+# DIRECT, predictable control over each DAG's total workload relative to its
+# period -- spans both comfortably-light (<1) and heavy (>1) territory by
+# construction, independent of how wide or narrow the generated structure
+# happens to be, so heavy/light mix no longer depends on an emergent,
+# hard-to-tune structural property. (Originally tried up to 3.0; narrowed to
+# 1.5 after the period-generation fix below made higher-utilization draws
+# rare-but-still-present rather than needed for a heavy tail -- 1.5 already
+# gives a clean, theoretically-sensible curve, see the pipeline script's own
+# validation run.)
+#
+# `relative_deadline` AND `period` are both overridden per-DAG in
+# acceptance_ratio.rs, discarding whatever RD-Gen generated for either
+# (`override_deadline`: D ~ Uniform[L, L/alpha]; `override_period`: T = D /
+# beta, beta ~ Uniform[0.1, 1], the TPDS23 paper's own generation order for
+# its constrained-deadline figures -- deadline first, period derived from
+# it, guaranteeing D <= T by construction with no clamp). This matters here:
+# an earlier version of this pipeline clamped D down to RD-Gen's own fixed
+# `Source node period: 1000` instead, which -- once UUniFast could produce
+# critical paths approaching or exceeding that period -- occasionally
+# produced an artificially tiny `D - critical_path` gap and thus wildly
+# inflated `min_dedicated_cores()` values (confirmed empirically: one
+# C=1500, L=983 DAG clamped to D=1000 needed 31 dedicated cores; the same
+# DAG under the current D-then-T generation order needs 2). RD-Gen's own
+# generated period only ever mattered as a UUniFast sizing input for
+# `volume`, with no meaning after that -- same treatment `critical_path`
+# already gets post-admission (see `DagMetrics::critical_path`'s own doc).
+#
+# Single-source/single-sink (Awkernel's DagJobTable and dag/performance.rs's
+# response-time tracking both assume this -- see dag.rs's own doc comments)
+# holds by construction with this Chain-based structure: one main sequence
+# (its head has no predecessor) merging every sub-sequence into one sink
+# node ("Merge chains: Number of sink nodes: Fixed: 1") -- confirmed
+# empirically earlier this session by inspecting a generated dag_0.yaml
+# directly (exactly one node with no incoming edges, exactly one with no
+# outgoing edges).
+#
+# Deadline mode is 'Arbitrary' as a placeholder only -- discarded by
+# acceptance_ratio.rs's override, same reasoning as before: it's the only
+# mode that never rejects a DAG for an L-vs-T reason (both 'Implicit' and
+# 'Constrained' raise BuildFailedError whenever the critical path alone
+# exceeds the period, confirmed empirically to silently shrink the pool and
+# bias it against high-critical-path draws).
+Number of DAGs: 5000
+
+Graph structure:
+  Generation method: "Chain-based"
+  Number of chains:
+    Fixed: 1
+  Main sequence length:
+    Random: (5, 10, 1)
+  Number of sub sequences:
+    Random: (1, 3, 1)          # 幅を持たせるため多めに設定
+  Merge chains:
+    Number of sink nodes:
+      Fixed: 1
+    Middle of chain: False
+    Sink node: True
+
+Properties:
+  Multi-rate:
+    Periodic type: "Entry"
+    Source node period:
+      Fixed: 1000
+    Whole-DAG utilization:
+      Random: [0.1, 1.5]
+  End-to-end deadline:
+    Deadline mode: 'Arbitrary'
+    Ratio of deadline to critical path:
+      Fixed: 1.0
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    JSON: False
+    XML: False
+    DOT: False
+  Figure:
+    Draw legend: False
+    PNG: False
+    SVG: False
+    EPS: False
+    PDF: False
