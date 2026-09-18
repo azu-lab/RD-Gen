@@ -72,15 +72,33 @@ Seed: 0
 #    is the practical ceiling; still meaningfully wider than the superseded
 #    Chain-based pool.
 #
-# UUniFast ("Whole-DAG utilization"), single-source/single-sink (via
+# UUniFast ("Whole-DAG utilization") and single-source/single-sink (via
 # "Number of source/sink nodes: Fixed: 1" -- Awkernel's own model
 # requirement, satisfied here the same way the paper's own model is: see
 # ../chain_based/my_chain_theory_pool.yaml's doc for the full reasoning,
-# identical here), and 'Arbitrary' deadline mode as a discarded placeholder
-# (relative_deadline AND period are both overridden per-DAG in
-# acceptance_ratio.rs regardless of what's generated here) -- all identical
-# to, and for the identical reasons documented in,
-# ../chain_based/my_chain_theory_pool.yaml.
+# identical here) are identical to, and for the identical reasons documented
+# in, ../chain_based/my_chain_theory_pool.yaml.
+#
+# 'Implicit' deadline mode (D = T), *not* 'Arbitrary': this pool is also
+# embedded directly (raw dag_<N>.yaml, no override) for real-machine boot
+# trials via rd_gen_to_dags's DAGS_DIR/RD_GEN_DAGS_DIR (see
+# applications/rd_gen_to_dags/build.rs), which uses each DAG's own
+# generated relative_deadline/period as-is -- unlike acceptance_ratio.rs,
+# which overrides both post-load and so never cared what was generated
+# here. An earlier revision of this file used 'Arbitrary' with "Ratio of
+# deadline to critical path: Fixed: 1.0" (D = L exactly) purely as a
+# placeholder for that override-based pipeline; every one of that
+# revision's 5000 DAGs had zero slack (D == L) by construction, which
+# `dag_sched::policy::{federated,vfed}` correctly rejects as infeasible
+# whenever there's any exploitable parallelism (volume > critical_path) --
+# i.e. essentially always for a branching generator -- making the whole
+# pool unusable for a raw-embed real-boot trial. 'Implicit' sets
+# end_to_end_deadline = period (here, the fixed 1000 below) instead, giving
+# genuine D > L slack for any DAG whose critical path is shorter than the
+# period (RD-Gen raises BuildFailedError -- and regenerates that instance --
+# for the rare draw where it isn't). Requires 'Periodic type: Entry' and a
+# single period reaching each sink, already satisfied by the single-source/
+# single-sink constraint above.
 Number of DAGs: 5000
 
 Graph structure:
@@ -112,9 +130,7 @@ Properties:
     Whole-DAG utilization:
       Random: [0.1, 1.5]
   End-to-end deadline:
-    Deadline mode: 'Arbitrary'
-    Ratio of deadline to critical path:
-      Fixed: 1.0
+    Deadline mode: 'Implicit'
 
 Output formats:
   Naming of combination directory: "Abbreviation"
