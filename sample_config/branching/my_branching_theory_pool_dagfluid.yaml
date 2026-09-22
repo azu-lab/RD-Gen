@@ -1,0 +1,120 @@
+Seed: 0
+# Real-machine-scale variant of ../branching/my_branching_theory_pool.yaml,
+# tuned specifically for DAG-Fluid's real DP-Wrap dispatch (see
+# awkernel_async_lib::scheduler::dp_wrap / dag_sched::dp_partition) rather
+# than for Federated/V-Fed. Read that file's own doc comments first (they
+# cover the shared generator design: G(n,p)+Branching, UUniFast,
+# single-source/single-sink, Implicit deadline mode); this file only
+# documents the one thing it changes and why.
+#
+# Why this exists: DAG-Fluid's real dispatch can only ever grant a segment
+# as many *real* CPUs as the target's own DAG-pool core count -- a segment
+# whose own concurrency (max simultaneously-active nodes in the "infinite
+# processors" timeline, see dag_fluid::decompose_segments) exceeds that
+# count necessarily serializes part of its parallelism onto the same
+# physical cores, no matter how good the dispatch mechanism is. This
+# project's real target has 5 worker cores, ~4 of them in the DAG-pool
+# after the regular-pool split (see scheduler::pool's own doc) -- but every
+# one of the existing pools (both the main one above and
+# ../branching/my_branching_theory_pool_branch2.yaml) was generated for
+# Federated/V-Fed, which have no such per-segment concurrency ceiling, and
+# turned out to badly over-provision it: measured directly against a real
+# trace (applications/rd_gen_to_dags/examples/segment_concurrency_stats)
+# on the branch2 pool: 99.4% of its 4999 DAGs have a segment demanding more
+# concurrency than the target has cores for (median 8, p90 12, max 22 --
+# against a target of 4).
+#
+# Why "Probability of branching" and "Probability of edge existence" (not
+# "Maximum branches"): confirmed directly against RD-Gen source
+# (branching_augmentor.py's `_augment_gnp`) that system-wide peak
+# concurrency is not bounded by "Maximum branches" (n_par) alone -- that
+# only caps how many branches *one* branching point produces. Multiple
+# independent branching points in the same DAG (any two candidate nodes in
+# the base G(n,p) seed graph with no precedence path between them) each
+# spawn their own up-to-n_par-wide parallel structure, and if their
+# execution windows overlap -- likely whenever the base seed graph itself
+# leaves many node pairs unconnected -- their concurrency stacks in
+# dag_fluid::decompose_segments' own system-wide count, not just within one
+# branch point. "Maximum branches" was already at Melani's own minimum
+# useful value (2 -- a "branch" of 1 isn't one) in every existing pool, so
+# it has no further room to shrink; the two levers that actually reduce how
+# many *independent* branch points can coexist and overlap are lowering
+# "Probability of branching" (fewer candidate nodes get expanded into
+# parallel branches at all) and raising "Probability of edge existence"
+# (a denser base seed graph leaves fewer node pairs mutually independent,
+# so fewer separate branch points can ever run concurrently in the first
+# place). "Number of nodes" (the base seed graph size) was also reduced,
+# directly bounding how many independent candidates can exist to begin
+# with. Empirically tuned (segment_concurrency_stats against small
+# generated batches, same tool as the 99.4% figure above) to:
+#
+#   nodes=8, p_par=0.15, edge_prob=0.7 (this file) -> mean 2.99, p50=3,
+#     p90=4, max=6, only 7.3% of DAGs over the target of 4 (206 generated
+#     from a batch of 300 requested -- see "Number of DAGs" note below)
+#
+# against these intermediate points on the way there (both still with
+# "Maximum branches: 2", "Maximum nesting depth: 1" unchanged from the
+# other pools):
+#
+#   nodes=10, p_par=0.3, edge_prob=0.3 -> mean 5.97, p50=6, p90=8, max=14,
+#     78.3% over target
+#   nodes=8,  p_par=0.2, edge_prob=0.6 -> mean 3.61, p50=3, p90=5, max=9,
+#     21.3% over target
+#
+# As a side benefit, the smaller base graph also shrinks total DAG size
+# (mean 17.5 nodes, p50=15, p90=29, max=43 in the same batch) well below
+# the branch2 pool's own ~69-node average -- faster to embed/boot on real
+# hardware too, not just lower peak concurrency.
+#
+# "Number of DAGs: 8000", not 5000: BranchingValidator rejects and retries
+# (branching_augmentor.py's own max_try=100) draws that don't satisfy its
+# structural constraints, and the low p_par here empirically loses more
+# draws to that than the other pools' higher p_par did (206/300 succeeded
+# in the tuning batch above, ~69%) -- requesting 8000 gives comfortable
+# margin over a 5000-DAG pool even at that success rate.
+Number of DAGs: 8000
+
+Graph structure:
+  Generation method: "G(n, p)"
+  Number of nodes:
+    Fixed: 8
+  Number of source nodes:
+    Fixed: 1
+  Number of sink nodes:
+    Fixed: 1
+  Probability of edge existence:
+    Fixed: 0.7
+  Ensure weakly connected: True
+  Branching:
+    Probability of branching:
+      Fixed: 0.15
+    Maximum nesting depth:
+      Fixed: 1
+    Maximum branches:
+      Fixed: 2
+    Firing: deterministic
+    Probability distribution: uniform-normalize
+
+Properties:
+  Multi-rate:
+    Periodic type: "Entry"
+    Source node period:
+      Fixed: 1000
+    Whole-DAG utilization:
+      Random: [0.1, 1.5]
+  End-to-end deadline:
+    Deadline mode: 'Implicit'
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    JSON: False
+    XML: False
+    DOT: False
+  Figure:
+    Draw legend: False
+    PNG: False
+    SVG: False
+    EPS: False
+    PDF: True
