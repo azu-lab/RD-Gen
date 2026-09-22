@@ -118,7 +118,7 @@ Graph structure:
     Maximum nesting depth:
       Fixed: 1           # see doc item 3 above
     Maximum branches:
-      Fixed: 2           # Melani n_par
+      Fixed: 8           # Melani n_par
     Firing: deterministic
     Probability distribution: uniform-normalize
 

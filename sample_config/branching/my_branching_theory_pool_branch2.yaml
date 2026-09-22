@@ -1,0 +1,72 @@
+Seed: 0
+# Real-machine-scale variant of ../branching/my_branching_theory_pool.yaml.
+# Identical in every way EXCEPT "Maximum branches" (n_par): 2 here, not the
+# paper's 8. That file's own doc comments explain the full generator design
+# (G(n,p)+Branching, UUniFast, single-source/single-sink, Implicit deadline
+# mode); read them first. This file only documents the one deviation.
+#
+# Why n_par=2, not 8: the main pool's ~130 nodes/DAG (n_par=8, depth=1) is
+# fine for the offline acceptance-ratio sweep (never runs on real hardware),
+# but too large for a single DAG to embed and boot on the real machine in
+# reasonable time. Empirically measured (venv/bin/python3 run_generator.py
+# against small seed/n_par combinations, then averaging generated node
+# counts):
+#
+#   seed=3, n_par=2 -> avg 20.9 nodes (10-24)   <- closest to a ~20-node target
+#   seed=3, n_par=8 -> avg 40.5 nodes (32-48)
+#   seed=10, n_par=2 -> avg ~69 nodes (59-80)   <- what this file actually uses
+#
+# This file keeps "Number of nodes" at the main pool's 10 (not the smaller
+# 3 that would hit ~20 nodes) because that's what was already used to
+# generate test/awkernel_theory_pool_branching_branch2/DAGs -- reproduced
+# here verbatim so the existing generated pool and this checked-in config
+# stay in sync. A seed=3 variant for a tighter ~20-node target is still
+# open; see the real-machine routine doc in Notion
+# (2026-09-23-実機到達性トラブルシュートと開始前ルーティン) for the
+# current recommendation before generating one.
+Number of DAGs: 5000
+
+Graph structure:
+  Generation method: "G(n, p)"
+  Number of nodes:
+    Fixed: 10
+  Number of source nodes:
+    Fixed: 1
+  Number of sink nodes:
+    Fixed: 1
+  Probability of edge existence:
+    Fixed: 0.3
+  Ensure weakly connected: True
+  Branching:
+    Probability of branching:
+      Fixed: 0.8         # Melani p_par
+    Maximum nesting depth:
+      Fixed: 1           # see my_branching_theory_pool.yaml doc item 3
+    Maximum branches:
+      Fixed: 2           # deviates from Melani n_par=8 -- see doc above
+    Firing: deterministic
+    Probability distribution: uniform-normalize
+
+Properties:
+  Multi-rate:
+    Periodic type: "Entry"
+    Source node period:
+      Fixed: 1000
+    Whole-DAG utilization:
+      Random: [0.1, 1.5]
+  End-to-end deadline:
+    Deadline mode: 'Implicit'
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    JSON: False
+    XML: False
+    DOT: False
+  Figure:
+    Draw legend: False
+    PNG: False
+    SVG: False
+    EPS: False
+    PDF: True
