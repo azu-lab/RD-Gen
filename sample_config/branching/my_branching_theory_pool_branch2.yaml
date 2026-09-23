@@ -24,7 +24,22 @@ Seed: 0
 # open; see the real-machine routine doc in Notion
 # (2026-09-23-実機到達性トラブルシュートと開始前ルーティン) for the
 # current recommendation before generating one.
-Number of DAGs: 5000
+Number of DAGs: 8000
+# Raised from the original 5000 (2026-09-23): the real-machine trial log
+# comparison (compare_offline_vs_real.py) needed dag_<N>.yaml files up to
+# N=7843, which a 5000-count pool doesn't have -- some earlier real trial
+# was staged from a larger version of this same pool than what's
+# currently checked in. Confirmed deterministic before raising this:
+# regenerating with 8000 instead of 5000 reproduces dag_100.yaml and
+# dag_4998.yaml byte-for-byte identical to the existing 5000-count pool,
+# only extending the range upward (RD-Gen's own Seed:0 fixes the draw
+# sequence; this doesn't perturb any already-drawn DAG). The offline
+# acceptance_ratio.csv/trials.jsonl pair in
+# awkernel_script/2026_ECRTS_Awkernel_result/evaluation_data/
+# data_schedulability_evaluation_branch2/ only ever reference up to
+# dag_4999 (they were generated from the 5000-count pool), so they remain
+# valid unchanged; only the *real-machine* trial's own DAG set needed the
+# wider range.
 
 Graph structure:
   Generation method: "G(n, p)"
