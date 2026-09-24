@@ -1,0 +1,58 @@
+Seed: 7
+# Per-u_norm-bin pool for the theory-vs-reality study (see
+# gen_theory_vs_reality_bins.py, which generated this file -- do not hand-edit,
+# regenerate instead). u_norm=0.45, REAL_CORES=14,
+# DAGS_PER_SET=8: centers this bin's per-DAG "Whole-DAG
+# utilization" on u_norm*REAL_CORES/DAGS_PER_SET = 0.7875.
+#
+# Deadline mode 'Constrained' (D ~ Uniform(L, T], T = the fixed period below)
+# -- NOT 'Arbitrary'+override like acceptance_ratio.rs/my_chain_theory_pool.yaml:
+# this study anchors each bin's utilization targeting on the *fixed* period,
+# so period must survive intact into admission. An 'Arbitrary'+override_period
+# scheme (acceptance_ratio.rs's own D-then-T generation order) was tried first
+# and rejected (confirmed empirically 2026-09-24): its override_period
+# discards RD-Gen's own period entirely and derives a new one from
+# critical_path/beta instead, decorrelating the resulting utilization=C/period
+# from the bin's own generation-time C-vs-1000 targeting -- every bin came out
+# with the same ~0.35 median utilization regardless of u_norm. 'Constrained'
+# keeps the fixed period as T by construction (BuildFailedError, silently
+# dropping the DAG, only when critical_path alone already exceeds it).
+Number of DAGs: 300
+
+Graph structure:
+  Generation method: "Chain-based"
+  Number of chains:
+    Fixed: 1
+  Main sequence length:
+    Random: (5, 10, 1)
+  Number of sub sequences:
+    Random: (1, 3, 1)          # 幅を持たせるため多めに設定
+  Merge chains:
+    Number of sink nodes:
+      Fixed: 1
+    Middle of chain: False
+    Sink node: True
+
+Properties:
+  Multi-rate:
+    Periodic type: "Entry"
+    Source node period:
+      Fixed: 1000
+    Whole-DAG utilization:
+      Random: [0.7612, 0.8137]
+  End-to-end deadline:
+    Deadline mode: 'Constrained'
+
+Output formats:
+  Naming of combination directory: "Abbreviation"
+  DAG:
+    YAML: True
+    JSON: False
+    XML: False
+    DOT: False
+  Figure:
+    Draw legend: False
+    PNG: False
+    SVG: False
+    EPS: False
+    PDF: True
