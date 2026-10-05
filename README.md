@@ -10,7 +10,7 @@
 ## About
 **RD-Gen** (random DAG generator considering multi-rate applications for reproducible scheduling evaluation) is a tool for researchers targeting DAGs.
 
-Releases v2.0.0 and later (currently [v2.0.1](https://github.com/azu-lab/RD-Gen/releases/tag/v2.0.1)) are **RD-Gen+**, which extends RD-Gen with conditional (cDAG) and probabilistic (pDAG) branching DAGs through the `Branching` block described in [RD-Gen+ (branching augmentation)](#rd-gen-branching-augmentation). The RD-Gen of ISORC 2023 remains available as release [v1.0.0](https://github.com/azu-lab/RD-Gen/releases/tag/v1.0.0).
+Releases v2.0.0 and later (currently [v2.0.2](https://github.com/azu-lab/RD-Gen/releases/tag/v2.0.2)) are **RD-Gen+**, which extends RD-Gen with conditional (cDAG) and probabilistic (pDAG) branching DAGs through the `Branching` block described in [RD-Gen+ (branching augmentation)](#rd-gen-branching-augmentation). The RD-Gen of ISORC 2023 remains available as release [v1.0.0](https://github.com/azu-lab/RD-Gen/releases/tag/v1.0.0).
 RD-Gen makes the following contributions:
 - RD-Gen **extends existing random DAG construction methods**, Fan-in/Fan-out [1] and G(n, p) [2] methods, to meet researchers’ requirements.
 - RD-Gen proposes a new **Chain-based method** to flexibly construct state-of-the-art chain-based multi-rate DAGs.
