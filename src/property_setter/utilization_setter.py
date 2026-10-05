@@ -309,7 +309,7 @@ class UtilizationSetter(PropertySetterBase):
             utilizations: List[float] = []  # type: ignore
             for i in range(n - 1):
                 next_u = -sys.maxsize
-                next_u = remain_u * (random.uniform(0, 1) ** (1 / (n - i)))
+                next_u = remain_u * (random.uniform(0, 1) ** (1 / (n - i - 1)))
                 utilizations.append(remain_u - next_u)
                 remain_u = next_u
             utilizations.append(remain_u)
@@ -349,7 +349,7 @@ class UtilizationSetter(PropertySetterBase):
             for i in range(n - 1):
                 next_u = -sys.maxsize
                 while remain_u - next_u >= max_u:
-                    next_u = remain_u * (random.uniform(0, 1) ** (1 / (n - i)))
+                    next_u = remain_u * (random.uniform(0, 1) ** (1 / (n - i - 1)))
                 utilizations.append(remain_u - next_u)
                 remain_u = next_u
 

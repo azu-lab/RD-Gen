@@ -127,6 +127,23 @@ class TestUtilizationSetter:
             sum_util += util
         assert abs(sum_util - total_utilization) <= 0.000001
 
+    @pytest.mark.parametrize("n", [2, 4, 8])
+    def test_UUniFast_shares_are_uniform(self, n):
+        # UUniFast draws the shares uniformly, so each share has the mean total_u / n.
+        random.seed(0)
+        total_utilization = 1.0
+        samples = 20000
+        for draw in (
+            lambda: UtilizationSetter._UUniFast(total_utilization, n),
+            lambda: UtilizationSetter._UUniFast_with_max_u(total_utilization, n, 2.0),
+        ):
+            means = [0.0] * n
+            for _ in range(samples):
+                for k, util in enumerate(draw()):
+                    means[k] += util / samples
+            for mean in means:
+                assert abs(mean - total_utilization / n) < 0.01
+
     def test_set_by_total_utilization_no_max(self, mocker):
         total_utilization = 10.0
         period_option = list(range(1000, 10000, 10))
