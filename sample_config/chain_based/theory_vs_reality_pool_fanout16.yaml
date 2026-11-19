@@ -6,8 +6,9 @@
 # the sink's fan-in is 1 + (number of sub sequences) and a branching node's
 # fan-out is at most 1 + (number of sub sequences), so "Number of sub
 # sequences" up to 15 is exactly the macro limit. Everything else (seed,
-# utilization range, fixed period, 'Constrained' deadlines, pool size) is
-# unchanged, so the two pools differ only in how wide the DAGs may get.
+# utilization range, 'Constrained' deadlines, pool size) is unchanged
+# except the period: this file draws it per DAG from a set (see 'Source
+# node period' below), while theory_vs_reality_pool.yaml keeps 1000 fixed.
 #
 Seed: 0
 # Core-count-independent pool for the theory-vs-reality study (see
@@ -34,8 +35,8 @@ Seed: 0
 # 2.0 and nothing between (confirmed 2026-09-29 -- the old per-bin
 # "Random: [lo, hi]" configs only ever produced their two endpoints).
 #
-# Deadline mode 'Constrained' (D ~ Uniform(L, T], T = the fixed period
-# below) keeps the fixed period as T, so the generation-time C/T survives
+# Deadline mode 'Constrained' (D ~ Uniform(L, T], T = the DAG's period
+# below) keeps the generated period as T, so the generation-time C/T survives
 # into admission unchanged (an 'Arbitrary'+override_period scheme was tried
 # and rejected 2026-09-24: it re-derives the period and decorrelates C/T).
 # A DAG whose critical path alone exceeds the period is dropped by RD-Gen
@@ -62,8 +63,17 @@ Graph structure:
 Properties:
   Multi-rate:
     Periodic type: "Entry"
+    # One period per DAG, drawn from this set (a plain list is a discrete
+    # random.choice). Changed from 'Fixed: 1000' on 2026-11-19 after the
+    # M1 beta review ("RD-Gen supports multiple rates, why throw that away";
+    # "1000 ms needs a reason"). FasS can only declare a period on the
+    # source, so a DAG keeps one period (no multi-rate DAG); the period
+    # varies between DAGs instead. The set is provisional: fix it after
+    # checking how many jobs fit in the 10 s trace and its dump time at
+    # 115,200 bps. Its LCM (1000) is the DAG-Fluid hyperperiod, so keep
+    # every value a divisor of 1000 unless the hyperperiod may grow.
     Source node period:
-      Fixed: 1000
+      Random: [100, 200, 500, 1000]
     Whole-DAG utilization:
       Random: "(0.01, 2.0, 0.001)"
   End-to-end deadline:
