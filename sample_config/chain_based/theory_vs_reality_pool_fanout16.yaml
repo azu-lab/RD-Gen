@@ -77,7 +77,7 @@ Properties:
     Whole-DAG utilization:
       Random: "(0.01, 2.0, 0.001)"
   End-to-end deadline:
-    Deadline mode: 'Constrained'
+    Deadline mode: 'Implicit'
 
 Output formats:
   Naming of combination directory: "Abbreviation"
